@@ -19,7 +19,7 @@ public interface SellerListingsClient {
 
 	/**
 	 * Create a seller listing for a requested event
-	 * 
+	 *
 	 * @param newSellerListing
 	 * @return
 	 */
