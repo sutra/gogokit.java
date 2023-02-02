@@ -1,7 +1,8 @@
-package org.oxerr.viagogo.model.response;
+package org.oxerr.viagogo.model;
 
-import java.util.Collections;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ViagogoException extends RuntimeException {
 
@@ -13,11 +14,11 @@ public class ViagogoException extends RuntimeException {
 
 	private final Map<String, String> errors;
 
-	public ViagogoException() {
-		this(null, null, Collections.emptyMap());
-	}
-
-	public ViagogoException(String code, String message, Map<String, String> errors) {
+	public ViagogoException(
+		@JsonProperty("code") String code,
+		@JsonProperty("message") String message,
+		@JsonProperty("errors") Map<String, String> errors
+	) {
 		this.code = code;
 		this.message = message;
 		this.errors = errors;

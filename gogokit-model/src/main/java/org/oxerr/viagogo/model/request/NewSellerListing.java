@@ -7,10 +7,6 @@ import org.oxerr.viagogo.model.Seating;
 import org.oxerr.viagogo.model.response.Event;
 import org.oxerr.viagogo.model.response.Venue;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class NewSellerListing {
 
 	private Money ticketPrice;

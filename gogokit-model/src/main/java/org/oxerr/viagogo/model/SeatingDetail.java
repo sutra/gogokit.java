@@ -3,12 +3,7 @@ package org.oxerr.viagogo.model;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-/**
- * Represents the seating information for a ticket(s) in a Venue.
- *
- * <a href="https://developer.viagogo.net/api-reference/inventory#tag/BasicType_Seating">Seating</a>
- */
-public class Seating {
+public class SeatingDetail {
 
 	/**
 	 * The section of the ticket(s).
@@ -30,10 +25,10 @@ public class Seating {
 	 */
 	private String seatTo;
 
-	public Seating() {
+	public SeatingDetail() {
 	}
 
-	public Seating(String section, String row, String seatFrom, String seatTo) {
+	public SeatingDetail(String section, String row, String seatFrom, String seatTo) {
 		this.section = section;
 		this.row = row;
 		this.seatFrom = seatFrom;
@@ -88,7 +83,7 @@ public class Seating {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		Seating rhs = (Seating) obj;
+		SeatingDetail rhs = (SeatingDetail) obj;
 		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 

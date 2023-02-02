@@ -7,15 +7,11 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 /**
  * Returned for monetary values, such as ticket prices, fees charged and tax amounts.
  *
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/BasicType_Money">Money</a>
  */
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Money {
 
 	/**

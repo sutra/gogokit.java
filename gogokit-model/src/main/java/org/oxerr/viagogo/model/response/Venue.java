@@ -3,9 +3,6 @@ package org.oxerr.viagogo.model.response;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import io.openapitools.jackson.dataformat.hal.HALLink;
 import io.openapitools.jackson.dataformat.hal.annotation.Link;
 import io.openapitools.jackson.dataformat.hal.annotation.Resource;
@@ -16,13 +13,12 @@ import io.openapitools.jackson.dataformat.hal.annotation.Resource;
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/Resource_Venue">Venue</a>
  */
 @Resource
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Venue {
 
 	/**
 	 * The venue identifier.
 	 */
-	private Integer id;
+	private Long id;
 
 	/**
 	 * The name of the venue.
@@ -65,11 +61,11 @@ public class Venue {
 		this.city = city;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

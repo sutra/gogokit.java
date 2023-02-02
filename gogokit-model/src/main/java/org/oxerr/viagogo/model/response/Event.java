@@ -7,8 +7,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 import io.openapitools.jackson.dataformat.hal.annotation.Link;
@@ -20,13 +18,12 @@ import io.openapitools.jackson.dataformat.hal.annotation.Resource;
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/Resource_Event">Event</a>
  */
 @Resource
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Event {
 
 	/**
 	 * The event identifier.
 	 */
-	private Integer id;
+	private Long id;
 
 	/**
 	 * The name of the event.
@@ -85,11 +82,11 @@ public class Event {
 		this.startDate = startDate;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

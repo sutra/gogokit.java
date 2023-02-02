@@ -5,8 +5,14 @@ import javax.ws.rs.PathParam;
 
 import org.oxerr.viagogo.client.inventory.SellerListingsClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+
+import io.openapitools.jackson.dataformat.hal.HALMapper;
 import si.mazi.rescu.ClientConfig;
 import si.mazi.rescu.IRestProxyFactory;
+import si.mazi.rescu.serialization.jackson.DefaultJacksonObjectMapperFactory;
+import si.mazi.rescu.serialization.jackson.JacksonObjectMapperFactory;
 
 public class ViagogoClient {
 
@@ -23,9 +29,24 @@ public class ViagogoClient {
 	public ViagogoClient(String baseUrl, String token) {
 		this.baseUrl = baseUrl;
 
+		JacksonObjectMapperFactory jacksonObjectMapperFactory = new DefaultJacksonObjectMapperFactory() {
+
+			@Override
+			public void configureObjectMapper(ObjectMapper objectMapper) {
+				super.configureObjectMapper(objectMapper);
+				objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+			}
+
+			@Override
+			protected ObjectMapper createInstance() {
+				return new HALMapper().findAndRegisterModules();
+			}
+		};
+
 		this.clientConfig = new ClientConfig();
 		clientConfig.addDefaultParam(PathParam.class, "version", "v2");
 		clientConfig.addDefaultParam(HeaderParam.class, "Authorization", "Bearer " + token);
+		clientConfig.setJacksonObjectMapperFactory(jacksonObjectMapperFactory);
 
 		this.restProxyFactory = new RestProxyFactorySingletonImpl();
 	}
