@@ -1,37 +1,81 @@
-package org.oxerr.viagogo.model;
+package org.oxerr.viagogo.model.response;
 
 import java.time.Instant;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.oxerr.viagogo.model.Money;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import io.openapitools.jackson.dataformat.hal.HALLink;
+import io.openapitools.jackson.dataformat.hal.annotation.Link;
+import io.openapitools.jackson.dataformat.hal.annotation.Resource;
+
+/**
+ * An event on the viagogo platform.
+ *
+ * <a href="https://developer.viagogo.net/api-reference/catalog#tag/Resource_Event">Event</a>
+ */
+@Resource
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Event {
 
+	/**
+	 * The event identifier.
+	 */
 	private Integer id;
 
+	/**
+	 * The name of the event.
+	 */
 	private String name;
 
+	/**
+	 * The date when the event starts.
+	 */
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
 	private Instant startDate;
 
+	/**
+	 * The date when the event ends.
+	 */
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
 	private Instant endDate;
 
+	/**
+	 * The date when tickets for the event will go onsale.
+	 */
 	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
 	private Instant onSaleDate;
 
+	/**
+	 * True if the event start and end date have been confirmed; Otherwise, false.
+	 */
 	private Boolean dateConfirmed;
 
+	/**
+	 * True if the event start and end time have been confirmed; Otherwise, false.
+	 */
 	private Boolean timeConfirmed;
 
+	/**
+	 * The type of the event. Can be {@code Main} or {@code Parking}.
+	 */
 	private String type;
 
+	/**
+	 * The minimum ticket price of the event.
+	 */
 	private Money minTicketPrice;
+
+	@Link
+	private HALLink self;
+
+	@Link("event:webpage")
+	private HALLink webpage;
 
 	public Event() {
 	}

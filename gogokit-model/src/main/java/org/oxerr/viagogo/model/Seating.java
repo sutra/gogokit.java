@@ -6,15 +6,32 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+/**
+ * Represents the seating information for a ticket(s) in a Venue.
+ *
+ * <a href="https://developer.viagogo.net/api-reference/inventory#tag/BasicType_Seating">Seating</a>
+ */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Seating {
 
+	/**
+	 * The section of the ticket(s).
+	 */
 	private String section;
 
+	/**
+	 * The row of the ticket(s).
+	 */
 	private String row;
 
+	/**
+	 * The first in a contiguous block of seats to which the tickets have been allocated.
+	 */
 	private String seatFrom;
 
+	/**
+	 * The last in a contiguous block of seats to which the tickets have been allocated.
+	 */
 	private String seatTo;
 
 	public Seating() {

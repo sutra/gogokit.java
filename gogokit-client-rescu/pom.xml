@@ -11,8 +11,8 @@
 		<artifactId>gogokit</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>gogokit-model</artifactId>
-	<name>GogoKit Model</name>
+	<artifactId>gogokit-client-rescu</artifactId>
+	<name>GogoKit Client - Apache CXF</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -20,20 +20,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
+			<groupId>com.github.mmazi</groupId>
+			<artifactId>rescu</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.openapitools.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-hal</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>gogokit-client</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

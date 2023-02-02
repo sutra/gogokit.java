@@ -10,14 +10,28 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+/**
+ * Returned for monetary values, such as ticket prices, fees charged and tax amounts.
+ *
+ * <a href="https://developer.viagogo.net/api-reference/catalog#tag/BasicType_Money">Money</a>
+ */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Money {
 
+	/**
+	 * The decimal amount of the money.
+	 */
 	@Nullable
 	private BigDecimal amount;
 
+	/**
+	 * The ISO 4217 currency code that the monetary value is represented in.
+	 */
 	private String currencyCode;
 
+	/**
+	 * A user-friendly string representing the monetary value.
+	 */
 	private String display;
 
 	public Money() {

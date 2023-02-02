@@ -2,10 +2,10 @@ package org.oxerr.viagogo.model.request;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.oxerr.viagogo.model.Event;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
-import org.oxerr.viagogo.model.Venue;
+import org.oxerr.viagogo.model.response.Event;
+import org.oxerr.viagogo.model.response.Venue;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
