@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.model.request;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Event;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
@@ -99,6 +101,26 @@ public class NewSellerListing {
 
 	public void setVenue(Venue venue) {
 		this.venue = venue;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		NewSellerListing rhs = (NewSellerListing) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

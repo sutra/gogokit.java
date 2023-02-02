@@ -1,5 +1,8 @@
 package org.oxerr.viagogo.model;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -54,6 +57,26 @@ public class Seating {
 
 	public void setSeatTo(String seatTo) {
 		this.seatTo = seatTo;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		Seating rhs = (Seating) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }
