@@ -15,8 +15,6 @@ import org.oxerr.viagogo.model.request.NewSellerListing;
 import org.oxerr.viagogo.model.response.SellerListing;
 
 @Path("/{version}")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public interface SellerListingsClient {
 
 	/**
@@ -27,6 +25,8 @@ public interface SellerListingsClient {
 	 */
 	@POST
 	@Path("/sellerlistings")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	SellerListing create(NewSellerListing newSellerListing) throws ViagogoException, IOException;
 
 	/**
