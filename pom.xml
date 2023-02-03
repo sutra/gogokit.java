@@ -22,6 +22,7 @@
 	<modules>
 		<module>gogokit-model</module>
 		<module>gogokit-client</module>
+		<module>gogokit-client-cached</module>
 		<module>gogokit-client-rescu</module>
 	</modules>
 	<dependencyManagement>
@@ -50,6 +51,11 @@
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter-api</artifactId>
 				<version>5.9.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.redisson</groupId>
+				<artifactId>redisson</artifactId>
+				<version>3.19.2</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>

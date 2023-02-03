@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.rescu;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 
+import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.inventory.SellerListingsClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +15,7 @@ import si.mazi.rescu.IRestProxyFactory;
 import si.mazi.rescu.serialization.jackson.DefaultJacksonObjectMapperFactory;
 import si.mazi.rescu.serialization.jackson.JacksonObjectMapperFactory;
 
-public class ViagogoClient {
+public class RescuViagogoClient implements ViagogoClient {
 
 	private final String baseUrl;
 
@@ -22,11 +23,11 @@ public class ViagogoClient {
 
 	private final IRestProxyFactory restProxyFactory;
 
-	public ViagogoClient(String token) {
+	public RescuViagogoClient(String token) {
 		this("https://api.viagogo.net", token);
 	}
 
-	public ViagogoClient(String baseUrl, String token) {
+	public RescuViagogoClient(String baseUrl, String token) {
 		this.baseUrl = baseUrl;
 
 		JacksonObjectMapperFactory jacksonObjectMapperFactory = new DefaultJacksonObjectMapperFactory() {
@@ -55,7 +56,7 @@ public class ViagogoClient {
 		return createProxy(SellerListingsClient.class);
 	}
 
-	public <I> I createProxy(Class<I> restInterface) {
+	protected <I> I createProxy(Class<I> restInterface) {
 		return this.restProxyFactory.createProxy(restInterface, baseUrl, this.clientConfig);
 	}
 
