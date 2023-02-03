@@ -24,12 +24,19 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 
 	private final Redisson redisson;
 
+	private final String cacheName;
+
 	public CachedSellerListingsClient(
 		SellerListingsClient sellerListingsClient,
 		Redisson redisson
 	) {
 		this.redisson = redisson;
 		this.sellerListingsClient = sellerListingsClient;
+
+		this.cacheName = String.format(
+			"%s:externalId-sellerListingCreation",
+			this.getClass().getName()
+		);
 	}
 
 	public SellerListing create(NewSellerListing newSellerListing) throws ViagogoException, IOException {
@@ -105,16 +112,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 	}
 
 	protected RMap<String, SellerListingCreation> getSellerListingCreationCache() {
-		final String cacheName = String.format(
-			"%s:externalId-sellerListingCreation",
-			this.getClass().getName()
-		);
-
-		log.debug("cacheName: {}", cacheName);
-
-		final RMap<String, SellerListingCreation> cache = redisson.getMap(cacheName);
-
-		return cache;
+		return redisson.getMap(this.cacheName);
 	}
 
 }
