@@ -112,6 +112,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 	}
 
 	protected RMap<String, SellerListingCreation> getSellerListingCreationCache() {
+		log.trace("Getting map: {}", this.cacheName);
 		return redisson.getMap(this.cacheName);
 	}
 
