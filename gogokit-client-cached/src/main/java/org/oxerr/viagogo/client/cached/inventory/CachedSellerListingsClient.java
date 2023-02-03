@@ -10,9 +10,9 @@ import org.oxerr.viagogo.client.inventory.SellerListingsClient;
 import org.oxerr.viagogo.model.ViagogoException;
 import org.oxerr.viagogo.model.request.NewSellerListing;
 import org.oxerr.viagogo.model.response.SellerListing;
-import org.redisson.Redisson;
 import org.redisson.api.RMap;
 import org.redisson.api.RReadWriteLock;
+import org.redisson.api.RedissonClient;
 
 import si.mazi.rescu.HttpStatusIOException;
 
@@ -22,13 +22,13 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 
 	private final SellerListingsClient sellerListingsClient;
 
-	private final Redisson redisson;
+	private final RedissonClient redisson;
 
 	private final String cacheName;
 
 	public CachedSellerListingsClient(
 		SellerListingsClient sellerListingsClient,
-		Redisson redisson
+		RedissonClient redisson
 	) {
 		this.redisson = redisson;
 		this.sellerListingsClient = sellerListingsClient;
