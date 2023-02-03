@@ -42,25 +42,25 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 	public SellerListing create(NewSellerListing newSellerListing) throws ViagogoException, IOException {
 		final SellerListing sellerListing;
 
-		final String key = newSellerListing.getExternalId();
+		final String externalId = newSellerListing.getExternalId();
 
 		final RMap<String, SellerListingCreation> cache = this.getSellerListingCreationCache();
 
-		final RReadWriteLock rwLock = cache.getReadWriteLock(key);
+		final RReadWriteLock rwLock = cache.getReadWriteLock(externalId);
 
 		rwLock.writeLock().lock();
 
 		try {
-			final SellerListingCreation creation = cache.get(key);
-			log.debug("{}: {}", key, creation);
+			final SellerListingCreation creation = cache.get(externalId);
+			log.debug("[{}] Creation: {}", externalId, creation);
 
 			if (creation != null && creation.isEqual(newSellerListing)) {
-				log.debug("Skip calling API, return seller listing from cache directly.");
+				log.debug("[{}] Skip calling API, return seller listing from cache directly.", externalId);
 				sellerListing = creation.getSellerListing();
 			} else {
-				log.debug("Calling API.");
+				log.debug("[]{} Calling API.", externalId);
 				sellerListing = this.sellerListingsClient.create(newSellerListing);
-				cache.put(key, new SellerListingCreation(newSellerListing, sellerListing));
+				cache.put(externalId, new SellerListingCreation(newSellerListing, sellerListing));
 			}
 
 		} finally {
@@ -76,7 +76,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 		final SellerListingCreation creation = cache.get(externalId);
 
 		if (creation != null && creation.isEmpty()) {
-			log.debug("Creation({}) is empty, skip deleting.", externalId);
+			log.debug("[{}] Creation is empty, skip deleting.", externalId);
 
 			final IOException e = creation.getException();
 			if (e != null) {
@@ -92,16 +92,16 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 			this.sellerListingsClient.delete(externalId);
 			this.getSellerListingCreationCache().put(externalId, new SellerListingCreation());
 
-			log.debug("Deleted: {}", externalId);
+			log.debug("[{}] Deleted.", externalId);
 		} catch (IOException e) {
-			log.debug("Delete failed: {}({})", e.getMessage(), e.getClass());
+			log.debug("[{}] Delete failed: {}", externalId, e.getMessage());
 
 			if (e instanceof HttpStatusIOException) {
 				final int httpStatusCode = ((HttpStatusIOException) e).getHttpStatusCode();
 
 				if (httpStatusCode == 404) {
 					this.getSellerListingCreationCache().put(externalId, new SellerListingCreation(e));
-					log.debug("Not exists, marked as empty in cache.");
+					log.debug("[{}] Not exists, marked as empty in cache.", externalId);
 				}
 			}
 
