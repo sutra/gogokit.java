@@ -1,6 +1,9 @@
 package org.oxerr.viagogo.client.cached.inventory;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.PathParam;
 
@@ -10,7 +13,8 @@ import org.oxerr.viagogo.client.inventory.SellerListingsClient;
 import org.oxerr.viagogo.model.ViagogoException;
 import org.oxerr.viagogo.model.request.NewSellerListing;
 import org.oxerr.viagogo.model.response.SellerListing;
-import org.redisson.api.RMap;
+import org.redisson.api.MapOptions;
+import org.redisson.api.RMapCache;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
 
@@ -44,14 +48,14 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 
 		final String externalId = newSellerListing.getExternalId();
 
-		final RMap<String, SellerListingCreation> cache = this.getSellerListingCreationCache();
+		var cache = this.getSellerListingCreationCache();
 
 		final RReadWriteLock rwLock = cache.getReadWriteLock(externalId);
 
 		rwLock.writeLock().lock();
 
 		try {
-			final SellerListingCreation creation = cache.get(externalId);
+			SellerListingCreation creation = cache.get(externalId);
 			log.debug("[{}] Creation: {}", externalId, creation);
 
 			if (creation != null && creation.isEqual(newSellerListing)) {
@@ -60,7 +64,9 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 			} else {
 				log.debug("[]{} Calling API.", externalId);
 				sellerListing = this.sellerListingsClient.create(newSellerListing);
-				cache.put(externalId, new SellerListingCreation(newSellerListing, sellerListing));
+				creation = new SellerListingCreation(newSellerListing, sellerListing);
+				var ttl = Duration.between(Instant.now(), newSellerListing.getEvent().getStartDate()).toDays();
+				cache.fastPut(externalId, creation, ttl, TimeUnit.DAYS);
 			}
 
 		} finally {
@@ -71,7 +77,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 	}
 
 	public void delete(@PathParam("externalId") String externalId) throws IOException {
-		final RMap<String, SellerListingCreation> cache = this.getSellerListingCreationCache();
+		var cache = this.getSellerListingCreationCache();
 
 		final SellerListingCreation creation = cache.get(externalId);
 
@@ -90,7 +96,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 
 		try {
 			this.sellerListingsClient.delete(externalId);
-			this.getSellerListingCreationCache().put(externalId, new SellerListingCreation());
+			cache.fastPut(externalId, new SellerListingCreation(), 365, TimeUnit.DAYS);
 
 			log.debug("[{}] Deleted.", externalId);
 		} catch (IOException e) {
@@ -100,7 +106,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 				final int httpStatusCode = ((HttpStatusIOException) e).getHttpStatusCode();
 
 				if (httpStatusCode == 404) {
-					this.getSellerListingCreationCache().put(externalId, new SellerListingCreation(e));
+					cache.fastPut(externalId, new SellerListingCreation(e), 365, TimeUnit.DAYS);
 					log.debug("[{}] Not exists, marked as empty in cache.", externalId);
 				}
 			}
@@ -111,9 +117,9 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 		}
 	}
 
-	protected RMap<String, SellerListingCreation> getSellerListingCreationCache() {
+	protected RMapCache<String, SellerListingCreation> getSellerListingCreationCache() {
 		log.trace("Getting map: {}", this.cacheName);
-		return redisson.getMap(this.cacheName);
+		return redisson.getMapCache(this.cacheName, MapOptions.defaults());
 	}
 
 }
