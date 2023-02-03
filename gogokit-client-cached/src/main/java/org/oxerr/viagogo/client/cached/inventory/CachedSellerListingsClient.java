@@ -41,7 +41,6 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 
 		final RReadWriteLock rwLock = cache.getReadWriteLock(key);
 
-		// lock
 		rwLock.writeLock().lock();
 
 		try {
@@ -58,7 +57,6 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 			}
 
 		} finally {
-			// unlock
 			rwLock.writeLock().unlock();
 		}
 
