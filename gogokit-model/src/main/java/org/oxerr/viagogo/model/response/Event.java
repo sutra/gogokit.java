@@ -32,19 +32,19 @@ public class Event extends Resource {
 	/**
 	 * The date when the event starts.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 	private Instant startDate;
 
 	/**
 	 * The date when the event ends.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 	private Instant endDate;
 
 	/**
 	 * The date when tickets for the event will go onsale.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 	private Instant onSaleDate;
 
 	/**
@@ -66,6 +66,14 @@ public class Event extends Resource {
 	 * The minimum ticket price of the event.
 	 */
 	private Money minTicketPrice;
+
+	/**
+	 * The status of the event.
+	 * Can be {@code Normal}, {@code Postponed}, {@code Cancelled},
+	 * {@code Rescheduled}, {@code Relocated}, {@code RelocatedAndRescheduled},
+	 * {@code Draft}, {@code Contingent} and {@code Deleted}.
+	 */
+	private String status;
 
 	@Link("event:webpage")
 	private HALLink webpage;
@@ -148,6 +156,22 @@ public class Event extends Resource {
 
 	public void setMinTicketPrice(Money minTicketPrice) {
 		this.minTicketPrice = minTicketPrice;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public HALLink getWebpage() {
+		return webpage;
+	}
+
+	public void setWebpage(HALLink webpage) {
+		this.webpage = webpage;
 	}
 
 	@Override

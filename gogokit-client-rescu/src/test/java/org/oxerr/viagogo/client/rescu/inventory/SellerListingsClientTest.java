@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.oxerr.viagogo.client.rescu.RescuViagogoClient;
+import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
 import org.oxerr.viagogo.model.ViagogoException;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.SellerListing;
@@ -23,23 +22,10 @@ class SellerListingsClientTest {
 
 	private final Logger log = LogManager.getLogger();
 
-	private RescuViagogoClient getClient() {
-		Properties props = new Properties();
-		try (var in = this.getClass().getResourceAsStream("/viagogo.properties")) {
-			props.load(in);
-		} catch (IOException e) {
-			throw new java.lang.IllegalArgumentException("Read /viagogo.properties failed.");
-		}
-
-		var token = props.getProperty("token");
-		RescuViagogoClient client = new RescuViagogoClient(token);
-		return client;
-	}
-
 	@Test
 	@Disabled("Token is required")
 	void testGetAllByEventId() throws ViagogoException, IOException {
-		var client = getClient();
+		var client = RescuViagogoClientTest.getClient();
 		var sellerListings = client.sellerListingsClient().getAll(null, null, null, null, null, null);
 		assertNotNull(sellerListings);
 		log.info("Total items: {}", sellerListings.getTotalItems());
@@ -48,7 +34,7 @@ class SellerListingsClientTest {
 	@Test
 	@Disabled("Delete all seller listings")
 	void testDeleteAll() throws IOException {
-		RescuViagogoClient client = getClient();
+		var client = RescuViagogoClientTest.getClient();
 
 		PagedResource<SellerListing> all;
 

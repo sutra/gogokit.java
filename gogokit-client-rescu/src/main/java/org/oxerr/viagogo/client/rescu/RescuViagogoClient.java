@@ -4,10 +4,13 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 
 import org.oxerr.viagogo.client.ViagogoClient;
+import org.oxerr.viagogo.client.catalog.EventClient;
 import org.oxerr.viagogo.client.inventory.SellerListingsClient;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.openapitools.jackson.dataformat.hal.HALMapper;
@@ -36,13 +39,15 @@ public class RescuViagogoClient implements ViagogoClient {
 			@Override
 			public void configureObjectMapper(ObjectMapper objectMapper) {
 				super.configureObjectMapper(objectMapper);
+				objectMapper.registerModule(new JavaTimeModule());
 				objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+				objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+				objectMapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
 			}
 
 			@Override
 			protected ObjectMapper createInstance() {
-				return new HALMapper()
-					.registerModule(new JavaTimeModule());
+				return new HALMapper();
 			}
 		};
 
@@ -54,6 +59,12 @@ public class RescuViagogoClient implements ViagogoClient {
 		this.restProxyFactory = new RestProxyFactorySingletonImpl();
 	}
 
+	@Override
+	public EventClient eventClient() {
+		return createProxy(EventClient.class);
+	}
+
+	@Override
 	public SellerListingsClient sellerListingsClient() {
 		return createProxy(SellerListingsClient.class);
 	}

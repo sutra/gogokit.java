@@ -15,22 +15,23 @@ public class PagedResource<T> extends Resource {
 
 	private Integer pageSize;
 
+	@EmbeddedResource
 	private List<T> deletedItems;
 
 	@EmbeddedResource
 	private List<T> items;
 
 	@Link
-	private HALLink nextLink;
+	private HALLink next;
 
 	@Link
-	private HALLink prevLink;
+	private HALLink prev;
 
 	@Link
-	private HALLink firstLink;
+	private HALLink first;
 
 	@Link
-	private HALLink lastLink;
+	private HALLink last;
 
 	public Integer getTotalItems() {
 		return totalItems;
@@ -72,36 +73,36 @@ public class PagedResource<T> extends Resource {
 		this.items = items;
 	}
 
-	public HALLink getNextLink() {
-		return nextLink;
+	public HALLink getNext() {
+		return next;
 	}
 
-	public void setNextLink(HALLink nextLink) {
-		this.nextLink = nextLink;
+	public void setNext(HALLink next) {
+		this.next = next;
 	}
 
-	public HALLink getPrevLink() {
-		return prevLink;
+	public HALLink getPrev() {
+		return prev;
 	}
 
-	public void setPrevLink(HALLink prevLink) {
-		this.prevLink = prevLink;
+	public void setPrev(HALLink prev) {
+		this.prev = prev;
 	}
 
-	public HALLink getFirstLink() {
-		return firstLink;
+	public HALLink getFirst() {
+		return first;
 	}
 
-	public void setFirstLink(HALLink firstLink) {
-		this.firstLink = firstLink;
+	public void setFirst(HALLink first) {
+		this.first = first;
 	}
 
-	public HALLink getLastLink() {
-		return lastLink;
+	public HALLink getLast() {
+		return last;
 	}
 
-	public void setLastLink(HALLink lastLink) {
-		this.lastLink = lastLink;
+	public void setLastLink(HALLink last) {
+		this.last = last;
 	}
 
 }
