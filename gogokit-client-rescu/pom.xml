@@ -12,7 +12,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>gogokit-client-rescu</artifactId>
-	<name>GogoKit Client - Apache CXF</name>
+	<name>GogoKit Client - ResCU</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
