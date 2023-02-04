@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClient;
 import org.oxerr.viagogo.model.response.PagedResource;
@@ -32,6 +33,7 @@ class SellerListingsClientTest {
 	}
 
 	@Test
+	@Disabled("Delete all seller listings")
 	void testDeleteAll() throws IOException {
 		RescuViagogoClient client = getClient();
 
