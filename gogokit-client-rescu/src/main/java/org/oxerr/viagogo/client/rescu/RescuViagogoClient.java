@@ -8,6 +8,7 @@ import org.oxerr.viagogo.client.inventory.SellerListingsClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.openapitools.jackson.dataformat.hal.HALMapper;
 import si.mazi.rescu.ClientConfig;
@@ -40,7 +41,8 @@ public class RescuViagogoClient implements ViagogoClient {
 
 			@Override
 			protected ObjectMapper createInstance() {
-				return new HALMapper().findAndRegisterModules();
+				return new HALMapper()
+					.registerModule(new JavaTimeModule());
 			}
 		};
 

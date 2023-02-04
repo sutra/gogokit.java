@@ -10,15 +10,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 import io.openapitools.jackson.dataformat.hal.annotation.Link;
-import io.openapitools.jackson.dataformat.hal.annotation.Resource;
 
 /**
  * An event on the viagogo platform.
  *
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/Resource_Event">Event</a>
  */
-@Resource
-public class Event {
+@io.openapitools.jackson.dataformat.hal.annotation.Resource
+public class Event extends Resource {
 
 	/**
 	 * The event identifier.
@@ -67,9 +66,6 @@ public class Event {
 	 * The minimum ticket price of the event.
 	 */
 	private Money minTicketPrice;
-
-	@Link
-	private HALLink self;
 
 	@Link("event:webpage")
 	private HALLink webpage;

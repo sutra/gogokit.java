@@ -3,17 +3,13 @@ package org.oxerr.viagogo.model.response;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import io.openapitools.jackson.dataformat.hal.HALLink;
-import io.openapitools.jackson.dataformat.hal.annotation.Link;
-import io.openapitools.jackson.dataformat.hal.annotation.Resource;
-
 /**
  * An venue on the viagogo platform.
  *
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/Resource_Venue">Venue</a>
  */
-@Resource
-public class Venue {
+@io.openapitools.jackson.dataformat.hal.annotation.Resource
+public class Venue extends Resource {
 
 	/**
 	 * The venue identifier.
@@ -49,9 +45,6 @@ public class Venue {
 	 * The longitude for the venue.
 	 */
 	private Double longitude;
-
-	@Link
-	private HALLink self;
 
 	public Venue() {
 	}
@@ -115,14 +108,6 @@ public class Venue {
 
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
-	}
-
-	public HALLink getSelf() {
-		return self;
-	}
-
-	public void setSelf(HALLink self) {
-		this.self = self;
 	}
 
 	@Override

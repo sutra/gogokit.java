@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.oxerr.viagogo.client.inventory.SellerListingsClient;
 import org.oxerr.viagogo.model.ViagogoException;
 import org.oxerr.viagogo.model.request.NewSellerListing;
+import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.SellerListing;
 import org.redisson.api.MapOptions;
 import org.redisson.api.RMapCache;
@@ -41,6 +42,12 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 			"%s:externalId-sellerListingCreation",
 			this.getClass().getName()
 		);
+	}
+
+	@Override
+	public PagedResource<SellerListing> getAll(Long eventId, String requestedEventId, int page, int pageSize,
+			Instant updatedSince, String sort) throws ViagogoException, IOException {
+		return this.sellerListingsClient.getAll(eventId, requestedEventId, page, pageSize, updatedSince, sort);
 	}
 
 	public SellerListing create(NewSellerListing newSellerListing) throws ViagogoException, IOException {

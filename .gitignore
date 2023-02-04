@@ -2,3 +2,4 @@ target/
 .project
 .classpath
 .settings/
+/gogokit-client-rescu/src/test/resources/viagogo.properties
