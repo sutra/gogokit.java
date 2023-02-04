@@ -49,8 +49,8 @@ public interface SellerListingsClient {
 	PagedResource<SellerListing> getAll(
 		@QueryParam("event_id") Long eventId,
 		@QueryParam("requested_event_id") String requestedEventId,
-		@QueryParam("page") int page,
-		@QueryParam("page_size") int pageSize,
+		@QueryParam("page") Integer page,
+		@QueryParam("page_size") Integer pageSize,
 		@QueryParam("updated_since") Instant updatedSince,
 		@QueryParam("sort") String sort
 	) throws ViagogoException, IOException;

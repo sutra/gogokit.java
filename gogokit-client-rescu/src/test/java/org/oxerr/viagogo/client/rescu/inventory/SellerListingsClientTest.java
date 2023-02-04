@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClient;
+import org.oxerr.viagogo.model.ViagogoException;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.SellerListing;
 
@@ -22,14 +23,26 @@ class SellerListingsClientTest {
 
 	private final Logger log = LogManager.getLogger();
 
-	private RescuViagogoClient getClient() throws IOException {
+	private RescuViagogoClient getClient() {
 		Properties props = new Properties();
 		try (var in = this.getClass().getResourceAsStream("/viagogo.properties")) {
 			props.load(in);
+		} catch (IOException e) {
+			throw new java.lang.IllegalArgumentException("Read /viagogo.properties failed.");
 		}
+
 		var token = props.getProperty("token");
 		RescuViagogoClient client = new RescuViagogoClient(token);
 		return client;
+	}
+
+	@Test
+	@Disabled("Token is required")
+	void testGetAllByEventId() throws ViagogoException, IOException {
+		var client = getClient();
+		var sellerListings = client.sellerListingsClient().getAll(null, null, null, null, null, null);
+		assertNotNull(sellerListings);
+		log.info("Total items: {}", sellerListings.getTotalItems());
 	}
 
 	@Test
