@@ -45,8 +45,14 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 	}
 
 	@Override
-	public PagedResource<SellerListing> getAll(Long eventId, String requestedEventId, int page, int pageSize,
-			Instant updatedSince, String sort) throws ViagogoException, IOException {
+	public PagedResource<SellerListing> getAll(
+		Long eventId,
+		String requestedEventId,
+		Integer page,
+		Integer pageSize,
+		Instant updatedSince,
+		String sort
+	) throws ViagogoException, IOException {
 		return this.sellerListingsClient.getAll(eventId, requestedEventId, page, pageSize, updatedSince, sort);
 	}
 
