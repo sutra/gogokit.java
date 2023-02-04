@@ -29,8 +29,8 @@ class EventClientTest {
 		PagedResource<Event> events = client.eventClient().getAll(null, null, null, null, null, null, null, null, null, null);
 		assertNotNull(events);
 		log.info("{}", ToStringBuilder.reflectionToString(events, ToStringStyle.MULTI_LINE_STYLE));
-		assertNotNull(events.getSelf());
-		assertNotNull(events.getNext());
+		assertEquals("https://api.viagogo.net/catalog/events?page_size=500&sort=resource_version", events.getSelf().getHref());
+		assertEquals("https://api.viagogo.net/catalog/events?min_resource_version=132719748114&page_size=500&sort=resource_version", events.getNext().getHref());
 		assertEquals(0, events.getDeletedItems().size());
 		assertEquals(500, events.getItems().size());
 		var event = events.getItems().get(0);
