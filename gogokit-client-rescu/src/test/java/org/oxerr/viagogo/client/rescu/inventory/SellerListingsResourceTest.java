@@ -25,7 +25,7 @@ class SellerListingsResourceTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetAllByEventId() throws ViagogoException, IOException {
+	void testGetSellerListings() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
 		var sellerListings = client.getSellerListingsService().getSellerListings(new SellerListingRequest());
 		assertNotNull(sellerListings);

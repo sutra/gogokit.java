@@ -27,7 +27,7 @@ class EventServiceTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetAll() throws ViagogoException, IOException {
+	void testGetEvents() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
 		PagedResource<Event> events = client.getEventService().getEvents(new EventRequest());
 		assertNotNull(events);
@@ -48,7 +48,7 @@ class EventServiceTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testSearch() throws ViagogoException, IOException {
+	void testSearchEvents() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
 		var q = "Penn & Teller";
 		var dateLocal = Instant.parse("2023-02-05T05:00:00.000Z");
