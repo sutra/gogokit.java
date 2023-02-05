@@ -1,10 +1,11 @@
-package org.oxerr.viagogo.model.response;
+package org.oxerr.viagogo.model.response.catalog;
 
 import java.time.Instant;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
+import org.oxerr.viagogo.model.response.Resource;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

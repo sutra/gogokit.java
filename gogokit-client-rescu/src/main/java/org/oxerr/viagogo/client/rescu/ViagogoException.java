@@ -1,4 +1,4 @@
-package org.oxerr.viagogo.model;
+package org.oxerr.viagogo.client.rescu;
 
 import java.util.Map;
 

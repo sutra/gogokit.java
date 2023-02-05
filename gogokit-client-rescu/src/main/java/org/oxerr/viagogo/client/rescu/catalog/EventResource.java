@@ -1,16 +1,18 @@
-package org.oxerr.viagogo.client.catalog;
+package org.oxerr.viagogo.client.rescu.catalog;
 
+import java.io.IOException;
 import java.time.Instant;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
-import org.oxerr.viagogo.model.response.Event;
+import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.response.PagedResource;
+import org.oxerr.viagogo.model.response.catalog.Event;
 
 @Path("/catalog/events")
-public interface EventClient {
+public interface EventResource {
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_GetEvents">List Events</a>
@@ -31,7 +33,7 @@ public interface EventClient {
 	 * @return all events on the viagogo platform.
 	 */
 	@GET
-	PagedResource<Event> getAll(
+	PagedResource<Event> getEvents(
 		@QueryParam("page") Integer page,
 		@QueryParam("page_size") Integer pageSize,
 		@QueryParam("updated_since") Instant updatedSince,
@@ -42,7 +44,7 @@ public interface EventClient {
 		@QueryParam("longitude") Double longitude,
 		@QueryParam("max_distance_in_meters") Integer maxDistanceInmeters,
 		@QueryParam("genre_id") Integer genreId
-	);
+	) throws ViagogoException, IOException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_SearchEvents">Search events</a>
@@ -65,7 +67,7 @@ public interface EventClient {
 	 */
 	@GET
 	@Path("/search")
-	PagedResource<Event> search(
+	PagedResource<Event> searchEvents(
 		@QueryParam("q") String q,
 		@QueryParam("dateLocal") Instant dateLocal,
 		@QueryParam("page") Integer page,
@@ -78,6 +80,6 @@ public interface EventClient {
 		@QueryParam("longitude") Double longitude,
 		@QueryParam("max_distance_in_meters") Integer maxDistanceInmeters,
 		@QueryParam("genre_id") Integer genreId
-	);
+	) throws ViagogoException, IOException;
 
 }

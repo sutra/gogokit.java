@@ -1,4 +1,4 @@
-package org.oxerr.viagogo.model.request;
+package org.oxerr.viagogo.model.request.inventory;
 
 import java.time.Instant;
 
@@ -32,6 +32,13 @@ public class SellerListingRequest {
 	 * {@code resource_version}, {@code orticket_availability_date}.
 	 */
 	private String sort;
+
+	public SellerListingRequest() {
+	}
+	
+	public SellerListingRequest(Long eventId) {
+		this.eventId = eventId;
+	}
 
 	public Long getEventId() {
 		return eventId;

@@ -15,11 +15,13 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
-import org.oxerr.viagogo.model.ViagogoException;
-import org.oxerr.viagogo.model.response.Event;
+import org.oxerr.viagogo.client.rescu.ViagogoException;
+import org.oxerr.viagogo.model.request.catalog.EventRequest;
+import org.oxerr.viagogo.model.request.catalog.SearchEventRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
+import org.oxerr.viagogo.model.response.catalog.Event;
 
-class EventClientTest {
+class EventServiceTest {
 
 	private final Logger log = LogManager.getLogger();
 
@@ -27,7 +29,7 @@ class EventClientTest {
 	@Disabled("Token is required")
 	void testGetAll() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
-		PagedResource<Event> events = client.eventClient().getAll(null, null, null, null, null, null, null, null, null, null);
+		PagedResource<Event> events = client.getEventService().getEvents(new EventRequest());
 		assertNotNull(events);
 		log.info("{}", ToStringBuilder.reflectionToString(events, ToStringStyle.MULTI_LINE_STYLE));
 		assertEquals("https://api.viagogo.net/catalog/events?page_size=500&sort=resource_version", events.getSelf().getHref());
@@ -46,11 +48,14 @@ class EventClientTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testSearch() {
+	void testSearch() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
 		var q = "Penn & Teller";
 		var dateLocal = Instant.parse("2023-02-05T05:00:00.000Z");
-		PagedResource<Event> events = client.eventClient().search(q, dateLocal, null, null, null, null, null, null, null, null, null, null);
+		SearchEventRequest r = new SearchEventRequest();
+		r.setQ(q);
+		r.setDateLocal(dateLocal);
+		PagedResource<Event> events = client.getEventService().searchEvents(r);
 		assertNotNull(events);
 		assertEquals(1, events.getTotalItems());
 		assertEquals("https://api.viagogo.net/catalog/events/search?q=Penn%20%26%20Teller&dateLocal=2023-02-05T05%3A00%3A00Z&page=1&page_size=500", events.getSelf().getHref());

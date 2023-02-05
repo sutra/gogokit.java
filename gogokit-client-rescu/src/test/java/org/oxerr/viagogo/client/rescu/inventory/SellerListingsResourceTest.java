@@ -14,11 +14,12 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
-import org.oxerr.viagogo.model.ViagogoException;
+import org.oxerr.viagogo.client.rescu.ViagogoException;
+import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
-import org.oxerr.viagogo.model.response.SellerListing;
+import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-class SellerListingsClientTest {
+class SellerListingsResourceTest {
 
 	private final Logger log = LogManager.getLogger();
 
@@ -26,7 +27,7 @@ class SellerListingsClientTest {
 	@Disabled("Token is required")
 	void testGetAllByEventId() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
-		var sellerListings = client.sellerListingsClient().getAll(null, null, null, null, null, null);
+		var sellerListings = client.getSellerListingsService().getSellerListings(new SellerListingRequest());
 		assertNotNull(sellerListings);
 		log.info("Total items: {}", sellerListings.getTotalItems());
 	}
@@ -40,12 +41,15 @@ class SellerListingsClientTest {
 
 		Set<String> externalIds = new HashSet<>();
 
-		int page = 1;
-		int pageSize = 10_000;
+		Integer page = 1;
+		Integer pageSize = 10_000;
 
 		do {
 			try {
-				all = client.sellerListingsClient().getAll(null, null, page, pageSize, null, null);
+				var r = new SellerListingRequest();
+				r.setPage(page);
+				r.setPageSize(pageSize);
+				all = client.getSellerListingsService().getSellerListings(r);
 				page++;
 			} catch (IOException e) {
 				log.warn("Read all seller listings failed: {}", e.getMessage());
@@ -66,7 +70,7 @@ class SellerListingsClientTest {
 
 			executor.execute(() -> {
 				try {
-					client.sellerListingsClient().delete(externalId);
+					client.getSellerListingsService().deleteListingByExternalListingId(externalId);
 				} catch (IOException e) {
 					log.warn("Delete {} failed: {}", externalId, e.getMessage());
 				}

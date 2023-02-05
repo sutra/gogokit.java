@@ -4,8 +4,12 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 
 import org.oxerr.viagogo.client.ViagogoClient;
-import org.oxerr.viagogo.client.catalog.EventClient;
-import org.oxerr.viagogo.client.inventory.SellerListingsClient;
+import org.oxerr.viagogo.client.catalog.EventService;
+import org.oxerr.viagogo.client.inventory.SellerListingsService;
+import org.oxerr.viagogo.client.rescu.catalog.EventResource;
+import org.oxerr.viagogo.client.rescu.catalog.EventServiceImpl;
+import org.oxerr.viagogo.client.rescu.inventory.SellerListingsResource;
+import org.oxerr.viagogo.client.rescu.inventory.SellerListingsServiceImpl;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +30,10 @@ public class RescuViagogoClient implements ViagogoClient {
 	private final ClientConfig clientConfig;
 
 	private final IRestProxyFactory restProxyFactory;
+
+	private final EventService eventService;
+
+	private final SellerListingsService sellerListingsService;
 
 	public RescuViagogoClient(String token) {
 		this("https://api.viagogo.net", token);
@@ -57,16 +65,19 @@ public class RescuViagogoClient implements ViagogoClient {
 		clientConfig.setJacksonObjectMapperFactory(jacksonObjectMapperFactory);
 
 		this.restProxyFactory = new RestProxyFactorySingletonImpl();
+
+		this.eventService = new EventServiceImpl(createProxy(EventResource.class));
+		this.sellerListingsService = new SellerListingsServiceImpl(createProxy(SellerListingsResource.class));
 	}
 
 	@Override
-	public EventClient eventClient() {
-		return createProxy(EventClient.class);
+	public EventService getEventService() {
+		return this.eventService;
 	}
 
 	@Override
-	public SellerListingsClient sellerListingsClient() {
-		return createProxy(SellerListingsClient.class);
+	public SellerListingsService getSellerListingsService() {
+		return this.sellerListingsService;
 	}
 
 	protected <I> I createProxy(Class<I> restInterface) {

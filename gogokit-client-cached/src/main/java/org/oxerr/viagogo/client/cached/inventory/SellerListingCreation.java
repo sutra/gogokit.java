@@ -7,8 +7,8 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.oxerr.viagogo.model.request.NewSellerListing;
-import org.oxerr.viagogo.model.response.SellerListing;
+import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
+import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
 public class SellerListingCreation implements Serializable {
 

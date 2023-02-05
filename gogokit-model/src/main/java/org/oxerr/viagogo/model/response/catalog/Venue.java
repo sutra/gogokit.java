@@ -1,7 +1,8 @@
-package org.oxerr.viagogo.model.response;
+package org.oxerr.viagogo.model.response.catalog;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.oxerr.viagogo.model.response.Resource;
 
 /**
  * An venue on the viagogo platform.

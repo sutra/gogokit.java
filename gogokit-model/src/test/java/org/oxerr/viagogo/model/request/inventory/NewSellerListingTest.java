@@ -1,4 +1,4 @@
-package org.oxerr.viagogo.model.request;
+package org.oxerr.viagogo.model.request.inventory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

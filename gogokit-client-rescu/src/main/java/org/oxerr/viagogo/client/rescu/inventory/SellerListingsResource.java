@@ -1,4 +1,4 @@
-package org.oxerr.viagogo.client.inventory;
+package org.oxerr.viagogo.client.rescu.inventory;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -14,13 +14,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.oxerr.viagogo.model.ViagogoException;
-import org.oxerr.viagogo.model.request.NewSellerListing;
+import org.oxerr.viagogo.client.rescu.ViagogoException;
+import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
 import org.oxerr.viagogo.model.response.PagedResource;
-import org.oxerr.viagogo.model.response.SellerListing;
+import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
 @Path("/{version}")
-public interface SellerListingsClient {
+public interface SellerListingsResource {
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_GetSellerListings">List seller listings</a>
@@ -46,7 +46,7 @@ public interface SellerListingsClient {
 	@Path("/sellerlistings")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	PagedResource<SellerListing> getAll(
+	PagedResource<SellerListing> getSellerListings(
 		@QueryParam("event_id") Long eventId,
 		@QueryParam("requested_event_id") String requestedEventId,
 		@QueryParam("page") Integer page,
@@ -64,7 +64,7 @@ public interface SellerListingsClient {
 	@POST
 	@Path("/sellerlistings")
 	@Consumes(MediaType.APPLICATION_JSON)
-	SellerListing create(@BeanParam NewSellerListing newSellerListing) throws ViagogoException, IOException;
+	SellerListing createListingForRequestedEvent(@BeanParam NewSellerListing newSellerListing) throws ViagogoException, IOException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_DeleteListingByExternalListingId">Delete a seller listing by external ID</a>
@@ -77,6 +77,6 @@ public interface SellerListingsClient {
 	 */
 	@DELETE
 	@Path("/externalsellerlistings/{externalId}")
-	void delete(@PathParam("externalId") String externalId) throws IOException;
+	void deleteListingByExternalListingId(@PathParam("externalId") String externalId) throws IOException;
 
 }

@@ -1,4 +1,4 @@
-package org.oxerr.viagogo.model.response;
+package org.oxerr.viagogo.model.response.inventory;
 
 import java.time.Instant;
 
@@ -8,8 +8,7 @@ import org.oxerr.viagogo.model.BarcodeInformation;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
 import org.oxerr.viagogo.model.SeatingDetail;
-
-import io.openapitools.jackson.dataformat.hal.annotation.Resource;
+import org.oxerr.viagogo.model.response.Resource;
 
 /**
  * A set of tickets for sale on the viagogo marketplace that belong to the
@@ -18,8 +17,8 @@ import io.openapitools.jackson.dataformat.hal.annotation.Resource;
  * <a href=
  * "https://developer.viagogo.net/api-reference/inventory#tag/Resource_SellerListing">SellerListing</a>
  */
-@Resource
-public class SellerListing {
+@io.openapitools.jackson.dataformat.hal.annotation.Resource
+public class SellerListing extends Resource {
 
 	/**
 	 * The listing identifier.

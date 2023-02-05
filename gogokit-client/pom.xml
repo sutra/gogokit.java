@@ -15,11 +15,6 @@
 	<name>GogoKit Client</name>
 	<dependencies>
 		<dependency>
-			<groupId>jakarta.ws.rs</groupId>
-			<artifactId>jakarta.ws.rs-api</artifactId>
-			<version>2.1.5</version>
-		</dependency>
-		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>gogokit-model</artifactId>
 			<version>${project.version}</version>

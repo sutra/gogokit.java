@@ -1,11 +1,11 @@
-package org.oxerr.viagogo.model.request;
+package org.oxerr.viagogo.model.request.inventory;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
-import org.oxerr.viagogo.model.response.Event;
-import org.oxerr.viagogo.model.response.Venue;
+import org.oxerr.viagogo.model.response.catalog.Event;
+import org.oxerr.viagogo.model.response.catalog.Venue;
 
 public class NewSellerListing {
 

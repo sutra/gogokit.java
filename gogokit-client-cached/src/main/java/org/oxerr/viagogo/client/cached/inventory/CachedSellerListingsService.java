@@ -5,15 +5,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.PathParam;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.oxerr.viagogo.client.inventory.SellerListingsClient;
-import org.oxerr.viagogo.model.ViagogoException;
-import org.oxerr.viagogo.model.request.NewSellerListing;
+import org.oxerr.viagogo.client.inventory.SellerListingsService;
+import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
+import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
-import org.oxerr.viagogo.model.response.SellerListing;
+import org.oxerr.viagogo.model.response.inventory.SellerListing;
 import org.redisson.api.MapOptions;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RReadWriteLock;
@@ -21,22 +19,22 @@ import org.redisson.api.RedissonClient;
 
 import si.mazi.rescu.HttpStatusIOException;
 
-public class CachedSellerListingsClient implements SellerListingsClient {
+public class CachedSellerListingsService implements SellerListingsService {
 
 	private final Logger log = LogManager.getLogger();
 
-	private final SellerListingsClient sellerListingsClient;
+	private final SellerListingsService sellerListingsService;
 
 	private final RedissonClient redisson;
 
 	private final String cacheName;
 
-	public CachedSellerListingsClient(
-		SellerListingsClient sellerListingsClient,
+	public CachedSellerListingsService(
+		SellerListingsService sellerListingsService,
 		RedissonClient redisson
 	) {
+		this.sellerListingsService = sellerListingsService;
 		this.redisson = redisson;
-		this.sellerListingsClient = sellerListingsClient;
 
 		this.cacheName = String.format(
 			"%s:externalId-sellerListingCreation",
@@ -45,18 +43,12 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 	}
 
 	@Override
-	public PagedResource<SellerListing> getAll(
-		Long eventId,
-		String requestedEventId,
-		Integer page,
-		Integer pageSize,
-		Instant updatedSince,
-		String sort
-	) throws ViagogoException, IOException {
-		return this.sellerListingsClient.getAll(eventId, requestedEventId, page, pageSize, updatedSince, sort);
+	public PagedResource<SellerListing> getSellerListings(SellerListingRequest r) throws IOException {
+		return this.sellerListingsService.getSellerListings(r);
 	}
 
-	public SellerListing create(NewSellerListing newSellerListing) throws ViagogoException, IOException {
+	@Override
+	public SellerListing createListingForRequestedEvent(NewSellerListing newSellerListing) throws IOException {
 		final SellerListing sellerListing;
 
 		final String externalId = newSellerListing.getExternalId();
@@ -76,7 +68,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 				sellerListing = creation.getSellerListing();
 			} else {
 				log.debug("[]{} Calling API.", externalId);
-				sellerListing = this.sellerListingsClient.create(newSellerListing);
+				sellerListing = this.sellerListingsService.createListingForRequestedEvent(newSellerListing);
 				creation = new SellerListingCreation(newSellerListing, sellerListing);
 				var ttl = Duration.between(Instant.now(), newSellerListing.getEvent().getStartDate()).toDays();
 				cache.fastPut(externalId, creation, ttl, TimeUnit.DAYS);
@@ -89,7 +81,8 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 		return sellerListing;
 	}
 
-	public void delete(@PathParam("externalId") String externalId) throws IOException {
+	@Override
+	public void deleteListingByExternalListingId(String externalId) throws IOException {
 		var cache = this.getSellerListingCreationCache();
 
 		final SellerListingCreation creation = cache.get(externalId);
@@ -108,7 +101,7 @@ public class CachedSellerListingsClient implements SellerListingsClient {
 		rwLock.writeLock().lock();
 
 		try {
-			this.sellerListingsClient.delete(externalId);
+			this.sellerListingsService.deleteListingByExternalListingId(externalId);
 			cache.fastPut(externalId, new SellerListingCreation(), 365, TimeUnit.DAYS);
 
 			log.debug("[{}] Deleted.", externalId);
