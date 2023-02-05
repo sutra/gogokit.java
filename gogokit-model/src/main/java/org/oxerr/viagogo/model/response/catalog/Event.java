@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.model.response.catalog;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,6 +11,7 @@ import org.oxerr.viagogo.model.response.Resource;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
+import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
 import io.openapitools.jackson.dataformat.hal.annotation.Link;
 
 /**
@@ -76,8 +78,41 @@ public class Event extends Resource {
 	 */
 	private String status;
 
+	/**
+	 * Url on the website for the event.
+	 */
 	@Link("event:webpage")
 	private HALLink webpage;
+
+	/**
+	 * The categories for this event.
+	 */
+	@EmbeddedResource
+	private List<Category> categories;
+
+	/**
+	 * The external mappings for this event.
+	 */
+	@EmbeddedResource
+	private List<ExternalMapping> externalMappings;
+
+	/**
+	 * The genre for this event.
+	 */
+	@EmbeddedResource
+	private Genre genre;
+
+	/**
+	 * The events that have been merged into this event.
+	 */
+	@EmbeddedResource
+	private List<Long> mergedEvents;
+
+	/**
+	 * The venue where the event is taking place.
+	 */
+	@EmbeddedResource
+	private Venue venue;
 
 	public Event() {
 	}
@@ -173,6 +208,46 @@ public class Event extends Resource {
 
 	public void setWebpage(HALLink webpage) {
 		this.webpage = webpage;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+
+	public List<ExternalMapping> getExternalMappings() {
+		return externalMappings;
+	}
+
+	public void setExternalMappings(List<ExternalMapping> externalMappings) {
+		this.externalMappings = externalMappings;
+	}
+
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
+	public List<Long> getMergedEvents() {
+		return mergedEvents;
+	}
+
+	public void setMergedEvents(List<Long> mergedEvents) {
+		this.mergedEvents = mergedEvents;
+	}
+
+	public Venue getVenue() {
+		return venue;
+	}
+
+	public void setVenue(Venue venue) {
+		this.venue = venue;
 	}
 
 	@Override

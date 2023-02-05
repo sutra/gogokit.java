@@ -1,8 +1,12 @@
 package org.oxerr.viagogo.model.response.catalog;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.response.Resource;
+
+import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
 
 /**
  * An venue on the viagogo platform.
@@ -46,6 +50,18 @@ public class Venue extends Resource {
 	 * The longitude for the venue.
 	 */
 	private Double longitude;
+
+	/**
+	 * The Country where the venue is located.
+	 */
+	@EmbeddedResource
+	private Country country;
+
+	/**
+	 * The external mappings for this venue.
+	 */
+	@EmbeddedResource
+	private List<ExternalMapping> externalMappings;
 
 	public Venue() {
 	}
@@ -109,6 +125,22 @@ public class Venue extends Resource {
 
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public List<ExternalMapping> getExternalMappings() {
+		return externalMappings;
+	}
+
+	public void setExternalMappings(List<ExternalMapping> externalMappings) {
+		this.externalMappings = externalMappings;
 	}
 
 	@Override
