@@ -35,19 +35,19 @@ public class Event extends Resource {
 	/**
 	 * The date when the event starts.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
 	private Instant startDate;
 
 	/**
 	 * The date when the event ends.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
 	private Instant endDate;
 
 	/**
 	 * The date when tickets for the event will go onsale.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
 	private Instant onSaleDate;
 
 	/**
