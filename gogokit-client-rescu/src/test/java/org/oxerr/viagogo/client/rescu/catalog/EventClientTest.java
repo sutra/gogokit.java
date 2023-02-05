@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -24,7 +25,7 @@ class EventClientTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetAllByEventId() throws ViagogoException, IOException {
+	void testGetAll() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
 		PagedResource<Event> events = client.eventClient().getAll(null, null, null, null, null, null, null, null, null, null);
 		assertNotNull(events);
@@ -41,6 +42,21 @@ class EventClientTest {
 		assertEquals("Main", event.getType());
 		assertEquals("Normal", event.getStatus());
 		assertEquals("https://www.stubhub.com/a-tribute-to-abba-southbank-tickets-2-25-2023/event/132533943/", event.getWebpage().getHref());
+	}
+
+	@Test
+	@Disabled("Token is required")
+	void testSearch() {
+		var client = RescuViagogoClientTest.getClient();
+		var q = "Penn & Teller";
+		var dateLocal = Instant.parse("2023-02-05T05:00:00.000Z");
+		PagedResource<Event> events = client.eventClient().search(q, dateLocal, null, null, null, null, null, null, null, null, null, null);
+		assertNotNull(events);
+		assertEquals(1, events.getTotalItems());
+		assertEquals("https://api.viagogo.net/catalog/events/search?q=Penn%20%26%20Teller&dateLocal=2023-02-05T05%3A00%3A00Z&page=1&page_size=500", events.getSelf().getHref());
+		Event event = events.getItems().get(0);
+		assertEquals(150517204L, event.getId());
+		assertEquals("Penn and Teller", event.getName());
 	}
 
 }
