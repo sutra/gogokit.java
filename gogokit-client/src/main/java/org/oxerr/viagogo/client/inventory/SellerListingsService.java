@@ -25,7 +25,9 @@ public interface SellerListingsService {
 	}
 
 	default List<SellerListing> getAllSellerListings(Long eventId) throws IOException {
-		return getAllSellerListings(new SellerListingRequest(eventId));
+		SellerListingRequest r = new SellerListingRequest(eventId);
+		r.setPage(1);
+		return getAllSellerListings(r);
 	}
 
 	SellerListing createListingForRequestedEvent(NewSellerListing newSellerListing) throws IOException;
