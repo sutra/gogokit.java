@@ -28,6 +28,14 @@ public class SearchEventRequest {
 
 	private Integer genreId;
 
+	public SearchEventRequest() {
+	}
+
+	public SearchEventRequest(String q, Instant dateLocal) {
+		this.q = q;
+		this.dateLocal = dateLocal;
+	}
+
 	public String getQ() {
 		return q;
 	}
