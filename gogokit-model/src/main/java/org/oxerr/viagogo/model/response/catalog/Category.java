@@ -40,7 +40,7 @@ public class Category extends Resource {
 	 * The categories that have been merged into this category.
 	 */
 	@EmbeddedResource
-	private List<Integer> mergedCategories;
+	private List<Category> mergedCategories;
 
 	public Integer getId() {
 		return id;
@@ -74,11 +74,11 @@ public class Category extends Resource {
 		this.externalMappings = externalMappings;
 	}
 
-	public List<Integer> getMergedCategories() {
+	public List<Category> getMergedCategories() {
 		return mergedCategories;
 	}
 
-	public void setMergedCategories(List<Integer> mergedCategories) {
+	public void setMergedCategories(List<Category> mergedCategories) {
 		this.mergedCategories = mergedCategories;
 	}
 

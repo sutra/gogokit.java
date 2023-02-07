@@ -27,7 +27,7 @@ public class EventServiceImpl implements EventService {
 			r.getCountryCode(),
 			r.getLatitude(),
 			r.getLongitude(),
-			r.getMaxDistanceInmeters(),
+			r.getMaxDistanceInMeters(),
 			r.getGenreId()
 		);
 	}

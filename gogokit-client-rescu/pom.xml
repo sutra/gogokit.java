@@ -39,6 +39,11 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.evanlennick</groupId>
+			<artifactId>retry4j</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Java 8 Date/time -->
 		<dependency>

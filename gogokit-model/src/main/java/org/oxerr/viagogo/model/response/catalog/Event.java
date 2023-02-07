@@ -106,7 +106,7 @@ public class Event extends Resource {
 	 * The events that have been merged into this event.
 	 */
 	@EmbeddedResource
-	private List<Long> mergedEvents;
+	private List<Event> mergedEvents;
 
 	/**
 	 * The venue where the event is taking place.
@@ -234,11 +234,11 @@ public class Event extends Resource {
 		this.genre = genre;
 	}
 
-	public List<Long> getMergedEvents() {
+	public List<Event> getMergedEvents() {
 		return mergedEvents;
 	}
 
-	public void setMergedEvents(List<Long> mergedEvents) {
+	public void setMergedEvents(List<Event> mergedEvents) {
 		this.mergedEvents = mergedEvents;
 	}
 
