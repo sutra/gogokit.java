@@ -3,8 +3,10 @@ package org.oxerr.viagogo.model.response.inventory;
 import java.util.List;
 
 import org.oxerr.viagogo.model.response.catalog.Event;
+import org.oxerr.viagogo.model.response.catalog.Venue;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
+import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
 import io.openapitools.jackson.dataformat.hal.annotation.Link;
 
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
@@ -28,6 +30,9 @@ public class SellerEvent extends Event {
 	 */
 	@Link("sellerevent:sellerlistings")
 	private HALLink sellerListings;
+
+	@EmbeddedResource
+	private Venue salesAggregates;
 
 	public List<Event> getMergedEvents() {
 		return mergedEvents;
@@ -59,6 +64,14 @@ public class SellerEvent extends Event {
 
 	public void setSellerListings(HALLink sellerListings) {
 		this.sellerListings = sellerListings;
+	}
+
+	public Venue getSalesAggregates() {
+		return salesAggregates;
+	}
+
+	public void setSalesAggregates(Venue salesAggregates) {
+		this.salesAggregates = salesAggregates;
 	}
 
 }

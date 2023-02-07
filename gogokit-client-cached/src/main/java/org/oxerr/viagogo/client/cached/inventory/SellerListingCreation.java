@@ -7,14 +7,14 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
 public class SellerListingCreation implements Serializable {
 
 	private static final long serialVersionUID = 2023020301L;
 
-	private NewSellerListing newSellerListing;
+	private CreateSellerListingRequest newSellerListing;
 
 	private SellerListing sellerListing;
 
@@ -24,7 +24,7 @@ public class SellerListingCreation implements Serializable {
 	}
 
 	public SellerListingCreation(
-		NewSellerListing newSellerListing,
+		CreateSellerListingRequest newSellerListing,
 		SellerListing sellerListing
 	) {
 		this.newSellerListing = newSellerListing;
@@ -35,11 +35,11 @@ public class SellerListingCreation implements Serializable {
 		this.exception = exception;
 	}
 
-	public NewSellerListing getNewSellerListing() {
+	public CreateSellerListingRequest getNewSellerListing() {
 		return newSellerListing;
 	}
 
-	public void setNewSellerListing(NewSellerListing newSellerListing) {
+	public void setNewSellerListing(CreateSellerListingRequest newSellerListing) {
 		this.newSellerListing = newSellerListing;
 	}
 
@@ -65,7 +65,7 @@ public class SellerListingCreation implements Serializable {
 	}
 
 	@Transient
-	public boolean isEqual(NewSellerListing newSellerListing) {
+	public boolean isEqual(CreateSellerListingRequest newSellerListing) {
 		return Objects.equals(this.newSellerListing, newSellerListing);
 	}
 

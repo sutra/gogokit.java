@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
@@ -30,7 +30,7 @@ public interface SellerListingService {
 		return getAllSellerListings(r);
 	}
 
-	SellerListing createListingForRequestedEvent(NewSellerListing newSellerListing) throws IOException;
+	SellerListing createListingForRequestedEvent(CreateSellerListingRequest r) throws IOException;
 
 	void deleteListingByExternalListingId(String externalId) throws IOException;
 

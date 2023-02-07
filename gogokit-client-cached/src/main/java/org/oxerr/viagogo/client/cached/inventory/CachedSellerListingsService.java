@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
-import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
@@ -48,7 +48,7 @@ public class CachedSellerListingsService implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing createListingForRequestedEvent(NewSellerListing newSellerListing) throws IOException {
+	public SellerListing createListingForRequestedEvent(CreateSellerListingRequest newSellerListing) throws IOException {
 		final SellerListing sellerListing;
 
 		final String externalId = newSellerListing.getExternalId();

@@ -3,11 +3,16 @@ package org.oxerr.viagogo.client.rescu.inventory;
 import java.io.IOException;
 import java.time.Instant;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.oxerr.viagogo.client.rescu.ViagogoException;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerEventRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerEvent;
 
@@ -33,5 +38,10 @@ public interface SellerEventResource {
 		@QueryParam("updated_since") Instant updatedSince,
 		@QueryParam("sort") String sort
 	) throws ViagogoException, IOException;
+
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	SellerEvent createSellerEvent(CreateSellerEventRequest r);
 
 }

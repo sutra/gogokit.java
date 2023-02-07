@@ -4,10 +4,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
-import org.oxerr.viagogo.model.response.catalog.Event;
-import org.oxerr.viagogo.model.response.catalog.Venue;
 
-public class NewSellerListing {
+public class CreateSellerListingRequest {
 
 	private Money ticketPrice;
 
@@ -23,9 +21,9 @@ public class NewSellerListing {
 
 	private String notes;
 
-	private Event event;
+	private EventRequest event;
 
-	private Venue venue;
+	private VenueRequest venue;
 
 	public Money getTicketPrice() {
 		return ticketPrice;
@@ -83,19 +81,19 @@ public class NewSellerListing {
 		this.notes = notes;
 	}
 
-	public Event getEvent() {
+	public EventRequest getEvent() {
 		return event;
 	}
 
-	public void setEvent(Event event) {
+	public void setEvent(EventRequest event) {
 		this.event = event;
 	}
 
-	public Venue getVenue() {
+	public VenueRequest getVenue() {
 		return venue;
 	}
 
-	public void setVenue(Venue venue) {
+	public void setVenue(VenueRequest venue) {
 		this.venue = venue;
 	}
 
@@ -115,7 +113,7 @@ public class NewSellerListing {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		NewSellerListing rhs = (NewSellerListing) obj;
+		CreateSellerListingRequest rhs = (CreateSellerListingRequest) obj;
 		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 

@@ -8,17 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.model.Money;
 
-class NewSellerListingTest {
+class CreateSellerListingRequestTest {
 
 	@Test
 	void test() {
-		assertEquals(new NewSellerListing().hashCode(), new NewSellerListing().hashCode());
+		assertEquals(new CreateSellerListingRequest().hashCode(), new CreateSellerListingRequest().hashCode());
 
-		boolean equals = new NewSellerListing().equals(new NewSellerListing());
+		boolean equals = new CreateSellerListingRequest().equals(new CreateSellerListingRequest());
 		assertTrue(equals);
 
-		var a = new NewSellerListing();
-		var b = new NewSellerListing();
+		var a = new CreateSellerListingRequest();
+		var b = new CreateSellerListingRequest();
 		b.setTicketPrice(new Money());
 
 		assertNotEquals(a.hashCode(), b.hashCode());

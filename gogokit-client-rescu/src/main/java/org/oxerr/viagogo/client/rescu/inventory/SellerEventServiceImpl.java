@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.rescu.inventory;
 import java.io.IOException;
 
 import org.oxerr.viagogo.client.inventory.SellerEventService;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerEventRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerEventRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerEvent;
@@ -23,6 +24,11 @@ public class SellerEventServiceImpl implements SellerEventService {
 			r.getUpdatedSince(),
 			r.getSort()
 		);
+	}
+
+	@Override
+	public SellerEvent createSellerEvent(CreateSellerEventRequest r) {
+		return this.sellerEventResource.createSellerEvent(r);
 	}
 
 }

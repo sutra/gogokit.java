@@ -14,7 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.oxerr.viagogo.client.rescu.ViagogoException;
-import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
@@ -62,7 +62,7 @@ public interface SellerListingResource {
 	@Path("/sellerlistings")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	SellerListing createListingForRequestedEvent(NewSellerListing newSellerListing) throws ViagogoException, IOException;
+	SellerListing createListingForRequestedEvent(CreateSellerListingRequest newSellerListing) throws ViagogoException, IOException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_DeleteListingByExternalListingId">Delete a seller listing by external ID</a>

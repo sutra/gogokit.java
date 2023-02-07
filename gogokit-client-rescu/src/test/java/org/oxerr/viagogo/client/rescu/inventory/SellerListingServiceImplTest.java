@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
-import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
-import org.oxerr.viagogo.model.response.catalog.Event;
-import org.oxerr.viagogo.model.response.catalog.Venue;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
+import org.oxerr.viagogo.model.request.inventory.EventRequest;
+import org.oxerr.viagogo.model.request.inventory.VenueRequest;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
 class SellerListingServiceImplTest {
@@ -27,7 +27,7 @@ class SellerListingServiceImplTest {
 	void testCreateListingForRequestedEvent() throws IOException {
 		var client = RescuViagogoClientTest.getClient();
 
-		var request = new NewSellerListing();
+		var request = new CreateSellerListingRequest();
 		request.setTicketPrice(new Money(new BigDecimal("5000"), "USD", null));
 		request.setSeating(new Seating("A", "A", "1", "1"));
 		request.setTicketType("TicketMasterMobile");
@@ -36,12 +36,12 @@ class SellerListingServiceImplTest {
 		request.setExternalId("1");
 		request.setNotes("test");
 
-		request.setEvent(new Event("Hamilton (NY)", Instant.parse("2023-06-22T00:00:00Z")));
+		request.setEvent(new EventRequest("Hamilton (NY)", Instant.parse("2023-06-22T00:00:00Z")));
 
 		String venueName = "Richard Rodgers Theatre";
 		String venueCity = "New York";
 
-		request.setVenue(new Venue(venueName, venueCity));
+		request.setVenue(new VenueRequest(venueName, venueCity));
 
 		SellerListing sl = client.getSellerListingService().createListingForRequestedEvent(request);
 		assertNotNull(sl);
