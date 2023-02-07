@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.oxerr.viagogo.client.cached.CachedViagogoClient;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
@@ -23,6 +24,8 @@ public class CachedSellerListingsService implements SellerListingService {
 
 	private final Logger log = LogManager.getLogger();
 
+	private final CachedViagogoClient client;
+
 	private final SellerListingService sellerListingsService;
 
 	private final RedissonClient redisson;
@@ -30,9 +33,11 @@ public class CachedSellerListingsService implements SellerListingService {
 	private final String cacheName;
 
 	public CachedSellerListingsService(
+		CachedViagogoClient cachedViagogoClient,
 		SellerListingService sellerListingsService,
 		RedissonClient redisson
 	) {
+		this.client = cachedViagogoClient;
 		this.sellerListingsService = sellerListingsService;
 		this.redisson = redisson;
 
@@ -87,14 +92,26 @@ public class CachedSellerListingsService implements SellerListingService {
 
 		final SellerListingCreation creation = cache.get(externalId);
 
-		if (creation != null && creation.isEmpty()) {
+		if (creation == null && this.client.isDeleteOnlyInCache()) {
+			log.debug("[{}] Creation is null, but only delete the listing that in cahce, skip deleting.", externalId);
+		} else if (creation != null && creation.isEmpty()) {
 			log.debug("[{}] Creation is empty, skip deleting.", externalId);
 
 			final IOException e = creation.getException();
+
 			if (e != null) {
 				throw e;
 			}
+		} else {
+			this.deleteListingByExternalListingId(externalId, cache);
 		}
+	}
+
+	private void deleteListingByExternalListingId(
+		String externalId,
+		RMapCache<String, SellerListingCreation> cache
+	) throws IOException {
+		log.debug("[{}] Deleting...", externalId);
 
 		final RReadWriteLock rwLock = cache.getReadWriteLock(externalId);
 

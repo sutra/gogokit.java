@@ -9,14 +9,17 @@ import org.redisson.api.RedissonClient;
 
 public class CachedViagogoClient implements ViagogoClient {
 
-	private ViagogoClient client;
+	private final ViagogoClient client;
 
-	private CachedSellerListingsService cachedSellerListingsService;
+	private final CachedSellerListingsService cachedSellerListingsService;
+
+	private boolean deleteOnlyInCache;
 
 	public CachedViagogoClient(ViagogoClient client, RedissonClient redission) {
 		this.client = client;
 
 		this.cachedSellerListingsService = new CachedSellerListingsService(
+			this,
 			client.getSellerListingService(),
 			redission
 		);
@@ -35,6 +38,15 @@ public class CachedViagogoClient implements ViagogoClient {
 	@Override
 	public SellerEventService getSellerEventService() {
 		return this.client.getSellerEventService();
+	}
+
+	public boolean isDeleteOnlyInCache() {
+		return deleteOnlyInCache;
+	}
+
+	public CachedViagogoClient deleteOnlyInCache(boolean deleteOnlyInCache) {
+		this.deleteOnlyInCache = deleteOnlyInCache;
+		return this;
 	}
 
 }
