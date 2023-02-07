@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -63,12 +64,12 @@ class SellerListingsResourceTest {
 			log.info("total items: {}, externalIds.size: {}", all.getTotalItems(), externalIds.size());
 		} while (all == null || all.getItems().size() > 0);
 
-		var executor = Executors.newFixedThreadPool(100);
+		var executorService = Executors.newFixedThreadPool(100);
 
 		for (String externalId : externalIds) {
 			log.trace("Deleting {}", externalId);
 
-			executor.execute(() -> {
+			executorService.execute(() -> {
 				try {
 					client.getSellerListingsService().deleteListingByExternalListingId(externalId);
 				} catch (IOException e) {
@@ -77,10 +78,20 @@ class SellerListingsResourceTest {
 			});
 		}
 
+		executorService.shutdown();
+
+		List<Runnable> tasksNeverCommencedExecution = null;
+
 		try {
-			executor.awaitTermination(60, TimeUnit.MINUTES);
+			if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
+				tasksNeverCommencedExecution = executorService.shutdownNow();
+			}
 		} catch (InterruptedException e) {
-			log.warn("{}", e.getMessage());
+			tasksNeverCommencedExecution = executorService.shutdownNow();
+		}
+
+		if (tasksNeverCommencedExecution != null) {
+			log.warn("{} task(s) that never commenced execution.", tasksNeverCommencedExecution.size());
 		}
 	}
 
