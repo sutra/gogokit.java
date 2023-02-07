@@ -53,10 +53,10 @@ public class CachedSellerListingsService implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing createListingForRequestedEvent(CreateSellerListingRequest newSellerListing) throws IOException {
+	public SellerListing createListingForRequestedEvent(CreateSellerListingRequest createSellerListingRequest) throws IOException {
 		final SellerListing sellerListing;
 
-		final String externalId = newSellerListing.getExternalId();
+		final String externalId = createSellerListingRequest.getExternalId();
 
 		var cache = this.getSellerListingCreationCache();
 
@@ -68,14 +68,14 @@ public class CachedSellerListingsService implements SellerListingService {
 			SellerListingCreation creation = cache.get(externalId);
 			log.debug("[{}] Creation: {}", externalId, creation);
 
-			if (creation != null && creation.isEqual(newSellerListing)) {
+			if (creation != null && creation.isEqual(createSellerListingRequest)) {
 				log.debug("[{}] Skip calling API, return seller listing from cache directly.", externalId);
 				sellerListing = creation.getSellerListing();
 			} else {
 				log.debug("[]{} Calling API.", externalId);
-				sellerListing = this.sellerListingsService.createListingForRequestedEvent(newSellerListing);
-				creation = new SellerListingCreation(newSellerListing, sellerListing);
-				var ttl = Duration.between(Instant.now(), newSellerListing.getEvent().getStartDate()).toDays();
+				sellerListing = this.sellerListingsService.createListingForRequestedEvent(createSellerListingRequest);
+				creation = new SellerListingCreation(createSellerListingRequest, sellerListing);
+				var ttl = Duration.between(Instant.now(), createSellerListingRequest.getEvent().getStartDate()).toDays();
 				cache.fastPut(externalId, creation, ttl, TimeUnit.DAYS);
 			}
 
