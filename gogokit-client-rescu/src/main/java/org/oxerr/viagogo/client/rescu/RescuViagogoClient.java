@@ -5,11 +5,14 @@ import javax.ws.rs.PathParam;
 
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.catalog.EventService;
-import org.oxerr.viagogo.client.inventory.SellerListingsService;
+import org.oxerr.viagogo.client.inventory.SellerEventService;
+import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.client.rescu.catalog.EventResource;
 import org.oxerr.viagogo.client.rescu.catalog.EventServiceImpl;
-import org.oxerr.viagogo.client.rescu.inventory.SellerListingsResource;
-import org.oxerr.viagogo.client.rescu.inventory.SellerListingsServiceImpl;
+import org.oxerr.viagogo.client.rescu.inventory.SellerEventResource;
+import org.oxerr.viagogo.client.rescu.inventory.SellerEventServiceImpl;
+import org.oxerr.viagogo.client.rescu.inventory.SellerListingResource;
+import org.oxerr.viagogo.client.rescu.inventory.SellerListingServiceImpl;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +36,9 @@ public class RescuViagogoClient implements ViagogoClient {
 
 	private final EventService eventService;
 
-	private final SellerListingsService sellerListingsService;
+	private final SellerListingService sellerListingService;
+
+	private final SellerEventService sellerEventService;
 
 	public RescuViagogoClient(String token) {
 		this("https://api.viagogo.net", token);
@@ -67,7 +72,8 @@ public class RescuViagogoClient implements ViagogoClient {
 		this.restProxyFactory = new RestProxyFactorySingletonImpl();
 
 		this.eventService = new EventServiceImpl(createProxy(EventResource.class));
-		this.sellerListingsService = new SellerListingsServiceImpl(createProxy(SellerListingsResource.class));
+		this.sellerListingService = new SellerListingServiceImpl(createProxy(SellerListingResource.class));
+		this.sellerEventService = new SellerEventServiceImpl(createProxy(SellerEventResource.class));
 	}
 
 	@Override
@@ -76,8 +82,13 @@ public class RescuViagogoClient implements ViagogoClient {
 	}
 
 	@Override
-	public SellerListingsService getSellerListingsService() {
-		return this.sellerListingsService;
+	public SellerListingService getSellerListingService() {
+		return this.sellerListingService;
+	}
+
+	@Override
+	public SellerEventService getSellerEventService() {
+		return this.sellerEventService;
 	}
 
 	protected <I> I createProxy(Class<I> restInterface) {

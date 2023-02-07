@@ -18,7 +18,7 @@ import org.oxerr.viagogo.model.response.catalog.Event;
 import org.oxerr.viagogo.model.response.catalog.Venue;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-class SellerListingsServiceImplTest {
+class SellerListingServiceImplTest {
 
 	private final Logger log = LogManager.getLogger();
 
@@ -43,7 +43,7 @@ class SellerListingsServiceImplTest {
 
 		request.setVenue(new Venue(venueName, venueCity));
 
-		SellerListing sl = client.getSellerListingsService().createListingForRequestedEvent(request);
+		SellerListing sl = client.getSellerListingService().createListingForRequestedEvent(request);
 		assertNotNull(sl);
 		log.info("SellerListing ID: {}", sl.getId());
 	}

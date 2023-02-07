@@ -9,7 +9,7 @@ import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-public interface SellerListingsService {
+public interface SellerListingService {
 
 	PagedResource<SellerListing> getSellerListings(SellerListingRequest r) throws IOException;
 

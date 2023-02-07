@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.oxerr.viagogo.client.inventory.SellerListingsService;
+import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
@@ -19,18 +19,18 @@ import org.redisson.api.RedissonClient;
 
 import si.mazi.rescu.HttpStatusIOException;
 
-public class CachedSellerListingsService implements SellerListingsService {
+public class CachedSellerListingsService implements SellerListingService {
 
 	private final Logger log = LogManager.getLogger();
 
-	private final SellerListingsService sellerListingsService;
+	private final SellerListingService sellerListingsService;
 
 	private final RedissonClient redisson;
 
 	private final String cacheName;
 
 	public CachedSellerListingsService(
-		SellerListingsService sellerListingsService,
+		SellerListingService sellerListingsService,
 		RedissonClient redisson
 	) {
 		this.sellerListingsService = sellerListingsService;

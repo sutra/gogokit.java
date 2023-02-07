@@ -20,7 +20,7 @@ import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-class SellerListingsResourceTest {
+class SellerListingResourceTest {
 
 	private final Logger log = LogManager.getLogger();
 
@@ -28,9 +28,14 @@ class SellerListingsResourceTest {
 	@Disabled("Token is required")
 	void testGetSellerListings() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
-		var sellerListings = client.getSellerListingsService().getSellerListings(new SellerListingRequest());
+		var sellerListings = client.getSellerListingService().getSellerListings(new SellerListingRequest());
 		assertNotNull(sellerListings);
+
 		log.info("Total items: {}", sellerListings.getTotalItems());
+
+		for (SellerListing l : sellerListings.getItems()) {
+			log.info(l.getSelf().getHref());
+		}
 	}
 
 	@Test
@@ -50,7 +55,7 @@ class SellerListingsResourceTest {
 				var r = new SellerListingRequest();
 				r.setPage(page);
 				r.setPageSize(pageSize);
-				all = client.getSellerListingsService().getSellerListings(r);
+				all = client.getSellerListingService().getSellerListings(r);
 				page++;
 			} catch (IOException e) {
 				log.warn("Read all seller listings failed: {}", e.getMessage());
@@ -71,7 +76,7 @@ class SellerListingsResourceTest {
 
 			executorService.execute(() -> {
 				try {
-					client.getSellerListingsService().deleteListingByExternalListingId(externalId);
+					client.getSellerListingService().deleteListingByExternalListingId(externalId);
 				} catch (IOException e) {
 					log.warn("Delete {} failed: {}", externalId, e.getMessage());
 				}

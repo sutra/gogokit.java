@@ -2,17 +2,17 @@ package org.oxerr.viagogo.client.rescu.inventory;
 
 import java.io.IOException;
 
-import org.oxerr.viagogo.client.inventory.SellerListingsService;
+import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.model.request.inventory.NewSellerListing;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-public class SellerListingsServiceImpl implements SellerListingsService {
+public class SellerListingServiceImpl implements SellerListingService {
 
-	private final SellerListingsResource sellerListingsResource;
+	private final SellerListingResource sellerListingsResource;
 
-	public SellerListingsServiceImpl(SellerListingsResource sellerListingsResource) {
+	public SellerListingServiceImpl(SellerListingResource sellerListingsResource) {
 		this.sellerListingsResource = sellerListingsResource;
 	}
 

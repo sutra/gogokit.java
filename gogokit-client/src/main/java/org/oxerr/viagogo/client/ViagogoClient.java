@@ -1,12 +1,15 @@
 package org.oxerr.viagogo.client;
 
 import org.oxerr.viagogo.client.catalog.EventService;
-import org.oxerr.viagogo.client.inventory.SellerListingsService;
+import org.oxerr.viagogo.client.inventory.SellerEventService;
+import org.oxerr.viagogo.client.inventory.SellerListingService;
 
 public interface ViagogoClient {
 
 	EventService getEventService();
 
-	SellerListingsService getSellerListingsService();
+	SellerListingService getSellerListingService();
+
+	SellerEventService getSellerEventService();
 
 }

@@ -3,7 +3,8 @@ package org.oxerr.viagogo.client.cached;
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingsService;
 import org.oxerr.viagogo.client.catalog.EventService;
-import org.oxerr.viagogo.client.inventory.SellerListingsService;
+import org.oxerr.viagogo.client.inventory.SellerEventService;
+import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.redisson.api.RedissonClient;
 
 public class CachedViagogoClient implements ViagogoClient {
@@ -16,7 +17,7 @@ public class CachedViagogoClient implements ViagogoClient {
 		this.client = client;
 
 		this.cachedSellerListingsService = new CachedSellerListingsService(
-			client.getSellerListingsService(),
+			client.getSellerListingService(),
 			redission
 		);
 	}
@@ -27,8 +28,13 @@ public class CachedViagogoClient implements ViagogoClient {
 	}
 
 	@Override
-	public SellerListingsService getSellerListingsService() {
+	public SellerListingService getSellerListingService() {
 		return this.cachedSellerListingsService;
+	}
+
+	@Override
+	public SellerEventService getSellerEventService() {
+		return this.client.getSellerEventService();
 	}
 
 }

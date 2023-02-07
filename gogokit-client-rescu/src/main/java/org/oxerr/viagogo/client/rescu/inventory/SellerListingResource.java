@@ -19,7 +19,7 @@ import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
 @Path("/{version}")
-public interface SellerListingsResource {
+public interface SellerListingResource {
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_GetSellerListings">List seller listings</a>
