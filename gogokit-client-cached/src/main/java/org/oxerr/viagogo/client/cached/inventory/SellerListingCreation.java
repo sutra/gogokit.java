@@ -58,7 +58,7 @@ public class SellerListingCreation {
 
 	@Transient
 	public boolean isEmpty() {
-		return this.request == null;
+		return this.response == null;
 	}
 
 	@Transient
