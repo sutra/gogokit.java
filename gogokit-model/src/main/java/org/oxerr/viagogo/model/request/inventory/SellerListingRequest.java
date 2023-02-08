@@ -35,7 +35,7 @@ public class SellerListingRequest {
 
 	public SellerListingRequest() {
 	}
-	
+
 	public SellerListingRequest(Long eventId) {
 		this.eventId = eventId;
 	}

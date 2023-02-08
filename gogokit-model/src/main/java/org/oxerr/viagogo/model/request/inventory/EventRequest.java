@@ -25,6 +25,9 @@ public class EventRequest {
 	 */
 	private String note;
 
+	public EventRequest() {
+	}
+
 	public EventRequest(String name, Instant startDate) {
 		this.name = name;
 		this.startDate = startDate;

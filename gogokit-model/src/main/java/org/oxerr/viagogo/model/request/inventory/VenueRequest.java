@@ -17,6 +17,9 @@ public class VenueRequest {
 	 */
 	private String stateProvince;
 
+	public VenueRequest() {
+	}
+
 	public VenueRequest(String name, String city) {
 		this.name = name;
 		this.city = city;
