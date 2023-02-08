@@ -20,7 +20,7 @@ public class CachedViagogoClient implements ViagogoClient {
 	private boolean deleteOnlyInCache;
 
 	public CachedViagogoClient(ViagogoClient client, RedissonClient redission) {
-		log.info("[CachedViagogoClient] init");
+		log.info("[CachedViagogoClient] init.");
 
 		this.client = client;
 

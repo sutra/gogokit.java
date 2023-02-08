@@ -66,13 +66,16 @@ public class CachedSellerListingsService implements SellerListingService {
 
 		try {
 			SellerListingCreation creation = cache.get(externalId);
-			log.debug("[{}] Creation: {}", externalId, creation);
+
+			log.debug("externalId[{}]. Creation: {}.", externalId, creation);
 
 			if (creation != null && creation.isEqual(createSellerListingRequest)) {
-				log.debug("[{}] Skip calling API, return seller listing from cache directly.", externalId);
-				sellerListing = creation.getSellerListing();
+				log.debug("externalId[{}]. Skip calling API, return seller listing from cache directly.", externalId);
+
+				sellerListing = creation.getResponse();
 			} else {
-				log.debug("[]{} Calling API.", externalId);
+				log.debug("externalId[{}]. Calling API.", externalId);
+
 				sellerListing = this.sellerListingsService.createListingForRequestedEvent(createSellerListingRequest);
 				creation = new SellerListingCreation(createSellerListingRequest, sellerListing);
 				var ttl = Duration.between(Instant.now(), createSellerListingRequest.getEvent().getStartDate()).toDays();
@@ -93,9 +96,9 @@ public class CachedSellerListingsService implements SellerListingService {
 		final SellerListingCreation creation = cache.get(externalId);
 
 		if (creation == null && this.client.isDeleteOnlyInCache()) {
-			log.debug("[{}] Creation is null, but only delete the listing that in cahce, skip deleting.", externalId);
+			log.debug("externalId[{}]. Creation is null, but only delete the listing that in cahce, skip deleting.", externalId);
 		} else if (creation != null && creation.isEmpty()) {
-			log.debug("[{}] Creation is empty, skip deleting.", externalId);
+			log.debug("externalId[{}]. Creation is empty, skip deleting.", externalId);
 
 			final IOException e = creation.getException();
 
@@ -111,7 +114,7 @@ public class CachedSellerListingsService implements SellerListingService {
 		String externalId,
 		RMapCache<String, SellerListingCreation> cache
 	) throws IOException {
-		log.debug("[{}] Deleting...", externalId);
+		log.debug("externalId[{}]. Deleting...", externalId);
 
 		final RReadWriteLock rwLock = cache.getReadWriteLock(externalId);
 
@@ -121,16 +124,17 @@ public class CachedSellerListingsService implements SellerListingService {
 			this.sellerListingsService.deleteListingByExternalListingId(externalId);
 			cache.fastPut(externalId, new SellerListingCreation(), 365, TimeUnit.DAYS);
 
-			log.debug("[{}] Deleted.", externalId);
+			log.debug("externalId[{}]. Deleted.", externalId);
 		} catch (IOException e) {
-			log.debug("[{}] Delete failed: {}", externalId, e.getMessage());
+			log.debug("externalId[{}]. Delete failed: {}", externalId, e.getMessage());
 
 			if (e instanceof HttpStatusIOException) {
 				final int httpStatusCode = ((HttpStatusIOException) e).getHttpStatusCode();
 
 				if (httpStatusCode == 404) {
 					cache.fastPut(externalId, new SellerListingCreation(e), 365, TimeUnit.DAYS);
-					log.debug("[{}] Not exists, marked as empty in cache.", externalId);
+
+					log.debug("externalId[{}]. Not exists, marked as empty in cache.", externalId);
 				}
 			}
 

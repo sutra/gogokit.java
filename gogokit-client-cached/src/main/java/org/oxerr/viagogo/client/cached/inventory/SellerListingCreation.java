@@ -2,7 +2,6 @@ package org.oxerr.viagogo.client.cached.inventory;
 
 import java.beans.Transient;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -10,13 +9,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-public class SellerListingCreation implements Serializable {
+public class SellerListingCreation {
 
-	private static final long serialVersionUID = 2023020301L;
+	private CreateSellerListingRequest request;
 
-	private CreateSellerListingRequest newSellerListing;
-
-	private SellerListing sellerListing;
+	private SellerListing response;
 
 	private IOException exception;
 
@@ -24,31 +21,31 @@ public class SellerListingCreation implements Serializable {
 	}
 
 	public SellerListingCreation(
-		CreateSellerListingRequest newSellerListing,
-		SellerListing sellerListing
+		CreateSellerListingRequest request,
+		SellerListing response
 	) {
-		this.newSellerListing = newSellerListing;
-		this.sellerListing = sellerListing;
+		this.request = request;
+		this.response = response;
 	}
 
 	public SellerListingCreation(IOException exception) {
 		this.exception = exception;
 	}
 
-	public CreateSellerListingRequest getNewSellerListing() {
-		return newSellerListing;
+	public CreateSellerListingRequest getRequest() {
+		return request;
 	}
 
-	public void setNewSellerListing(CreateSellerListingRequest newSellerListing) {
-		this.newSellerListing = newSellerListing;
+	public void setRequest(CreateSellerListingRequest request) {
+		this.request = request;
 	}
 
-	public SellerListing getSellerListing() {
-		return sellerListing;
+	public SellerListing getResponse() {
+		return response;
 	}
 
-	public void setSellerListing(SellerListing sellerListing) {
-		this.sellerListing = sellerListing;
+	public void setResponse(SellerListing response) {
+		this.response = response;
 	}
 
 	public IOException getException() {
@@ -61,12 +58,12 @@ public class SellerListingCreation implements Serializable {
 
 	@Transient
 	public boolean isEmpty() {
-		return this.newSellerListing == null;
+		return this.request == null;
 	}
 
 	@Transient
-	public boolean isEqual(CreateSellerListingRequest newSellerListing) {
-		return Objects.equals(this.newSellerListing, newSellerListing);
+	public boolean isEqual(CreateSellerListingRequest request) {
+		return Objects.equals(this.request, request);
 	}
 
 	@Override
