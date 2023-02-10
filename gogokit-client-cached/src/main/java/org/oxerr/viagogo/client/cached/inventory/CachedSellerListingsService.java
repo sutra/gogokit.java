@@ -28,9 +28,7 @@ public class CachedSellerListingsService implements SellerListingService {
 
 	private final SellerListingService sellerListingsService;
 
-	private final RedissonClient redisson;
-
-	private final String cacheName;
+	private final RMapCache<String, SellerListingCreation> sellerListingCreationCache;
 
 	public CachedSellerListingsService(
 		CachedViagogoClient cachedViagogoClient,
@@ -39,12 +37,9 @@ public class CachedSellerListingsService implements SellerListingService {
 	) {
 		this.client = cachedViagogoClient;
 		this.sellerListingsService = sellerListingsService;
-		this.redisson = redisson;
 
-		this.cacheName = String.format(
-			"%s:externalId-sellerListingCreation",
-			this.getClass().getName()
-		);
+		var cacheName = String.format("%s:externalId-sellerListingCreation", getClass().getName());
+		this.sellerListingCreationCache = redisson.getMapCache(cacheName, MapOptions.defaults());
 	}
 
 	@Override
@@ -58,14 +53,12 @@ public class CachedSellerListingsService implements SellerListingService {
 
 		final String externalId = createSellerListingRequest.getExternalId();
 
-		var cache = this.getSellerListingCreationCache();
-
-		final RReadWriteLock rwLock = cache.getReadWriteLock(externalId);
+		final RReadWriteLock rwLock = this.sellerListingCreationCache.getReadWriteLock(externalId);
 
 		rwLock.writeLock().lock();
 
 		try {
-			SellerListingCreation creation = cache.get(externalId);
+			SellerListingCreation creation = this.sellerListingCreationCache.get(externalId);
 
 			log.debug("externalId[{}]. Creation: {}.", externalId, creation);
 
@@ -79,7 +72,7 @@ public class CachedSellerListingsService implements SellerListingService {
 				sellerListing = this.sellerListingsService.createListingForRequestedEvent(createSellerListingRequest);
 				creation = new SellerListingCreation(createSellerListingRequest, sellerListing);
 				var ttl = Duration.between(Instant.now(), createSellerListingRequest.getEvent().getStartDate()).toDays();
-				cache.fastPut(externalId, creation, ttl, TimeUnit.DAYS);
+				this.sellerListingCreationCache.fastPut(externalId, creation, ttl, TimeUnit.DAYS);
 			}
 
 		} finally {
@@ -91,9 +84,7 @@ public class CachedSellerListingsService implements SellerListingService {
 
 	@Override
 	public void deleteListingByExternalListingId(String externalId) throws IOException {
-		var cache = this.getSellerListingCreationCache();
-
-		final SellerListingCreation creation = cache.get(externalId);
+		final SellerListingCreation creation = this.sellerListingCreationCache.get(externalId);
 
 		if (creation == null && this.client.isDeleteOnlyInCache()) {
 			log.debug("externalId[{}]. Creation is null, but only delete the listing that in cahce, skip deleting.", externalId);
@@ -106,7 +97,7 @@ public class CachedSellerListingsService implements SellerListingService {
 				throw e;
 			}
 		} else {
-			this.deleteListingByExternalListingId(externalId, cache);
+			this.deleteListingByExternalListingId(externalId, this.sellerListingCreationCache);
 		}
 	}
 
@@ -142,11 +133,6 @@ public class CachedSellerListingsService implements SellerListingService {
 		} finally {
 			rwLock.writeLock().unlock();
 		}
-	}
-
-	protected RMapCache<String, SellerListingCreation> getSellerListingCreationCache() {
-		log.trace("Getting map: {}", this.cacheName);
-		return redisson.getMapCache(this.cacheName, MapOptions.defaults());
 	}
 
 }
