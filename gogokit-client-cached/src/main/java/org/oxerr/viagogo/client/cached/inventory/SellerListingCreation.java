@@ -62,6 +62,11 @@ public class SellerListingCreation {
 	}
 
 	@Transient
+	public boolean isNotEmpty() {
+		return !this.isEmpty();
+	}
+
+	@Transient
 	public boolean isEqual(CreateSellerListingRequest request) {
 		return Objects.equals(this.request, request);
 	}
