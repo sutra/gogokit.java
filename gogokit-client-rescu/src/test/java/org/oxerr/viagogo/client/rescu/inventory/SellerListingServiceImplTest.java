@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
@@ -35,10 +36,15 @@ class SellerListingServiceImplTest {
 	@Disabled("Token is required")
 	void testGetSellerListings() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
-		var sellerListings = client.getSellerListingService().getSellerListings(new SellerListingRequest());
+		var r = new SellerListingRequest();
+		r.setPageSize(1);
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		var sellerListings = client.getSellerListingService().getSellerListings(r);
+		stopWatch.stop();
 		assertNotNull(sellerListings);
 
-		log.info("Total items: {}", sellerListings.getTotalItems());
+		log.info("[{}]Total items: {}", stopWatch, sellerListings.getTotalItems());
 
 		for (SellerListing l : sellerListings.getItems()) {
 			log.info(l.getSelf().getHref());
