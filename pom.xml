@@ -24,6 +24,7 @@
 		<module>gogokit-client</module>
 		<module>gogokit-client-cached</module>
 		<module>gogokit-client-rescu</module>
+		<module>gogokit-client-delist</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
