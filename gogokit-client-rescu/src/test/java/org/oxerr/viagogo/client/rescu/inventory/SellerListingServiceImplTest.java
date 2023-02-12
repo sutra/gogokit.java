@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.channels.SelectableChannel;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
