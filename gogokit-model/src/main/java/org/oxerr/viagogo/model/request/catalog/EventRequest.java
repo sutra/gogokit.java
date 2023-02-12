@@ -13,6 +13,9 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
 public class EventRequest implements Serializable {
@@ -165,6 +168,26 @@ public class EventRequest implements Serializable {
 
 	public void setGenreId(Integer genreId) {
 		this.genreId = genreId;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		EventRequest rhs = (EventRequest) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

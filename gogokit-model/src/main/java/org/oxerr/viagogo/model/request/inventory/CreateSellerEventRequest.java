@@ -2,6 +2,9 @@ package org.oxerr.viagogo.model.request.inventory;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class CreateSellerEventRequest implements Serializable {
 
 	private static final long serialVersionUID = 2023021301L;
@@ -56,6 +59,26 @@ public class CreateSellerEventRequest implements Serializable {
 
 	public void setCountry(CountryRequest country) {
 		this.country = country;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		CreateSellerEventRequest rhs = (CreateSellerEventRequest) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

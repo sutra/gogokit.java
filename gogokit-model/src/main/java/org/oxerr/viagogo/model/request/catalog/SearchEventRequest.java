@@ -3,6 +3,9 @@ package org.oxerr.viagogo.model.request.catalog;
 import java.io.Serializable;
 import java.time.Instant;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class SearchEventRequest implements Serializable {
 
 	private static final long serialVersionUID = 2023021301L;
@@ -133,6 +136,26 @@ public class SearchEventRequest implements Serializable {
 
 	public void setGenreId(Integer genreId) {
 		this.genreId = genreId;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		SearchEventRequest rhs = (SearchEventRequest) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

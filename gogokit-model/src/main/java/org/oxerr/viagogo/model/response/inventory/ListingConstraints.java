@@ -2,6 +2,8 @@ package org.oxerr.viagogo.model.response.inventory;
 
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.response.Resource;
 
@@ -189,6 +191,26 @@ public class ListingConstraints extends Resource {
 
 	public void setTicketTypes(List<TicketType> ticketTypes) {
 		this.ticketTypes = ticketTypes;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		ListingConstraints rhs = (ListingConstraints) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

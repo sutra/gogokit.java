@@ -3,6 +3,9 @@ package org.oxerr.viagogo.model.request.inventory;
 import java.io.Serializable;
 import java.time.Instant;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class SellerEventRequest implements Serializable {
 
 	private static final long serialVersionUID = 2023021301L;
@@ -60,6 +63,26 @@ public class SellerEventRequest implements Serializable {
 
 	public void setSort(String sort) {
 		this.sort = sort;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		SellerEventRequest rhs = (SellerEventRequest) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

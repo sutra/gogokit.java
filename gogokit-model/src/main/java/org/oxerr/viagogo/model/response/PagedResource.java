@@ -1,13 +1,17 @@
 package org.oxerr.viagogo.model.response;
 
+import java.io.Serializable;
 import java.util.List;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
 import io.openapitools.jackson.dataformat.hal.annotation.Link;
 
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
-public class PagedResource<T> extends Resource {
+public class PagedResource<T extends Serializable> extends Resource {
 
 	private static final long serialVersionUID = 2023021301L;
 
@@ -105,6 +109,27 @@ public class PagedResource<T> extends Resource {
 
 	public void setLastLink(HALLink last) {
 		this.last = last;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		PagedResource<T> rhs = (PagedResource<T>) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

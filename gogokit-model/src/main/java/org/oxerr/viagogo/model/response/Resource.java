@@ -2,6 +2,9 @@ package org.oxerr.viagogo.model.response;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import io.openapitools.jackson.dataformat.hal.HALLink;
 import io.openapitools.jackson.dataformat.hal.annotation.Link;
 
@@ -19,6 +22,26 @@ public abstract class Resource implements Serializable {
 
 	public void setSelf(HALLink self) {
 		this.self = self;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		Resource rhs = (Resource) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

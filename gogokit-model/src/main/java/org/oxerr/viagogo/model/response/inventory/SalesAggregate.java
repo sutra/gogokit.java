@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.model.response.inventory;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.response.Resource;
 
@@ -75,6 +77,26 @@ public class SalesAggregate extends Resource {
 
 	public void setSales(HALLink sales) {
 		this.sales = sales;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		SalesAggregate rhs = (SalesAggregate) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

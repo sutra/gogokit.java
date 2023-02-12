@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.model.response.inventory;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.response.Resource;
 
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
@@ -46,6 +48,26 @@ public class ListingNote extends Resource {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		ListingNote rhs = (ListingNote) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }
