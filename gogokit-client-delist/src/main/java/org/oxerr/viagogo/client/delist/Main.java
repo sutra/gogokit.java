@@ -13,6 +13,8 @@ import org.oxerr.viagogo.model.response.inventory.SellerListing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import si.mazi.rescu.HttpStatusIOException;
+
 public class Main implements AutoCloseable {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -54,7 +56,11 @@ public class Main implements AutoCloseable {
 				try {
 					this.client.getSellerListingService().deleteListingByExternalListingId(item.getExternalId());
 				} catch (IOException e) {
-					log.error(e.getMessage());
+					if (e instanceof HttpStatusIOException hsioe && hsioe.getHttpStatusCode() == 404) {
+						// ignore
+					} else {
+						log.error(e.getMessage());
+					}
 				}
 			});
 		}
