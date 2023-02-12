@@ -1,5 +1,6 @@
 package org.oxerr.viagogo.model.request.catalog;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +15,9 @@ import java.util.stream.Collectors;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
-public class EventRequest {
+public class EventRequest implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	private Integer page;
 

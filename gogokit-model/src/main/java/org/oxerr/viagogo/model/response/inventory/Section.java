@@ -1,8 +1,11 @@
 package org.oxerr.viagogo.model.response.inventory;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Section {
+public class Section implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	private String name;
 

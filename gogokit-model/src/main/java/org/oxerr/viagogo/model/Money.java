@@ -1,5 +1,6 @@
 package org.oxerr.viagogo.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.annotation.Nullable;
@@ -12,7 +13,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/BasicType_Money">Money</a>
  */
-public class Money {
+public class Money implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	/**
 	 * The decimal amount of the money.

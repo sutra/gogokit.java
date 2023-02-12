@@ -7,6 +7,8 @@ import org.oxerr.viagogo.model.response.Resource;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class ExternalMapping extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	/**
 	 * The identifier of the resource in the external platform
 	 */

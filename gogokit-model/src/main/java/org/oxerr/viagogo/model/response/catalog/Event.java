@@ -22,6 +22,8 @@ import io.openapitools.jackson.dataformat.hal.annotation.Link;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class Event extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	/**
 	 * The event identifier.
 	 */

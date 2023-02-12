@@ -7,6 +7,8 @@ import org.oxerr.viagogo.model.response.Resource;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class SplitType extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	/**
 	 * The type of split.
 	 * Can be {@code Any}, {@code None}, {@code AvoidOne},

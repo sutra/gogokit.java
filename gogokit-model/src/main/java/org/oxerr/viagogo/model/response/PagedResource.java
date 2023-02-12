@@ -9,6 +9,8 @@ import io.openapitools.jackson.dataformat.hal.annotation.Link;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class PagedResource<T> extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	private Integer totalItems;
 
 	private Integer page;

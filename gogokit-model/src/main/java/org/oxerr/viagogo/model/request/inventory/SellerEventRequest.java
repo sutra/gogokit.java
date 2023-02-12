@@ -1,8 +1,11 @@
 package org.oxerr.viagogo.model.request.inventory;
 
+import java.io.Serializable;
 import java.time.Instant;
 
-public class SellerEventRequest {
+public class SellerEventRequest implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	/**
 	 * Specifies which page of data to retrieve.

@@ -5,6 +5,8 @@ import org.oxerr.viagogo.model.response.Resource;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class ListingNote extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	/**
 	 * The listing note identifier.
 	 */

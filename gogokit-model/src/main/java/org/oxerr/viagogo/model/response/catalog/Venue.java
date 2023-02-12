@@ -16,6 +16,8 @@ import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class Venue extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	/**
 	 * The venue identifier.
 	 */

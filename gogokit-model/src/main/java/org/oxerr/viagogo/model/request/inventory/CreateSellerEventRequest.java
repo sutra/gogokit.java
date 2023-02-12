@@ -1,6 +1,10 @@
 package org.oxerr.viagogo.model.request.inventory;
 
-public class CreateSellerEventRequest {
+import java.io.Serializable;
+
+public class CreateSellerEventRequest implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	/**
 	 * The event information.

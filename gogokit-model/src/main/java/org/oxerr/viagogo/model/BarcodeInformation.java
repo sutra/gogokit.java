@@ -1,9 +1,13 @@
 package org.oxerr.viagogo.model;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public class BarcodeInformation {
+public class BarcodeInformation implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	/**
 	 * An ordinal number for a seat.

@@ -1,11 +1,15 @@
 package org.oxerr.viagogo.model.request.inventory;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
 
-public class CreateSellerListingRequest {
+public class CreateSellerListingRequest implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	private Money ticketPrice;
 

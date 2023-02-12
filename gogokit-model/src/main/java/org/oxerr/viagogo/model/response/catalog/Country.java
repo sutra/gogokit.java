@@ -7,6 +7,8 @@ import org.oxerr.viagogo.model.response.Resource;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class Country extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	/**
 	 * The two-letter ISO 3166 code for the country.
 	 */

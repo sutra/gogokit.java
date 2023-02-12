@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.model;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -8,7 +10,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * <a href="https://developer.viagogo.net/api-reference/inventory#tag/BasicType_Seating">Seating</a>
  */
-public class Seating {
+public class Seating implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	/**
 	 * The section of the ticket(s).

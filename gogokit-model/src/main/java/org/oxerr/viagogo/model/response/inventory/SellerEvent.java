@@ -2,6 +2,8 @@ package org.oxerr.viagogo.model.response.inventory;
 
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.response.catalog.Event;
 import org.oxerr.viagogo.model.response.catalog.Venue;
 
@@ -11,6 +13,8 @@ import io.openapitools.jackson.dataformat.hal.annotation.Link;
 
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class SellerEvent extends Event {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	private List<Event> mergedEvents;
 
@@ -34,10 +38,12 @@ public class SellerEvent extends Event {
 	@EmbeddedResource
 	private Venue salesAggregates;
 
+	@Override
 	public List<Event> getMergedEvents() {
 		return mergedEvents;
 	}
 
+	@Override
 	public void setMergedEvents(List<Event> mergedEvents) {
 		this.mergedEvents = mergedEvents;
 	}
@@ -72,6 +78,26 @@ public class SellerEvent extends Event {
 
 	public void setSalesAggregates(Venue salesAggregates) {
 		this.salesAggregates = salesAggregates;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		SellerEvent rhs = (SellerEvent) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

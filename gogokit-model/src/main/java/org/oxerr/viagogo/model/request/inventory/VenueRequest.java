@@ -1,6 +1,10 @@
 package org.oxerr.viagogo.model.request.inventory;
 
-public class VenueRequest {
+import java.io.Serializable;
+
+public class VenueRequest implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	/**
 	 * The name of the venue.

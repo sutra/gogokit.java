@@ -9,6 +9,8 @@ import io.openapitools.jackson.dataformat.hal.annotation.Link;
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
 public class SalesAggregate extends Resource {
 
+	private static final long serialVersionUID = 2023021301L;
+
 	/**
 	 * The total number of sales aggregated in this resource.
 	 */

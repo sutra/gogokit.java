@@ -1,6 +1,10 @@
 package org.oxerr.viagogo.model.request.inventory;
 
-public class CountryRequest {
+import java.io.Serializable;
+
+public class CountryRequest implements Serializable {
+
+	private static final long serialVersionUID = 2023021301L;
 
 	/**
 	 * The two-letter ISO 3166 code for the country.
