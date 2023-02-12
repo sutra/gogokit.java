@@ -30,6 +30,10 @@ public class Money {
 	 */
 	private String display;
 
+	public static Money of(String amount, String currencyCode) {
+		return new Money(new BigDecimal(amount), currencyCode, null);
+	}
+
 	public Money() {
 	}
 

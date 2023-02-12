@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.model.response.inventory;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,6 +10,10 @@ import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
 import org.oxerr.viagogo.model.SeatingDetail;
 import org.oxerr.viagogo.model.response.Resource;
+import org.oxerr.viagogo.model.response.catalog.Event;
+import org.oxerr.viagogo.model.response.catalog.Venue;
+
+import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
 
 /**
  * A set of tickets for sale on the viagogo marketplace that belong to the
@@ -119,6 +124,24 @@ public class SellerListing extends Resource {
 	 * false.
 	 */
 	private Boolean salesTaxPaid;
+
+	@EmbeddedResource
+	private ListingConstraints constraints;
+
+	@EmbeddedResource
+	private Event event;
+
+	@EmbeddedResource
+	private List<ListingNote> listingNotes;
+
+	@EmbeddedResource
+	private SplitType splitType;
+
+	@EmbeddedResource
+	private TicketType ticketType;
+
+	@EmbeddedResource
+	private Venue venue;
 
 	public Long getId() {
 		return id;
@@ -270,6 +293,54 @@ public class SellerListing extends Resource {
 
 	public void setSalesTaxPaid(Boolean salesTaxPaid) {
 		this.salesTaxPaid = salesTaxPaid;
+	}
+
+	public ListingConstraints getConstraints() {
+		return constraints;
+	}
+
+	public void setConstraints(ListingConstraints constraints) {
+		this.constraints = constraints;
+	}
+
+	public Event getEvent() {
+		return event;
+	}
+
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	public List<ListingNote> getListingNotes() {
+		return listingNotes;
+	}
+
+	public void setListingNotes(List<ListingNote> listingNotes) {
+		this.listingNotes = listingNotes;
+	}
+
+	public SplitType getSplitType() {
+		return splitType;
+	}
+
+	public void setSplitType(SplitType splitType) {
+		this.splitType = splitType;
+	}
+
+	public TicketType getTicketType() {
+		return ticketType;
+	}
+
+	public void setTicketType(TicketType ticketType) {
+		this.ticketType = ticketType;
+	}
+
+	public Venue getVenue() {
+		return venue;
+	}
+
+	public void setVenue(Venue venue) {
+		this.venue = venue;
 	}
 
 	@Override

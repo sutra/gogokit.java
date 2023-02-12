@@ -17,6 +17,11 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
+	public SellerListing getSellerListing(Long listingId) throws IOException {
+		return this.sellerListingsResource.getSellerListing(listingId);
+	}
+
+	@Override
 	public PagedResource<SellerListing> getSellerListings(SellerListingRequest r) throws IOException {
 		return this.sellerListingsResource.getSellerListings(
 			r.getEventId(),

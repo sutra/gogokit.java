@@ -22,6 +22,16 @@ import org.oxerr.viagogo.model.response.inventory.SellerListing;
 public interface SellerListingResource {
 
 	/**
+	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_Get">Get a seller listing</a>
+	 *
+	 * @param listingId the listing ID.
+	 * @return the seller listing of the specified listing ID.
+	 */
+	@GET
+	@Path("/sellerlistings/{listingId}")
+	SellerListing getSellerListing(@PathParam("listingId") Long listingId);
+
+	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_GetSellerListings">List seller listings</a>
 	 *
 	 * <p>List seller listings for the authenticated user.</p>

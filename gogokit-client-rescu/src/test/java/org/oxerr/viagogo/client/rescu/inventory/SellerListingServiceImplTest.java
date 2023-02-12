@@ -1,9 +1,11 @@
 package org.oxerr.viagogo.client.rescu.inventory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.channels.SelectableChannel;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
@@ -56,25 +59,77 @@ class SellerListingServiceImplTest {
 	void testCreateListingForRequestedEvent() throws IOException {
 		var client = RescuViagogoClientTest.getClient();
 
-		var request = new CreateSellerListingRequest();
-		request.setTicketPrice(new Money(new BigDecimal("5000"), "USD", null));
-		request.setSeating(new Seating("A", "A", "1", "1"));
-		request.setTicketType("TicketMasterMobile");
-		request.setSplitType("any");
-		request.setNumberOfTickets(1);
-		request.setExternalId("1");
-		request.setNotes("test");
+		// given
+		var cslr = new CreateSellerListingRequest();
+		cslr.setTicketPrice(Money.of("5000", "USD"));
+		cslr.setSeating(new Seating("S1", "R1", "1", "5"));
+		cslr.setTicketType("TicketMasterMobile");
+		cslr.setSplitType("any");
+		cslr.setNumberOfTickets(3); // Seat names: 1, 3, 5
+		cslr.setExternalId("1");
+		cslr.setNotes("test");
 
-		request.setEvent(new EventRequest("Hamilton (NY)", Instant.parse("2023-06-22T00:00:00Z")));
+		cslr.setEvent(new EventRequest("Hamilton (NY)", Instant.parse("2023-06-22T00:00:00Z")));
 
 		String venueName = "Richard Rodgers Theatre";
 		String venueCity = "New York";
 
-		request.setVenue(new VenueRequest(venueName, venueCity));
+		cslr.setVenue(new VenueRequest(venueName, venueCity));
 
-		SellerListing sl = client.getSellerListingService().createListingForRequestedEvent(request);
-		assertNotNull(sl);
-		log.info("SellerListing ID: {}", sl.getId());
+		// when: create
+		SellerListing sl1 = client.getSellerListingService().createListingForRequestedEvent(cslr);
+
+		// then
+		assertNotNull(sl1);
+		log.info("SellerListing ID: {}", sl1.getId());
+		assertEquals(0, new BigDecimal("5000").compareTo(sl1.getTicketPrice().getAmount()));
+
+		// when: get
+		var sellerListing1 = client.getSellerListingService().getSellerListing(sl1.getId());
+
+		// then
+		assertEquals(0, new BigDecimal("5000").compareTo(sellerListing1.getTicketPrice().getAmount()));
+		assertEquals("S1", sellerListing1.getSeating().getSection());
+		assertEquals("R1", sellerListing1.getSeating().getRow());
+		assertEquals("1", sellerListing1.getSeating().getSeatFrom());
+		assertEquals("5", sellerListing1.getSeating().getSeatTo());
+		assertEquals("Ticketmaster Mobile Ticket", sellerListing1.getTicketType().getName());
+		assertEquals("Any", sellerListing1.getSplitType().getType());
+		assertEquals(3, sellerListing1.getNumberOfTickets().intValue());
+		assertEquals("1", sellerListing1.getExternalId());
+		assertNotNull(sellerListing1.getEvent());
+
+		// given
+		cslr.setTicketPrice(Money.of("5001", "USD"));
+		cslr.setSeating(new Seating("S1", "R1", "1", "3"));
+		cslr.setNumberOfTickets(2); // Seat names: 1, 3
+
+		// when: create again
+		SellerListing sl2 = client.getSellerListingService().createListingForRequestedEvent(cslr);
+
+		// then
+		assertNotNull(sl2);
+		log.info("SellerListing ID: {}", sl1.getId());
+		assertEquals(sl1.getId(), sl2.getId());
+		assertEquals(0, new BigDecimal("5001").compareTo(sl2.getTicketPrice().getAmount()));
+
+		// when: get again
+		var sellerListing2 = client.getSellerListingService().getSellerListing(sl1.getId());
+
+		// then
+		assertEquals(0, new BigDecimal("5001").compareTo(sellerListing2.getTicketPrice().getAmount()));
+		assertEquals("S1", sellerListing2.getSeating().getSection());
+		assertEquals("R1", sellerListing2.getSeating().getRow());
+		assertEquals("1", sellerListing2.getSeating().getSeatFrom());
+		assertEquals("3", sellerListing2.getSeating().getSeatTo());
+		assertEquals("Ticketmaster Mobile Ticket", sellerListing2.getTicketType().getName());
+		assertEquals("Any", sellerListing2.getSplitType().getType());
+		assertEquals(2, sellerListing2.getNumberOfTickets().intValue());
+		assertEquals("1", sellerListing2.getExternalId());
+		assertNotNull(sellerListing2.getEvent());
+
+		// when: delete
+		client.getSellerListingService().deleteListingByExternalListingId("1");
 	}
 
 	@Test
