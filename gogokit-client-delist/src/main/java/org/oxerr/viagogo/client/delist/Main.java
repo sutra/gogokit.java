@@ -1,6 +1,8 @@
 package org.oxerr.viagogo.client.delist;
 
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.oxerr.viagogo.client.rescu.RescuViagogoClient;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
@@ -15,14 +17,21 @@ public class Main {
 
 	private final RescuViagogoClient client;
 
-	public Main(String token) {
+	private final Executor executor;
+
+	private final int pageSize;
+
+	public Main(String token, int pageSize) {
+		this.pageSize = pageSize;
 		this.client = new RescuViagogoClient(token);
+		this.executor = Executors.newFixedThreadPool(pageSize);
 	}
 
 	public void delist() {
 		PagedResource<SellerListing> listings = null;
 
 		var r = new SellerListingRequest();
+		r.setPageSize(this.pageSize);
 
 		do {
 			try {
@@ -38,17 +47,20 @@ public class Main {
 		log.info("Left items: {}", listings.getTotalItems());
 
 		for (var item : listings.getItems()) {
-			try {
-				this.client.getSellerListingService().deleteListingByExternalListingId(item.getExternalId());
-			} catch (IOException e) {
-				log.error(e.getMessage());
-			}
+			this.executor.execute(() -> {
+				try {
+					this.client.getSellerListingService().deleteListingByExternalListingId(item.getExternalId());
+				} catch (IOException e) {
+					log.error(e.getMessage());
+				}
+			});
 		}
 	}
 
 	public static void main(String[] args) {
 		var token = args[0];
-		var main = new Main(token);
+		var pageSize = Integer.parseInt(args[1]);
+		var main = new Main(token, pageSize);
 		main.delist();
 	}
 
