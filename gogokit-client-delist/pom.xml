@@ -12,7 +12,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>gogokit-client-delist</artifactId>
-	<name>GogoKit Client Delist</name>
+	<name>GogoKit Client - Delist</name>
 	<description>
 		A command line tool to delist all seller listings.
 	</description>
