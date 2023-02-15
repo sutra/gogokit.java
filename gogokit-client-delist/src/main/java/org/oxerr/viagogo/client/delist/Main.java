@@ -56,7 +56,8 @@ public class Main implements AutoCloseable {
 				try {
 					this.client.getSellerListingService().deleteListingByExternalListingId(item.getExternalId());
 				} catch (IOException e) {
-					if (e instanceof HttpStatusIOException hsioe && hsioe.getHttpStatusCode() == 404) {
+					// if (e instanceof HttpStatusIOException hsioe && hsioe.getHttpStatusCode() == 404) {
+					if (e instanceof HttpStatusIOException && ((HttpStatusIOException) e).getHttpStatusCode() == 404) {
 						// ignore
 					} else {
 						log.error(e.getMessage());

@@ -93,7 +93,7 @@ class EventServiceTest {
 	}
 
 	@Test
-//	@Disabled("Token is required")
+	@Disabled("Token is required")
 	void testGetAllEvents() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
 
