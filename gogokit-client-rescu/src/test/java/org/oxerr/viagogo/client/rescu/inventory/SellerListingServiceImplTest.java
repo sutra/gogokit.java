@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
 import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.Money;
@@ -33,15 +34,17 @@ class SellerListingServiceImplTest {
 
 	private final Logger log = LogManager.getLogger();
 
+	private final SellerListingService sellerListingService
+		= RescuViagogoClientTest.getClient().getSellerListingService();;
+
 	@Test
 	@Disabled("Token is required")
 	void testGetSellerListings() throws ViagogoException, IOException {
-		var client = RescuViagogoClientTest.getClient();
 		var r = new SellerListingRequest();
 		r.setPageSize(1);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		var sellerListings = client.getSellerListingService().getSellerListings(r);
+		var sellerListings = sellerListingService.getSellerListings(r);
 		stopWatch.stop();
 		assertNotNull(sellerListings);
 
@@ -54,9 +57,30 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testCreateListingForRequestedEvent() throws IOException {
-		var client = RescuViagogoClientTest.getClient();
+	void testGetAllSellerListingsOfOneEvent() throws IOException {
+		var eventId = 150538531L;
+		var sellerListings = sellerListingService.getAllSellerListings(eventId);
+		sellerListings.stream()
+			.sorted((a, b) -> a.getSeating().compareTo(b.getSeating()))
+			.forEach(listing -> {
+				var event = listing.getEvent();
+				var seating = listing.getSeating();
+				log.info(
+					"L{}({}) {}: E{} {}@{} {}",
+					listing.getId(),
+					listing.getExternalId(),
+					listing.getTicketPrice(),
+					event.getId(),
+					event.getName(),
+					event.getStartDate(),
+					seating
+				);
+			});
+	}
 
+	@Test
+	@Disabled("Token is required")
+	void testCreateListingForRequestedEvent() throws IOException {
 		// given
 		var cslr = new CreateSellerListingRequest();
 		cslr.setTicketPrice(Money.of("5000", "USD"));
@@ -75,7 +99,7 @@ class SellerListingServiceImplTest {
 		cslr.setVenue(new VenueRequest(venueName, venueCity));
 
 		// when: create
-		SellerListing sl1 = client.getSellerListingService().createListingForRequestedEvent(cslr);
+		SellerListing sl1 = sellerListingService.createListingForRequestedEvent(cslr);
 
 		// then
 		assertNotNull(sl1);
@@ -83,7 +107,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5000").compareTo(sl1.getTicketPrice().getAmount()));
 
 		// when: get
-		var sellerListing1 = client.getSellerListingService().getSellerListing(sl1.getId());
+		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId());
 
 		// then
 		assertEquals(0, new BigDecimal("5000").compareTo(sellerListing1.getTicketPrice().getAmount()));
@@ -103,7 +127,7 @@ class SellerListingServiceImplTest {
 		cslr.setNumberOfTickets(2); // Seat names: 1, 3
 
 		// when: create again
-		SellerListing sl2 = client.getSellerListingService().createListingForRequestedEvent(cslr);
+		SellerListing sl2 = sellerListingService.createListingForRequestedEvent(cslr);
 
 		// then
 		assertNotNull(sl2);
@@ -112,7 +136,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5001").compareTo(sl2.getTicketPrice().getAmount()));
 
 		// when: get again
-		var sellerListing2 = client.getSellerListingService().getSellerListing(sl1.getId());
+		var sellerListing2 = sellerListingService.getSellerListing(sl1.getId());
 
 		// then
 		assertEquals(0, new BigDecimal("5001").compareTo(sellerListing2.getTicketPrice().getAmount()));
@@ -127,14 +151,12 @@ class SellerListingServiceImplTest {
 		assertNotNull(sellerListing2.getEvent());
 
 		// when: delete
-		client.getSellerListingService().deleteListingByExternalListingId("1");
+		sellerListingService.deleteListingByExternalListingId("1");
 	}
 
 	@Test
 	@Disabled("Delete all seller listings")
 	void testDeleteAll() throws IOException {
-		var client = RescuViagogoClientTest.getClient();
-
 		PagedResource<SellerListing> all;
 
 		Set<String> externalIds = new HashSet<>();
@@ -147,7 +169,7 @@ class SellerListingServiceImplTest {
 				var r = new SellerListingRequest();
 				r.setPage(page);
 				r.setPageSize(pageSize);
-				all = client.getSellerListingService().getSellerListings(r);
+				all = sellerListingService.getSellerListings(r);
 				page++;
 			} catch (IOException e) {
 				log.warn("Read all seller listings failed: {}", e.getMessage());
@@ -168,7 +190,7 @@ class SellerListingServiceImplTest {
 
 			executorService.execute(() -> {
 				try {
-					client.getSellerListingService().deleteListingByExternalListingId(externalId);
+					sellerListingService.deleteListingByExternalListingId(externalId);
 				} catch (IOException e) {
 					log.warn("Delete {} failed: {}", externalId, e.getMessage());
 				}

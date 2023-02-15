@@ -90,4 +90,9 @@ public class Money implements Serializable {
 		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
+	@Override
+	public String toString() {
+		return this.display;
+	}
+
 }

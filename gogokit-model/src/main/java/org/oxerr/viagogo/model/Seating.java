@@ -2,15 +2,17 @@ package org.oxerr.viagogo.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * Represents the seating information for a ticket(s) in a Venue.
  *
  * <a href="https://developer.viagogo.net/api-reference/inventory#tag/BasicType_Seating">Seating</a>
  */
-public class Seating implements Serializable {
+public class Seating implements Comparable<Seating>, Serializable {
 
 	private static final long serialVersionUID = 2023021301L;
 
@@ -94,6 +96,26 @@ public class Seating implements Serializable {
 		}
 		Seating rhs = (Seating) obj;
 		return EqualsBuilder.reflectionEquals(this, rhs);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s | Row %s | Seat %s-%s",
+			this.section.trim(),
+			this.row.trim(),
+			this.seatFrom.trim(),
+			this.seatTo.trim()
+		);
+	}
+
+	@Override
+	public int compareTo(Seating o) {
+		return new CompareToBuilder()
+			.append(this.section, o.section)
+			.append(this.row, o.row)
+			.append(NumberUtils.toInt(this.seatFrom), NumberUtils.toInt(o.seatFrom))
+			.append(NumberUtils.toInt(this.seatTo), NumberUtils.toInt(o.seatTo))
+			.toComparison();
 	}
 
 }
