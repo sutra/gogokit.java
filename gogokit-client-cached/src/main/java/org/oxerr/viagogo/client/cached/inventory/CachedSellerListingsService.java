@@ -88,6 +88,11 @@ public class CachedSellerListingsService implements SellerListingService {
 	}
 
 	@Override
+	public SellerListing getSellerListingByExternalId(String externalListingId) {
+		return this.sellerListingsService.getSellerListingByExternalId(externalListingId);
+	}
+
+	@Override
 	public void deleteListingByExternalListingId(String externalId) throws IOException {
 		final SellerListingCreation creation = this.sellerListingCreationCache.get(externalId);
 

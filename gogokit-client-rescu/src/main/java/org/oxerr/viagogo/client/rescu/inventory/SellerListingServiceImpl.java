@@ -39,6 +39,11 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
+	public SellerListing getSellerListingByExternalId(String externalListingId) {
+		return this.sellerListingsResource.getSellerListingByExternalId(externalListingId);
+	}
+
+	@Override
 	public void deleteListingByExternalListingId(String externalId) throws IOException {
 		this.sellerListingsResource.deleteListingByExternalListingId(externalId);
 	}

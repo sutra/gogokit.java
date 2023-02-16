@@ -70,6 +70,17 @@ public interface SellerListingService {
 	SellerListing createListingForRequestedEvent(CreateSellerListingRequest r) throws IOException;
 
 	/**
+	 * Get a seller listing by external ID.
+	 * <p>
+	 * Get a seller listing by identifier that has been assigned to the listing
+	 * in an external inventory management system.
+	 * </p>
+	 * @param externalListingId the external ID.
+	 * @return the seller listing.
+	 */
+	SellerListing getSellerListingByExternalId(String externalListingId);
+
+	/**
 	 * Delete a seller listing by external ID.
 	 * <p>
 	 * Delete a seller listing by identifier that has been assigned to the

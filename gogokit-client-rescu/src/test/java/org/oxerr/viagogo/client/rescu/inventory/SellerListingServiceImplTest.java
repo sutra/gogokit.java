@@ -60,21 +60,11 @@ class SellerListingServiceImplTest {
 	void testGetAllSellerListingsOfOneEvent() throws IOException {
 		var eventId = 150538531L;
 		var sellerListings = sellerListingService.getAllSellerListings(eventId);
+		assertNotNull(sellerListings);
 		sellerListings.stream()
 			.sorted((a, b) -> a.getSeating().compareTo(b.getSeating()))
 			.forEach(listing -> {
-				var event = listing.getEvent();
-				var seating = listing.getSeating();
-				log.info(
-					"L{}({}) {}: E{} {}@{} {}",
-					listing.getId(),
-					listing.getExternalId(),
-					listing.getTicketPrice(),
-					event.getId(),
-					event.getName(),
-					event.getStartDate(),
-					seating
-				);
+				print(listing);
 			});
 	}
 
@@ -156,6 +146,16 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Delete all seller listings")
+	void testGetSellerListingByExternalListingId() {
+		var externalListingId = "1626048103687655433";
+		var sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId);
+		assertNotNull(sellerListing);
+		sellerListing.getSeating();
+		this.print(sellerListing);
+	}
+
+	@Test
+	@Disabled("Delete all seller listings")
 	void testDeleteAll() throws IOException {
 		PagedResource<SellerListing> all;
 
@@ -212,6 +212,22 @@ class SellerListingServiceImplTest {
 		if (tasksNeverCommencedExecution != null) {
 			log.warn("{} task(s) that never commenced execution.", tasksNeverCommencedExecution.size());
 		}
+	}
+
+	private void print(SellerListing listing) {
+		var event = listing.getEvent();
+		var seating = listing.getSeating();
+		log.info(
+			"L{}({}) {}: E{} {}@{} {} {}",
+			listing.getId(),
+			listing.getExternalId(),
+			listing.getTicketPrice(),
+			event.getId(),
+			event.getName(),
+			event.getStartDate(),
+			seating,
+			listing.getNumberOfTickets()
+		);
 	}
 
 }

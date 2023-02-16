@@ -75,6 +75,16 @@ public interface SellerListingResource {
 	SellerListing createListingForRequestedEvent(CreateSellerListingRequest newSellerListing) throws ViagogoException, IOException;
 
 	/**
+	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_GetByExternalListingId">Get a seller listing by external ID</a>
+	 *
+	 * @param externalListingId the external listing ID.
+	 * @return the seller listing.
+	 */
+	@GET
+	@Path("/externalsellerlistings/{externalListingId}")
+	SellerListing getSellerListingByExternalId(@PathParam("externalListingId") String externalListingId);
+
+	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_DeleteListingByExternalListingId">Delete a seller listing by external ID</a>
 	 *
 	 * <p>Delete a seller listing by identifier that has been assigned to the listing
