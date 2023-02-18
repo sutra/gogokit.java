@@ -26,6 +26,7 @@ import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.EventRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.VenueRequest;
@@ -83,13 +84,15 @@ class SellerListingServiceImplTest {
 	@Disabled("Token is required")
 	void testCreateListingForRequestedEvent() throws IOException {
 		// given
+		final String externalId = "1";
+
 		var cslr = new CreateSellerListingForRequestedEventRequest();
 		cslr.setTicketPrice(Money.of("5000", "USD"));
 		cslr.setSeating(new Seating("S1", "R1", "1", "5"));
 		cslr.setTicketType("TicketMasterMobile");
 		cslr.setSplitType("any");
 		cslr.setNumberOfTickets(3); // Seat names: 1, 3, 5
-		cslr.setExternalId("1");
+		cslr.setExternalId(externalId);
 		cslr.setNotes("test");
 
 		cslr.setEvent(new EventRequest("Hamilton (NY)", OffsetDateTime.parse("2023-06-22T00:00:00Z").toLocalDateTime()));
@@ -151,6 +154,85 @@ class SellerListingServiceImplTest {
 		assertEquals(2, sellerListing2.getNumberOfTickets().intValue());
 		assertEquals("1", sellerListing2.getExternalId());
 		assertNotNull(sellerListing2.getEvent());
+
+		// when: delete
+		sellerListingService.deleteListingByExternalListingId("1");
+	}
+
+
+	@Test
+//	@Disabled("Token is required")
+	void testCreateListing() throws IOException {
+		// given
+		final String externalId = "1";
+
+		Long eventId1 = 151369736L;
+		Long eventId2 = 151369737L;
+
+		var cslr = new CreateSellerListingRequest();
+		cslr.setTicketPrice(Money.of("5000", "USD"));
+		cslr.setSeating(new Seating("S1", "R1", "1", "5"));
+		cslr.setTicketType("TicketMasterMobile");
+		cslr.setSplitType("Any");
+		cslr.setNumberOfTickets(3); // Seat names: 1, 3, 5
+		cslr.setExternalId(externalId);
+		cslr.setNotes("test");
+
+		// when: create
+		SellerListing sl1 = sellerListingService.createListing(eventId1, cslr);
+
+		// then
+		assertNotNull(sl1);
+		log.info("SellerListing ID: {}", sl1.getId());
+		assertEquals(0, new BigDecimal("5000").compareTo(sl1.getTicketPrice().getAmount()));
+
+		// when: get
+		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId());
+
+		// then
+		assertEquals(0, new BigDecimal("5000").compareTo(sellerListing1.getTicketPrice().getAmount()));
+		assertEquals("S1", sellerListing1.getSeating().getSection());
+		assertEquals("R1", sellerListing1.getSeating().getRow());
+		assertEquals("1", sellerListing1.getSeating().getSeatFrom());
+		assertEquals("5", sellerListing1.getSeating().getSeatTo());
+		assertEquals("Ticketmaster Mobile Ticket", sellerListing1.getTicketType().getName());
+		assertEquals("Any", sellerListing1.getSplitType().getType());
+		assertEquals(3, sellerListing1.getNumberOfTickets().intValue());
+		assertEquals("1", sellerListing1.getExternalId());
+		assertNotNull(sellerListing1.getEvent());
+		assertEquals(eventId1, sellerListing1.getEvent().getId());
+		assertEquals("2023-05-03T20:00-07:00", sellerListing1.getEvent().getStartDate().toString());
+
+		// given
+		cslr.setTicketPrice(Money.of("5001", "USD"));
+		cslr.setSeating(new Seating("S1", "R1", "1", "3"));
+		cslr.setNumberOfTickets(2); // Seat names: 1, 3
+
+		// when: create again
+		SellerListing sl2 = sellerListingService.createListing(eventId2, cslr);
+
+		// then
+		assertNotNull(sl2);
+		log.info("SellerListing ID: {}", sl1.getId());
+		assertEquals(sl1.getId(), sl2.getId());
+		assertEquals(0, new BigDecimal("5001").compareTo(sl2.getTicketPrice().getAmount()));
+
+		// when: get again
+		var sellerListing2 = sellerListingService.getSellerListing(sl2.getId());
+
+		// then
+		assertEquals(0, new BigDecimal("5001").compareTo(sellerListing2.getTicketPrice().getAmount()));
+		assertEquals("S1", sellerListing2.getSeating().getSection());
+		assertEquals("R1", sellerListing2.getSeating().getRow());
+		assertEquals("1", sellerListing2.getSeating().getSeatFrom());
+		assertEquals("3", sellerListing2.getSeating().getSeatTo());
+		assertEquals("Ticketmaster Mobile Ticket", sellerListing2.getTicketType().getName());
+		assertEquals("Any", sellerListing2.getSplitType().getType());
+		assertEquals(2, sellerListing2.getNumberOfTickets().intValue());
+		assertEquals("1", sellerListing2.getExternalId());
+		assertNotNull(sellerListing2.getEvent());
+		assertEquals(eventId1, sellerListing2.getEvent().getId()); // event ID keeps eventId1, so it does not support to change event ID.
+		assertEquals("2023-05-03T20:00-07:00", sellerListing1.getEvent().getStartDate().toString());
 
 		// when: delete
 		sellerListingService.deleteListingByExternalListingId("1");
