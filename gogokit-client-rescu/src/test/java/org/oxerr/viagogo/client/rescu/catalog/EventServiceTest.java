@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -148,18 +148,33 @@ class EventServiceTest {
 	@Disabled("Token is required")
 	void testSearchEvents() throws ViagogoException, IOException {
 		var client = RescuViagogoClientTest.getClient();
-		var q = "Penn & Teller";
-		var dateLocal = Instant.parse("2023-02-05T05:00:00.000Z");
+		var q = "The Chicks";
+		var zoneId = ZoneId.of("America/Los_Angeles");
+		var dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
+		log.info("dateLocal: {}", dateLocal);
 		SearchEventRequest r = new SearchEventRequest();
 		r.setQ(q);
 		r.setDateLocal(dateLocal);
 		PagedResource<Event> events = client.getEventService().searchEvents(r);
 		assertNotNull(events);
+		for (var event : events.getItems()) {
+			log.info(
+				"https://www.stubhub.com/E-{}, startDate: {}({}), WebPage: {}, Venue: {} {} {}",
+				event.getId(),
+				event.getStartDate().getOffset(),
+				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX").withZone(zoneId).format(event.getStartDate()),
+				event.getWebPageLink().getHref(),
+				event.getVenue().getName(),
+				event.getVenue().getCity(),
+				event.getVenue().getCountry().getCode()
+			);
+		}
 		assertEquals(1, events.getTotalItems());
-		assertEquals("https://api.viagogo.net/catalog/events/search?q=Penn%20%26%20Teller&dateLocal=2023-02-05T05%3A00%3A00Z&page=1&page_size=500", events.getSelfLink().getHref());
+		assertEquals("https://api.viagogo.net/catalog/events/search?q=The%20Chicks&dateLocal=2023-05-03T20%3A00&page=1&page_size=500", events.getSelfLink().getHref());
 		Event event = events.getItems().get(0);
-		assertEquals(150517204L, event.getId());
-		assertEquals("Penn and Teller", event.getName());
+		assertEquals(151369736L, event.getId());
+		assertEquals("The Chicks", event.getName());
+		assertEquals("2023-05-03T20:00-07:00", event.getStartDate().toString());
 	}
 
 }

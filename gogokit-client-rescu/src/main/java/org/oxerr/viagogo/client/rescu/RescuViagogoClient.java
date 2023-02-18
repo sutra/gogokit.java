@@ -17,6 +17,7 @@ import org.oxerr.viagogo.client.rescu.sale.SaleResource;
 import org.oxerr.viagogo.client.rescu.sale.SaleServiceImpl;
 import org.oxerr.viagogo.client.sale.SaleService;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -59,8 +60,10 @@ public class RescuViagogoClient implements ViagogoClient {
 				super.configureObjectMapper(objectMapper);
 				objectMapper.registerModule(new JavaTimeModule());
 				objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+				objectMapper.setSerializationInclusion(Include.NON_ABSENT);
 				objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 				objectMapper.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+				objectMapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 			}
 
 			@Override

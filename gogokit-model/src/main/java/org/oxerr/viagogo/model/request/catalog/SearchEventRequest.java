@@ -2,6 +2,7 @@ package org.oxerr.viagogo.model.request.catalog;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,7 +13,7 @@ public class SearchEventRequest implements Serializable {
 
 	private String q;
 
-	private Instant dateLocal;
+	private LocalDateTime dateLocal;
 
 	private Integer page;
 
@@ -37,7 +38,7 @@ public class SearchEventRequest implements Serializable {
 	public SearchEventRequest() {
 	}
 
-	public SearchEventRequest(String q, Instant dateLocal) {
+	public SearchEventRequest(String q, LocalDateTime dateLocal) {
 		this.q = q;
 		this.dateLocal = dateLocal;
 	}
@@ -50,11 +51,11 @@ public class SearchEventRequest implements Serializable {
 		this.q = q;
 	}
 
-	public Instant getDateLocal() {
+	public LocalDateTime getDateLocal() {
 		return dateLocal;
 	}
 
-	public void setDateLocal(Instant dateLocal) {
+	public void setDateLocal(LocalDateTime dateLocal) {
 		this.dateLocal = dateLocal;
 	}
 

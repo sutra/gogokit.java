@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,7 +92,7 @@ class SellerListingServiceImplTest {
 		cslr.setExternalId("1");
 		cslr.setNotes("test");
 
-		cslr.setEvent(new EventRequest("Hamilton (NY)", Instant.parse("2023-06-22T00:00:00Z")));
+		cslr.setEvent(new EventRequest("Hamilton (NY)", OffsetDateTime.parse("2023-06-22T00:00:00Z")));
 
 		String venueName = "Richard Rodgers Theatre";
 		String venueCity = "New York";
@@ -121,6 +121,7 @@ class SellerListingServiceImplTest {
 		assertEquals(3, sellerListing1.getNumberOfTickets().intValue());
 		assertEquals("1", sellerListing1.getExternalId());
 		assertNotNull(sellerListing1.getEvent());
+		assertEquals("2023-06-22T00:00Z", sellerListing1.getEvent().getStartDate().toString());
 
 		// given
 		cslr.setTicketPrice(Money.of("5001", "USD"));

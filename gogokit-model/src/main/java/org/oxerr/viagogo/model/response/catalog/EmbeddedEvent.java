@@ -1,12 +1,10 @@
 package org.oxerr.viagogo.model.response.catalog;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.response.Resource;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * An event on the viagogo platform.
@@ -31,20 +29,17 @@ public class EmbeddedEvent extends Resource {
 	/**
 	 * The date when the event starts.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-	private Instant startDate;
+	private OffsetDateTime startDate;
 
 	/**
 	 * The date when the event ends.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-	private Instant endDate;
+	private OffsetDateTime endDate;
 
 	/**
 	 * The date when tickets for the event will go onsale.
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-	private Instant onSaleDate;
+	private OffsetDateTime onSaleDate;
 
 	/**
 	 * True if the event start and end date have been confirmed; Otherwise, false.
@@ -54,7 +49,7 @@ public class EmbeddedEvent extends Resource {
 	public EmbeddedEvent() {
 	}
 
-	public EmbeddedEvent(String name, Instant startDate) {
+	public EmbeddedEvent(String name, OffsetDateTime startDate) {
 		this.name = name;
 		this.startDate = startDate;
 	}
@@ -75,27 +70,27 @@ public class EmbeddedEvent extends Resource {
 		this.name = name;
 	}
 
-	public Instant getStartDate() {
+	public OffsetDateTime getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Instant startDate) {
+	public void setStartDate(OffsetDateTime startDate) {
 		this.startDate = startDate;
 	}
 
-	public Instant getEndDate() {
+	public OffsetDateTime getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Instant endDate) {
+	public void setEndDate(OffsetDateTime endDate) {
 		this.endDate = endDate;
 	}
 
-	public Instant getOnSaleDate() {
+	public OffsetDateTime getOnSaleDate() {
 		return onSaleDate;
 	}
 
-	public void setOnSaleDate(Instant onSaleDate) {
+	public void setOnSaleDate(OffsetDateTime onSaleDate) {
 		this.onSaleDate = onSaleDate;
 	}
 

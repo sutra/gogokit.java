@@ -1,6 +1,6 @@
 package org.oxerr.viagogo.model.response.catalog;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -83,7 +83,7 @@ public class Event extends EmbeddedEvent {
 	public Event() {
 	}
 
-	public Event(String name, Instant startDate) {
+	public Event(String name, OffsetDateTime startDate) {
 		super(name, startDate);
 	}
 

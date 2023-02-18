@@ -2,6 +2,7 @@ package org.oxerr.viagogo.client.rescu.catalog;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -69,7 +70,7 @@ public interface EventResource {
 	@Path("/search")
 	PagedResource<Event> searchEvents(
 		@QueryParam("q") String q,
-		@QueryParam("dateLocal") Instant dateLocal,
+		@QueryParam("dateLocal") LocalDateTime dateLocal,
 		@QueryParam("page") Integer page,
 		@QueryParam("page_size") Integer pageSize,
 		@QueryParam("updated_since") Instant updatedSince,

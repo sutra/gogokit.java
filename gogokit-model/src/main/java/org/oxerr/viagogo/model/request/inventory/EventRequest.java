@@ -1,7 +1,7 @@
 package org.oxerr.viagogo.model.request.inventory;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -18,7 +18,7 @@ public class EventRequest implements Serializable {
 	/**
 	 * The date when the event starts.
 	 */
-	private Instant startDate;
+	private OffsetDateTime startDate;
 
 	/**
 	 * True if the event start and end date have been confirmed;
@@ -34,7 +34,7 @@ public class EventRequest implements Serializable {
 	public EventRequest() {
 	}
 
-	public EventRequest(String name, Instant startDate) {
+	public EventRequest(String name, OffsetDateTime startDate) {
 		this.name = name;
 		this.startDate = startDate;
 	}
@@ -47,11 +47,11 @@ public class EventRequest implements Serializable {
 		this.name = name;
 	}
 
-	public Instant getStartDate() {
+	public OffsetDateTime getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Instant startDate) {
+	public void setStartDate(OffsetDateTime startDate) {
 		this.startDate = startDate;
 	}
 

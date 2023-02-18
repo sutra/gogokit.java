@@ -13,7 +13,7 @@ public abstract class Resource implements Serializable {
 
 	private static final long serialVersionUID = 2023021301L;
 
-	@Link
+	@Link("self")
 	private HALLink selfLink;
 
 	public HALLink getSelfLink() {
