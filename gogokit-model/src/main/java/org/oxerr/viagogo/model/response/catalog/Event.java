@@ -6,9 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
-import org.oxerr.viagogo.model.response.Resource;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
@@ -20,42 +17,9 @@ import io.openapitools.jackson.dataformat.hal.annotation.Link;
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/Resource_Event">Event</a>
  */
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
-public class Event extends Resource {
+public class Event extends EmbeddedEvent {
 
 	private static final long serialVersionUID = 2023021301L;
-
-	/**
-	 * The event identifier.
-	 */
-	private Long id;
-
-	/**
-	 * The name of the event.
-	 */
-	private String name;
-
-	/**
-	 * The date when the event starts.
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-	private Instant startDate;
-
-	/**
-	 * The date when the event ends.
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-	private Instant endDate;
-
-	/**
-	 * The date when tickets for the event will go onsale.
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-	private Instant onSaleDate;
-
-	/**
-	 * True if the event start and end date have been confirmed; Otherwise, false.
-	 */
-	private Boolean dateConfirmed;
 
 	/**
 	 * True if the event start and end time have been confirmed; Otherwise, false.
@@ -84,13 +48,13 @@ public class Event extends Resource {
 	 * Url on the website for the event.
 	 */
 	@Link("event:webpage")
-	private HALLink webpage;
+	private HALLink webPageLink;
 
 	/**
 	 * The categories for this event.
 	 */
 	@EmbeddedResource
-	private List<Category> categories;
+	private List<EmbeddedCategory> categories;
 
 	/**
 	 * The external mappings for this event.
@@ -120,56 +84,7 @@ public class Event extends Resource {
 	}
 
 	public Event(String name, Instant startDate) {
-		this.name = name;
-		this.startDate = startDate;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Instant getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Instant startDate) {
-		this.startDate = startDate;
-	}
-
-	public Instant getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Instant endDate) {
-		this.endDate = endDate;
-	}
-
-	public Instant getOnSaleDate() {
-		return onSaleDate;
-	}
-
-	public void setOnSaleDate(Instant onSaleDate) {
-		this.onSaleDate = onSaleDate;
-	}
-
-	public Boolean getDateConfirmed() {
-		return dateConfirmed;
-	}
-
-	public void setDateConfirmed(Boolean dateConfirmed) {
-		this.dateConfirmed = dateConfirmed;
+		super(name, startDate);
 	}
 
 	public Boolean getTimeConfirmed() {
@@ -204,19 +119,19 @@ public class Event extends Resource {
 		this.status = status;
 	}
 
-	public HALLink getWebpage() {
-		return webpage;
+	public HALLink getWebPageLink() {
+		return webPageLink;
 	}
 
-	public void setWebpage(HALLink webpage) {
-		this.webpage = webpage;
+	public void setWebPageLink(HALLink webPageLink) {
+		this.webPageLink = webPageLink;
 	}
 
-	public List<Category> getCategories() {
+	public List<EmbeddedCategory> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<Category> categories) {
+	public void setCategories(List<EmbeddedCategory> categories) {
 		this.categories = categories;
 	}
 

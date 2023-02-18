@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,6 +41,15 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
+	void testGetSellerListing() throws IOException {
+		long listingId = 0L;
+		var sellerListing = this.sellerListingService.getSellerListing(listingId);
+		assertNotNull(sellerListing);
+		log.info("{}", ToStringBuilder.reflectionToString(sellerListingService, ToStringStyle.MULTI_LINE_STYLE));
+	}
+
+	@Test
+	@Disabled("Token is required")
 	void testGetSellerListings() throws ViagogoException, IOException {
 		var r = new SellerListingRequest();
 		r.setPageSize(1);
@@ -51,7 +62,7 @@ class SellerListingServiceImplTest {
 		log.info("[{}]Total items: {}", stopWatch, sellerListings.getTotalItems());
 
 		for (SellerListing l : sellerListings.getItems()) {
-			log.info(l.getSelf().getHref());
+			log.info(l.getSelfLink().getHref());
 		}
 	}
 

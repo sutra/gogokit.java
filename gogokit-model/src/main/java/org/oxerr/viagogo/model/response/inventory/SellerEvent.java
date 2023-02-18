@@ -27,13 +27,13 @@ public class SellerEvent extends Event {
 	 * Create listing for the currently authenticated user.
 	 */
 	@Link("sellerevent:createsellerlisting")
-	private HALLink createSellerListing;
+	private HALLink createSellerListingLink;
 
 	/**
 	 * Event listings that belong to the currently authenticated user.
 	 */
 	@Link("sellerevent:sellerlistings")
-	private HALLink sellerListings;
+	private HALLink sellerListingsLink;
 
 	@EmbeddedResource
 	private Venue salesAggregates;
@@ -56,20 +56,20 @@ public class SellerEvent extends Event {
 		this.lms = lms;
 	}
 
-	public HALLink getCreateSellerListing() {
-		return createSellerListing;
+	public HALLink getCreateSellerListingLink() {
+		return createSellerListingLink;
 	}
 
-	public void setCreateSellerListing(HALLink createSellerListing) {
-		this.createSellerListing = createSellerListing;
+	public void setCreateSellerListingLink(HALLink createSellerListingLink) {
+		this.createSellerListingLink = createSellerListingLink;
 	}
 
-	public HALLink getSellerListings() {
-		return sellerListings;
+	public HALLink getSellerListingsLink() {
+		return sellerListingsLink;
 	}
 
-	public void setSellerListings(HALLink sellerListings) {
-		this.sellerListings = sellerListings;
+	public void setSellerListingsLink(HALLink sellerListingsLink) {
+		this.sellerListingsLink = sellerListingsLink;
 	}
 
 	public Venue getSalesAggregates() {

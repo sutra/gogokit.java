@@ -37,7 +37,7 @@ public class SalesAggregate extends Resource {
 	 * The sales aggregated in this resource.
 	 */
 	@Link("salesaggregate:sales")
-	private HALLink sales;
+	private HALLink salesLink;
 
 	public Integer getNumberOfSales() {
 		return numberOfSales;
@@ -71,12 +71,12 @@ public class SalesAggregate extends Resource {
 		this.status = status;
 	}
 
-	public HALLink getSales() {
-		return sales;
+	public HALLink getSalesLink() {
+		return salesLink;
 	}
 
-	public void setSales(HALLink sales) {
-		this.sales = sales;
+	public void setSalesLink(HALLink salesLink) {
+		this.salesLink = salesLink;
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public interface SellerListingService {
 			res = this.getSellerListings(r);
 			sellerListings.addAll(res.getItems());
 			r.setPage(r.getPage() + 1);
-		} while (res.getNext() != null);
+		} while (res.getNextLink() != null);
 		return sellerListings;
 	}
 

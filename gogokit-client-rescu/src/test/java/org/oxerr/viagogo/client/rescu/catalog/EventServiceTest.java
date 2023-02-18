@@ -50,10 +50,10 @@ class EventServiceTest {
 		assertNotNull(events);
 		log.info("{}", ToStringBuilder.reflectionToString(events, ToStringStyle.MULTI_LINE_STYLE));
 
-		log.info("events.self: {}", events.getSelf().getHref());
-		log.info("events.next: {}", events.getNext().getHref());
+		log.info("events.self: {}", events.getSelfLink().getHref());
+		log.info("events.next: {}", events.getNextLink().getHref());
 
-		assertEquals("https://api.viagogo.net/catalog/events?page_size=500&sort=resource_version", events.getSelf().getHref());
+		assertEquals("https://api.viagogo.net/catalog/events?page_size=500&sort=resource_version", events.getSelfLink().getHref());
 
 		assertEquals(0, events.getDeletedItems().size());
 		assertEquals(500, events.getItems().size());
@@ -63,7 +63,7 @@ class EventServiceTest {
 		log.info("event.startDate: {}", event.getStartDate());
 		log.info("event.type: {}", event.getType());
 		log.info("event.status: {}", event.getStatus());
-		log.info("event.webpage: {}", event.getWebpage().getHref());
+		log.info("event.webpage: {}", event.getWebPageLink().getHref());
 
 		assertEquals(8988375L, event.getId());
 		assertEquals("ABBARAMA: The Ultimate Abba Tribute Experience", event.getName());
@@ -71,15 +71,15 @@ class EventServiceTest {
 			.withZone(ZoneId.of("Pacific/Ponape")).format(event.getStartDate()));
 		assertEquals("Main", event.getType());
 		assertEquals("Normal", event.getStatus());
-		assertEquals("https://www.stubhub.com/a-tribute-to-abba-southbank-tickets-2-25-2023/event/132533943/", event.getWebpage().getHref());
+		assertEquals("https://www.stubhub.com/a-tribute-to-abba-southbank-tickets-2-25-2023/event/132533943/", event.getWebPageLink().getHref());
 
 		// when
-		events = client.getEventService().getEvents(events.getNext());
+		events = client.getEventService().getEvents(events.getNextLink());
 
 		// then
 		assertNotNull(events);
-		log.info("events.self: {}", events.getSelf().getHref());
-		log.info("events.next: {}", events.getSelf().getHref());
+		log.info("events.self: {}", events.getSelfLink().getHref());
+		log.info("events.next: {}", events.getSelfLink().getHref());
 
 		assertEquals(0, events.getDeletedItems().size());
 		assertEquals(500, events.getItems().size());
@@ -89,7 +89,7 @@ class EventServiceTest {
 		log.info("event.startDate: {}", event.getStartDate());
 		log.info("event.type: {}", event.getType());
 		log.info("event.status: {}", event.getStatus());
-		log.info("event.webpage: {}", event.getWebpage().getHref());
+		log.info("event.webpage: {}", event.getWebPageLink().getHref());
 	}
 
 	@Test
@@ -111,16 +111,16 @@ class EventServiceTest {
 
 		var events = client.getEventService().getEvents(eventRequest);
 
-		while(events.getNext() != null) {
-			log.info("events.self: {}", Optional.ofNullable(events.getSelf()).map(HALLink::getHref).orElse(null));
-			log.info("events.first: {}", Optional.ofNullable(events.getFirst()).map(HALLink::getHref).orElse(null));
-			log.info("events.prev: {}", Optional.ofNullable(events.getPrev()).map(HALLink::getHref).orElse(null));
-			log.info("events.next: {}", Optional.ofNullable(events.getNext()).map(HALLink::getHref).orElse(null));
-			log.info("events.last: {}", Optional.ofNullable(events.getLast()).map(HALLink::getHref).orElse(null));
+		while(events.getNextLink() != null) {
+			log.info("events.self: {}", Optional.ofNullable(events.getSelfLink()).map(HALLink::getHref).orElse(null));
+			log.info("events.first: {}", Optional.ofNullable(events.getFirstLink()).map(HALLink::getHref).orElse(null));
+			log.info("events.prev: {}", Optional.ofNullable(events.getPrevLink()).map(HALLink::getHref).orElse(null));
+			log.info("events.next: {}", Optional.ofNullable(events.getNextLink()).map(HALLink::getHref).orElse(null));
+			log.info("events.last: {}", Optional.ofNullable(events.getLastLink()).map(HALLink::getHref).orElse(null));
 			long count = counter.addAndGet(events.getItems().size());
 			log.info("count: {}", count);
 
-			var next = events.getNext();
+			var next = events.getNextLink();
 			Callable<PagedResource<Event>> callable = () -> {
 				return client.getEventService().getEvents(next);
 			};
@@ -156,7 +156,7 @@ class EventServiceTest {
 		PagedResource<Event> events = client.getEventService().searchEvents(r);
 		assertNotNull(events);
 		assertEquals(1, events.getTotalItems());
-		assertEquals("https://api.viagogo.net/catalog/events/search?q=Penn%20%26%20Teller&dateLocal=2023-02-05T05%3A00%3A00Z&page=1&page_size=500", events.getSelf().getHref());
+		assertEquals("https://api.viagogo.net/catalog/events/search?q=Penn%20%26%20Teller&dateLocal=2023-02-05T05%3A00%3A00Z&page=1&page_size=500", events.getSelfLink().getHref());
 		Event event = events.getItems().get(0);
 		assertEquals(150517204L, event.getId());
 		assertEquals("Penn and Teller", event.getName());

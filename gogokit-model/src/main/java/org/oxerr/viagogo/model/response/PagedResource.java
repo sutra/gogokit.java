@@ -28,16 +28,16 @@ public class PagedResource<T extends Serializable> extends Resource {
 	private List<T> items;
 
 	@Link
-	private HALLink next;
+	private HALLink nextLink;
 
 	@Link
-	private HALLink prev;
+	private HALLink prevLink;
 
 	@Link
-	private HALLink first;
+	private HALLink firstLink;
 
 	@Link
-	private HALLink last;
+	private HALLink lastLink;
 
 	public Integer getTotalItems() {
 		return totalItems;
@@ -79,36 +79,36 @@ public class PagedResource<T extends Serializable> extends Resource {
 		this.items = items;
 	}
 
-	public HALLink getNext() {
-		return next;
+	public HALLink getNextLink() {
+		return nextLink;
 	}
 
-	public void setNext(HALLink next) {
-		this.next = next;
+	public void setNextLink(HALLink nextLink) {
+		this.nextLink = nextLink;
 	}
 
-	public HALLink getPrev() {
-		return prev;
+	public HALLink getPrevLink() {
+		return prevLink;
 	}
 
-	public void setPrev(HALLink prev) {
-		this.prev = prev;
+	public void setPrevLink(HALLink prevLink) {
+		this.prevLink = prevLink;
 	}
 
-	public HALLink getFirst() {
-		return first;
+	public HALLink getFirstLink() {
+		return firstLink;
 	}
 
-	public void setFirst(HALLink first) {
-		this.first = first;
+	public void setFirstLink(HALLink firstLink) {
+		this.firstLink = firstLink;
 	}
 
-	public HALLink getLast() {
-		return last;
+	public HALLink getLastLink() {
+		return lastLink;
 	}
 
-	public void setLastLink(HALLink last) {
-		this.last = last;
+	public void setLastLink(HALLink lastLink) {
+		this.lastLink = lastLink;
 	}
 
 	@Override

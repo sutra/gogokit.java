@@ -99,7 +99,7 @@ public class SellerListing extends Resource {
 	/**
 	 * Barcode(s) for the ticket(s) in this listing.
 	 */
-	private BarcodeInformation[] barcodes;
+	private List<BarcodeInformation> barcodes;
 
 	private Boolean instantDelivery;
 
@@ -249,11 +249,11 @@ public class SellerListing extends Resource {
 		this.inHandAt = inHandAt;
 	}
 
-	public BarcodeInformation[] getBarcodes() {
+	public List<BarcodeInformation> getBarcodes() {
 		return barcodes;
 	}
 
-	public void setBarcodes(BarcodeInformation[] barcodes) {
+	public void setBarcodes(List<BarcodeInformation> barcodes) {
 		this.barcodes = barcodes;
 	}
 

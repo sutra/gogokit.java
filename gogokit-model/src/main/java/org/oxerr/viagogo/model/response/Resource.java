@@ -14,14 +14,14 @@ public abstract class Resource implements Serializable {
 	private static final long serialVersionUID = 2023021301L;
 
 	@Link
-	private HALLink self;
+	private HALLink selfLink;
 
-	public HALLink getSelf() {
-		return self;
+	public HALLink getSelfLink() {
+		return selfLink;
 	}
 
-	public void setSelf(HALLink self) {
-		this.self = self;
+	public void setSelfLink(HALLink selfLink) {
+		this.selfLink = selfLink;
 	}
 
 	@Override

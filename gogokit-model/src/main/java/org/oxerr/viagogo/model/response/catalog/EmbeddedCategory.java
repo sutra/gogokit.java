@@ -9,7 +9,7 @@ import org.oxerr.viagogo.model.response.Resource;
 import io.openapitools.jackson.dataformat.hal.annotation.EmbeddedResource;
 
 @io.openapitools.jackson.dataformat.hal.annotation.Resource
-public class Category extends Resource {
+public class EmbeddedCategory extends Resource {
 
 	private static final long serialVersionUID = 2023021301L;
 
@@ -42,7 +42,7 @@ public class Category extends Resource {
 	 * The categories that have been merged into this category.
 	 */
 	@EmbeddedResource
-	private List<Category> mergedCategories;
+	private List<EmbeddedCategory> mergedCategories;
 
 	public Integer getId() {
 		return id;
@@ -76,11 +76,11 @@ public class Category extends Resource {
 		this.externalMappings = externalMappings;
 	}
 
-	public List<Category> getMergedCategories() {
+	public List<EmbeddedCategory> getMergedCategories() {
 		return mergedCategories;
 	}
 
-	public void setMergedCategories(List<Category> mergedCategories) {
+	public void setMergedCategories(List<EmbeddedCategory> mergedCategories) {
 		this.mergedCategories = mergedCategories;
 	}
 
@@ -100,7 +100,7 @@ public class Category extends Resource {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		Category rhs = (Category) obj;
+		EmbeddedCategory rhs = (EmbeddedCategory) obj;
 		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 

@@ -7,6 +7,7 @@ import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingsService;
 import org.oxerr.viagogo.client.catalog.EventService;
 import org.oxerr.viagogo.client.inventory.SellerEventService;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
+import org.oxerr.viagogo.client.sale.SaleService;
 import org.redisson.api.RedissonClient;
 
 public class CachedViagogoClient implements ViagogoClient {
@@ -44,6 +45,11 @@ public class CachedViagogoClient implements ViagogoClient {
 	@Override
 	public SellerEventService getSellerEventService() {
 		return this.client.getSellerEventService();
+	}
+
+	@Override
+	public SaleService getSaleService() {
+		return this.client.getSaleService();
 	}
 
 	public boolean isDeleteOnlyInCache() {
