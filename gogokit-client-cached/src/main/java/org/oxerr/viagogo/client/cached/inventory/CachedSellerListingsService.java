@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.oxerr.viagogo.client.cached.CachedViagogoClient;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
@@ -53,10 +54,10 @@ public class CachedSellerListingsService implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing createListingForRequestedEvent(CreateSellerListingRequest createSellerListingRequest) throws IOException {
+	public SellerListing createListingForRequestedEvent(CreateSellerListingForRequestedEventRequest createSellerListingForRequestedEventRequest) throws IOException {
 		final SellerListing sellerListing;
 
-		final String externalId = createSellerListingRequest.getExternalId();
+		final String externalId = createSellerListingForRequestedEventRequest.getExternalId();
 
 		final RReadWriteLock rwLock = this.sellerListingCreationCache.getReadWriteLock(externalId);
 
@@ -67,16 +68,16 @@ public class CachedSellerListingsService implements SellerListingService {
 
 			log.debug("externalId[{}]. Creation: {}.", externalId, creation);
 
-			if (creation != null && creation.isEqual(createSellerListingRequest)) {
+			if (creation != null && creation.isEqual(createSellerListingForRequestedEventRequest)) {
 				log.debug("externalId[{}]. Skip calling API, return seller listing from cache directly.", externalId);
 
 				sellerListing = creation.getResponse();
 			} else {
 				log.debug("externalId[{}]. Calling API.", externalId);
 
-				sellerListing = this.sellerListingsService.createListingForRequestedEvent(createSellerListingRequest);
-				creation = new SellerListingCreation(createSellerListingRequest, sellerListing);
-				var ttl = Duration.between(Instant.now(), createSellerListingRequest.getEvent().getStartDate()).toDays();
+				sellerListing = this.sellerListingsService.createListingForRequestedEvent(createSellerListingForRequestedEventRequest);
+				creation = new SellerListingCreation(createSellerListingForRequestedEventRequest, sellerListing);
+				var ttl = Duration.between(Instant.now(), createSellerListingForRequestedEventRequest.getEvent().getStartDate()).toDays();
 				this.sellerListingCreationCache.fastPut(externalId, creation, ttl, TimeUnit.DAYS);
 			}
 
@@ -85,6 +86,11 @@ public class CachedSellerListingsService implements SellerListingService {
 		}
 
 		return sellerListing;
+	}
+
+	@Override
+	public SellerListing createListing(Long eventId, CreateSellerListingRequest r) throws IOException {
+		return this.sellerListingsService.createListing(eventId, r);
 	}
 
 	@Override

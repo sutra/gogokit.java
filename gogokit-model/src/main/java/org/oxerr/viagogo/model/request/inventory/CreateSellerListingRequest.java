@@ -25,10 +25,6 @@ public class CreateSellerListingRequest implements Serializable {
 
 	private String notes;
 
-	private EventRequest event;
-
-	private VenueRequest venue;
-
 	public Money getTicketPrice() {
 		return ticketPrice;
 	}
@@ -83,22 +79,6 @@ public class CreateSellerListingRequest implements Serializable {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
-	}
-
-	public EventRequest getEvent() {
-		return event;
-	}
-
-	public void setEvent(EventRequest event) {
-		this.event = event;
-	}
-
-	public VenueRequest getVenue() {
-		return venue;
-	}
-
-	public void setVenue(VenueRequest venue) {
-		this.venue = venue;
 	}
 
 	@Override

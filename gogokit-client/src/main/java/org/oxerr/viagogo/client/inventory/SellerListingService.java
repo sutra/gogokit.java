@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
@@ -27,7 +28,7 @@ public interface SellerListingService {
 	 * @return the seller listings.
 	 * @throws IOException indicates IO exception.
 	 */
-	PagedResource<SellerListing> getSellerListings(SellerListingRequest r) throws IOException;
+	PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest) throws IOException;
 
 	/**
 	 * List all seller listings.
@@ -36,13 +37,13 @@ public interface SellerListingService {
 	 * @return the seller listings.
 	 * @throws IOException indicates IO exception.
 	 */
-	default List<SellerListing> getAllSellerListings(SellerListingRequest r) throws IOException {
+	default List<SellerListing> getAllSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
 		List<SellerListing> sellerListings = new ArrayList<>();
 		PagedResource<SellerListing> res;
 		do {
-			res = this.getSellerListings(r);
+			res = this.getSellerListings(sellerListingRequest);
 			sellerListings.addAll(res.getItems());
-			r.setPage(r.getPage() + 1);
+			sellerListingRequest.setPage(sellerListingRequest.getPage() + 1);
 		} while (res.getNextLink() != null);
 		return sellerListings;
 	}
@@ -67,7 +68,17 @@ public interface SellerListingService {
 	 * @return the created seller listing.
 	 * @throws IOException indicates IO exception.
 	 */
-	SellerListing createListingForRequestedEvent(CreateSellerListingRequest r) throws IOException;
+	SellerListing createListingForRequestedEvent(CreateSellerListingForRequestedEventRequest createSellerListingForRequestedEventRequest) throws IOException;
+
+	/**
+	 * Create a seller listing.
+	 *
+	 * @param eventId the event ID.
+	 * @param r the request.
+	 * @return the created seller listing.
+	 * @throws IOException
+	 */
+	SellerListing createListing(Long eventId, CreateSellerListingRequest createSellerListingRequest) throws IOException;
 
 	/**
 	 * Get a seller listing by external ID.

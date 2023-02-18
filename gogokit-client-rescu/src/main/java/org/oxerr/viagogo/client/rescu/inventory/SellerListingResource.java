@@ -67,12 +67,29 @@ public interface SellerListingResource {
 	 *
 	 * @param newSellerListing PostRequestedEventSellerListingRequest
 	 * @return {@link SellerListing}
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates IO exception
 	 */
 	@POST
 	@Path("/sellerlistings")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	SellerListing createListingForRequestedEvent(CreateSellerListingRequest newSellerListing) throws ViagogoException, IOException;
+	SellerListing createListingForRequestedEvent(CreateSellerListingRequest createSellerListingRequest) throws ViagogoException, IOException;
+
+	/**
+	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/Sales_Delete">Create a seller listing</a>
+	 *
+	 * @param eventId the event ID.
+	 * @param createSellerListingRequest the request.
+	 * @return the created seller listing.
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates IO exception
+	 */
+	@POST
+	@Path("/events/{eventId}/sellerlistings")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	SellerListing createListing(@PathParam("eventId") Long eventId, CreateSellerListingRequest createSellerListingRequest) throws ViagogoException, IOException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_GetByExternalListingId">Get a seller listing by external ID</a>

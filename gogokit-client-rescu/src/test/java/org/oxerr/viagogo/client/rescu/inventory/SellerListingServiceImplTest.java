@@ -25,7 +25,7 @@ import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
 import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
-import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
 import org.oxerr.viagogo.model.request.inventory.EventRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.VenueRequest;
@@ -83,7 +83,7 @@ class SellerListingServiceImplTest {
 	@Disabled("Token is required")
 	void testCreateListingForRequestedEvent() throws IOException {
 		// given
-		var cslr = new CreateSellerListingRequest();
+		var cslr = new CreateSellerListingForRequestedEventRequest();
 		cslr.setTicketPrice(Money.of("5000", "USD"));
 		cslr.setSeating(new Seating("S1", "R1", "1", "5"));
 		cslr.setTicketType("TicketMasterMobile");

@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.rescu.inventory;
 import java.io.IOException;
 
 import org.oxerr.viagogo.client.inventory.SellerListingService;
+import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
@@ -22,20 +23,25 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
-	public PagedResource<SellerListing> getSellerListings(SellerListingRequest r) throws IOException {
+	public PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
 		return this.sellerListingsResource.getSellerListings(
-			r.getEventId(),
-			r.getRequestedEventId(),
-			r.getPage(),
-			r.getPageSize(),
-			r.getUpdatedSince(),
-			r.getSort()
+			sellerListingRequest.getEventId(),
+			sellerListingRequest.getRequestedEventId(),
+			sellerListingRequest.getPage(),
+			sellerListingRequest.getPageSize(),
+			sellerListingRequest.getUpdatedSince(),
+			sellerListingRequest.getSort()
 		);
 	}
 
 	@Override
-	public SellerListing createListingForRequestedEvent(CreateSellerListingRequest newSellerListing) throws IOException {
-		return this.sellerListingsResource.createListingForRequestedEvent(newSellerListing);
+	public SellerListing createListingForRequestedEvent(CreateSellerListingForRequestedEventRequest createSellerListingForRequestedEventRequest) throws IOException {
+		return this.sellerListingsResource.createListingForRequestedEvent(createSellerListingForRequestedEventRequest);
+	}
+
+	@Override
+	public SellerListing createListing(Long eventId, CreateSellerListingRequest createSellerListingRequest) throws IOException {
+		return this.sellerListingsResource.createListing(eventId, createSellerListingRequest);
 	}
 
 	@Override
