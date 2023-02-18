@@ -92,7 +92,7 @@ class SellerListingServiceImplTest {
 		cslr.setExternalId("1");
 		cslr.setNotes("test");
 
-		cslr.setEvent(new EventRequest("Hamilton (NY)", OffsetDateTime.parse("2023-06-22T00:00:00Z")));
+		cslr.setEvent(new EventRequest("Hamilton (NY)", OffsetDateTime.parse("2023-06-22T00:00:00Z").toLocalDateTime()));
 
 		String venueName = "Richard Rodgers Theatre";
 		String venueCity = "New York";

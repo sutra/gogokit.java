@@ -42,7 +42,7 @@ class SellerEventServiceImplTest {
 		SellerEvent existingSellerEvent = sellerEvents.getItems().get(0);
 		assertNotNull(existingSellerEvent);
 
-		var event = new EventRequest(existingSellerEvent.getName(), existingSellerEvent.getStartDate());
+		var event = new EventRequest(existingSellerEvent.getName(), existingSellerEvent.getStartDate().toLocalDateTime());
 		var venue = new VenueRequest(existingSellerEvent.getVenue().getName(), existingSellerEvent.getVenue().getCity());
 		var country = new CountryRequest(existingSellerEvent.getVenue().getCountry().getCode());
 
