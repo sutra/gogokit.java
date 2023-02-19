@@ -1,20 +1,11 @@
 package org.oxerr.viagogo.model.request.catalog;
 
 import java.io.Serializable;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.oxerr.viagogo.model.Link;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
@@ -42,52 +33,19 @@ public class EventRequest implements Serializable {
 
 	private Integer genreId;
 
-	public static EventRequest from(HALLink link) {
-		URI uri = URI.create(link.getHref());
-		Map<String, List<String>> params = Pattern.compile("&")
-			.splitAsStream(uri.getQuery())
-			.map(s -> Arrays.copyOf(s.split("=", 2), 2))
-			.collect(Collectors.groupingBy(s -> decode(s[0]), Collectors.mapping(s -> decode(s[1]), Collectors.toList())));
+	public static EventRequest from(HALLink halLink) {
+		Link link = new Link(halLink);
 		EventRequest r = new EventRequest();
-		r.setPage(getFirstAsInteger(params, "page"));
-		r.setPageSize(getFirstAsInteger(params, "page_size"));
-		r.setSort(getFirst(params, "sort").orElse(null));
-		r.setMinResourceVersion(getFirstAsLong(params, "min_resource_version"));
-		r.setCountryCode(getFirstAsString(params, "country_code"));
-		r.setLatitude(getFirstAsDouble(params, "latitude"));
-		r.setLongitude(getFirstAsDouble(params, "longitude"));
-		r.setMaxDistanceInMeters(getFirstAsInteger(params, "max_distance_in_meters"));
-		r.setGenreId(getFirstAsInteger(params, "genre_id"));
+		r.setPage(link.getFirstAsInteger("page"));
+		r.setPageSize(link.getFirstAsInteger("page_size"));
+		r.setSort(link.getFirstAsString("sort"));
+		r.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
+		r.setCountryCode(link.getFirstAsString("country_code"));
+		r.setLatitude(link.getFirstAsDouble("latitude"));
+		r.setLongitude(link.getFirstAsDouble("longitude"));
+		r.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
+		r.setGenreId(link.getFirstAsInteger("genre_id"));
 		return r;
-	}
-
-	private static Optional<String> getFirst(Map<String, List<String>> params, String name) {
-		return Optional.ofNullable(params.get(name))
-			.orElseGet(Collections::emptyList)
-			.stream()
-			.findFirst();
-	}
-
-	private static String getFirstAsString(Map<String, List<String>> params, String name) {
-		return getFirst(params, name).orElse(null);
-	}
-
-	private static Long getFirstAsLong(Map<String, List<String>> params, String name) {
-		return getFirst(params, name).map(Long::parseLong).orElse(null);
-	}
-
-	private static Integer getFirstAsInteger(Map<String, List<String>> params, String name) {
-		return getFirst(params, name).map(Integer::parseInt).orElse(null);
-	}
-
-	private static Double getFirstAsDouble(Map<String, List<String>> params, String name) {
-		return getFirst(params, name).map(Double::parseDouble).orElse(null);
-	}
-
-	private static String decode(final String encoded) {
-		return Optional.ofNullable(encoded)
-			.map(e -> URLDecoder.decode(e, StandardCharsets.UTF_8))
-			.orElse(null);
 	}
 
 	public Integer getPage() {

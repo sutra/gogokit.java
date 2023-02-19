@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.oxerr.viagogo.client.catalog.EventService;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
 import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.request.catalog.EventRequest;
@@ -38,13 +40,13 @@ class EventServiceTest {
 
 	private final Logger log = LogManager.getLogger();
 
+	private final EventService eventService = RescuViagogoClientTest.getClient().getEventService();
+
 	@Test
 	@Disabled("Token is required")
 	void testGetEvents() throws ViagogoException, IOException {
-		var client = RescuViagogoClientTest.getClient();
-
 		// when
-		PagedResource<Event> events = client.getEventService().getEvents(new EventRequest());
+		PagedResource<Event> events = eventService.getEvents(new EventRequest());
 
 		// then
 		assertNotNull(events);
@@ -74,7 +76,7 @@ class EventServiceTest {
 		assertEquals("https://www.stubhub.com/a-tribute-to-abba-southbank-tickets-2-25-2023/event/132533943/", event.getWebPageLink().getHref());
 
 		// when
-		events = client.getEventService().getEvents(events.getNextLink());
+		events = eventService.getEvents(events.getNextLink());
 
 		// then
 		assertNotNull(events);
@@ -95,8 +97,6 @@ class EventServiceTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetAllEvents() throws ViagogoException, IOException {
-		var client = RescuViagogoClientTest.getClient();
-
 		AtomicLong counter = new AtomicLong();
 
 		EventRequest eventRequest = new EventRequest();
@@ -109,7 +109,7 @@ class EventServiceTest {
 			.withExponentialBackoff()
 			.build();
 
-		var events = client.getEventService().getEvents(eventRequest);
+		var events = eventService.getEvents(eventRequest);
 
 		while(events.getNextLink() != null) {
 			log.info("events.self: {}", Optional.ofNullable(events.getSelfLink()).map(HALLink::getHref).orElse(null));
@@ -122,7 +122,7 @@ class EventServiceTest {
 
 			var next = events.getNextLink();
 			Callable<PagedResource<Event>> callable = () -> {
-				return client.getEventService().getEvents(next);
+				return eventService.getEvents(next);
 			};
 
 			try {
@@ -147,7 +147,6 @@ class EventServiceTest {
 	@Test
 	@Disabled("Token is required")
 	void testSearchEvents() throws ViagogoException, IOException {
-		var client = RescuViagogoClientTest.getClient();
 		var q = "The Chicks";
 		var zoneId = ZoneId.of("America/Los_Angeles");
 		var dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
@@ -155,7 +154,7 @@ class EventServiceTest {
 		SearchEventRequest r = new SearchEventRequest();
 		r.setQ(q);
 		r.setDateLocal(dateLocal);
-		PagedResource<Event> events = client.getEventService().searchEvents(r);
+		PagedResource<Event> events = eventService.searchEvents(r);
 		assertNotNull(events);
 		for (var event : events.getItems()) {
 			log.info(
@@ -175,6 +174,56 @@ class EventServiceTest {
 		assertEquals(151369736L, event.getId());
 		assertEquals("The Chicks", event.getName());
 		assertEquals("2023-05-03T20:00-07:00", event.getStartDate().toString());
+	}
+
+	@Test
+	@Disabled("Token is required")
+	void testSearchFirst() throws ViagogoException, IOException {
+		var q = "The";
+		var dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
+		log.info("dateLocal: {}", dateLocal);
+
+		SearchEventRequest r = new SearchEventRequest();
+		r.setQ(q);
+		r.setDateLocal(dateLocal);
+
+		Optional<Event> first = eventService.searchFirst(r, t -> t.getName().equals("The Chicks"));
+		assertEquals("The Chicks", first.get().getName());
+	}
+
+	@Test
+	@Disabled("Token is required")
+	void testSearchAll() throws ViagogoException, IOException {
+		var q = "The";
+		var dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
+		log.info("dateLocal: {}", dateLocal);
+
+		SearchEventRequest r = new SearchEventRequest();
+		r.setQ(q);
+		r.setDateLocal(dateLocal);
+
+		List<Event> allMatched = eventService.searchAll(r, event -> {
+			log.info(
+				"[Event] ID: {}, start date: {}, name: {}, venue: {}, {}",
+				event.getId(),
+				event.getStartDate(),
+				event.getName(),
+				event.getVenue().getName(),
+				event.getVenue().getCity()
+			);
+			return event.getName().equals("Legends - The Home of Football");
+		});
+		assertEquals(64, allMatched.size());
+		for (var event : allMatched) {
+			log.info(
+				"[Event] ID: {}, start date: {}, name: {}, venue: {}, {}",
+				event.getId(),
+				event.getStartDate(),
+				event.getName(),
+				event.getVenue().getName(),
+				event.getVenue().getCity()
+			);
+		}
 	}
 
 }

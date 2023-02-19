@@ -27,16 +27,16 @@ public class PagedResource<T extends Serializable> extends Resource {
 	@EmbeddedResource
 	private List<T> items;
 
-	@Link
+	@Link("next")
 	private HALLink nextLink;
 
-	@Link
+	@Link("prev")
 	private HALLink prevLink;
 
-	@Link
+	@Link("first")
 	private HALLink firstLink;
 
-	@Link
+	@Link("last")
 	private HALLink lastLink;
 
 	public Integer getTotalItems() {

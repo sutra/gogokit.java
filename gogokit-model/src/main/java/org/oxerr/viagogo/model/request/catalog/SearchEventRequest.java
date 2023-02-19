@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.oxerr.viagogo.model.Link;
+
+import io.openapitools.jackson.dataformat.hal.HALLink;
 
 public class SearchEventRequest implements Serializable {
 
@@ -31,9 +34,27 @@ public class SearchEventRequest implements Serializable {
 
 	private Double longitude;
 
-	private Integer maxDistanceInmeters;
+	private Integer maxDistanceInMeters;
 
 	private Integer genreId;
+
+	public static SearchEventRequest from(HALLink halLink) {
+		Link link = new Link(halLink);
+		SearchEventRequest r = new SearchEventRequest();
+		r.setQ(link.getFirstAsString("q"));
+		r.setDateLocal(link.getFirstAsLocalDateTime("dateLocal"));
+		r.setPage(link.getFirstAsInteger("page"));
+		r.setPageSize(link.getFirstAsInteger("page_size"));
+		r.setUpdatedSince(link.getFirstAsInstant("updated_since"));
+		r.setSort(link.getFirstAsString("sort"));
+		r.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
+		r.setCountryCode(link.getFirstAsString("country_code"));
+		r.setLatitude(link.getFirstAsDouble("latitude"));
+		r.setLongitude(link.getFirstAsDouble("longitude"));
+		r.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
+		r.setGenreId(link.getFirstAsInteger("genre_id"));
+		return r;
+	}
 
 	public SearchEventRequest() {
 	}
@@ -123,12 +144,12 @@ public class SearchEventRequest implements Serializable {
 		this.longitude = longitude;
 	}
 
-	public Integer getMaxDistanceInmeters() {
-		return maxDistanceInmeters;
+	public Integer getMaxDistanceInMeters() {
+		return maxDistanceInMeters;
 	}
 
-	public void setMaxDistanceInmeters(Integer maxDistanceInmeters) {
-		this.maxDistanceInmeters = maxDistanceInmeters;
+	public void setMaxDistanceInMeters(Integer maxDistanceInMeters) {
+		this.maxDistanceInMeters = maxDistanceInMeters;
 	}
 
 	public Integer getGenreId() {

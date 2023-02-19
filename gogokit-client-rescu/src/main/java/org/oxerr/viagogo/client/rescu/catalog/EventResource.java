@@ -62,7 +62,7 @@ public interface EventResource {
 	 * @param countryCode Filters results to only include events located in the specified country.
 	 * @param latitude When provided with longitude and distance filters events returned to ones within the specified distance of the lat/long.
 	 * @param longitude When provided with latitude and distance filters events returned to ones within the specified distance of the lat/long.
-	 * @param maxDistanceInmeters When provided with latitude and longitude filters events returned to ones within the specified distance of the lat/long.
+	 * @param maxDistanceInMeters When provided with latitude and longitude filters events returned to ones within the specified distance of the lat/long.
 	 * @param genreId Filters results to only include events for the specified genre id.
 	 * @return events.
 	 */
@@ -79,7 +79,7 @@ public interface EventResource {
 		@QueryParam("country_code") String countryCode,
 		@QueryParam("latitude") Double latitude,
 		@QueryParam("longitude") Double longitude,
-		@QueryParam("max_distance_in_meters") Integer maxDistanceInmeters,
+		@QueryParam("max_distance_in_meters") Integer maxDistanceInMeters,
 		@QueryParam("genre_id") Integer genreId
 	) throws ViagogoException, IOException;
 
