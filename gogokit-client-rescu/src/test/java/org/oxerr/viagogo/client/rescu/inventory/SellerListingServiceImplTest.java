@@ -161,7 +161,7 @@ class SellerListingServiceImplTest {
 
 
 	@Test
-//	@Disabled("Token is required")
+	@Disabled("Token is required")
 	void testCreateListing() throws IOException {
 		// given
 		final String externalId = "1";
@@ -239,7 +239,7 @@ class SellerListingServiceImplTest {
 	}
 
 	@Test
-	@Disabled("Delete all seller listings")
+	@Disabled("Token is required")
 	void testGetSellerListingByExternalListingId() {
 		var externalListingId = "1626048103687655433";
 		var sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId);

@@ -6,10 +6,20 @@ public class DeliveryMethod implements Serializable {
 
 	private static final long serialVersionUID = 2023021801L;
 
+	/**
+	 * The delivery method identifier.
+	 */
 	private Integer id;
 
+	/**
+	 * The localised name of the delivery method.
+	 */
 	private String name;
 
+	/**
+	 * The type of delivery method.
+	 * Can be {@code ETicket}, {@code Post} or {@code Pickup].
+	 */
 	private String type;
 
 	public Integer getId() {

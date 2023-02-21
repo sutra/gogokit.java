@@ -65,7 +65,7 @@ public interface SellerListingResource {
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_CreateListingForRequestedEvent">Create a seller listing for a requested event</a>
 	 *
-	 * @param newSellerListing PostRequestedEventSellerListingRequest
+	 * @param createSellerListingRequest PostRequestedEventSellerListingRequest
 	 * @return {@link SellerListing}
 	 * @throws ViagogoException indicates business exception
 	 * @throws IOException indicates IO exception
