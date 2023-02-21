@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.lang3.time.StopWatch;
@@ -70,14 +71,15 @@ class SellerListingServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetAllSellerListingsOfOneEvent() throws IOException {
-		var eventId = 150538531L;
+		var eventId = 150471162L;
 		var sellerListings = sellerListingService.getAllSellerListings(eventId);
 		assertNotNull(sellerListings);
-		sellerListings.stream()
-			.sorted((a, b) -> a.getSeating().compareTo(b.getSeating()))
-			.forEach(listing -> {
-				print(listing);
-			});
+		var listings = sellerListings.stream()
+			.sorted((a, b) -> a.getSeating().compareTo(b.getSeating())).collect(Collectors.toList());
+		int i = 0;
+		for (var listing : listings) {
+			print(++i, listing);
+		}
 	}
 
 	@Test
@@ -245,7 +247,7 @@ class SellerListingServiceImplTest {
 		var sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId);
 		assertNotNull(sellerListing);
 		sellerListing.getSeating();
-		this.print(sellerListing);
+		this.print(1, sellerListing);
 	}
 
 	@Test
@@ -308,19 +310,24 @@ class SellerListingServiceImplTest {
 		}
 	}
 
-	private void print(SellerListing listing) {
+	private void print(int num, SellerListing listing) {
 		var event = listing.getEvent();
 		var seating = listing.getSeating();
+
 		log.info(
-			"L{}({}) {}: E{} {}@{} {} {}",
-			listing.getId(),
-			listing.getExternalId(),
-			listing.getTicketPrice(),
-			event.getId(),
-			event.getName(),
-			event.getStartDate(),
-			seating,
-			listing.getNumberOfTickets()
+			"{} {}({})\t{} | Row {} | Seat {}-{}\t{}\t{}\tE{} {}@{}",
+			() -> StringUtils.leftPad(String.valueOf(num), 2),
+			listing::getId,
+			listing::getExternalId,
+			() -> StringUtils.leftPad(seating.getSection(), 5),
+			() -> StringUtils.leftPad(seating.getRow(), 2),
+			seating::getSeatFrom,
+			seating::getSeatTo,
+			() -> StringUtils.leftPad(listing.getNumberOfTickets().toString(), 2),
+			listing::getTicketPrice,
+			event::getId,
+			event::getName,
+			event::getStartDate
 		);
 	}
 

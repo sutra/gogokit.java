@@ -5,6 +5,9 @@ import java.time.Instant;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.oxerr.viagogo.model.Link;
+
+import io.openapitools.jackson.dataformat.hal.HALLink;
 
 public class SellerListingRequest implements Serializable {
 
@@ -38,6 +41,17 @@ public class SellerListingRequest implements Serializable {
 	 * {@code resource_version}, {@code orticket_availability_date}.
 	 */
 	private String sort;
+
+	public static SellerListingRequest from(HALLink halLink) {
+		Link link = new Link(halLink);
+		SellerListingRequest r = new SellerListingRequest();
+		r.setEventId(link.getFirstAsLong("event_id"));
+		r.setRequestedEventId(link.getFirstAsString("requested_event_id"));
+		r.setPage(link.getFirstAsInteger("page"));
+		r.setPageSize(link.getFirstAsInteger("page_size"));
+		r.setUpdatedSince(link.getFirstAsInstant("updated_since"));
+		return r;
+	}
 
 	public SellerListingRequest() {
 	}

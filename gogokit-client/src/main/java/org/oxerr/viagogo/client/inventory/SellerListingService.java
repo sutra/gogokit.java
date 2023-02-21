@@ -10,6 +10,8 @@ import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
+import io.openapitools.jackson.dataformat.hal.HALLink;
+
 public interface SellerListingService {
 
 	/**
@@ -30,6 +32,10 @@ public interface SellerListingService {
 	 */
 	PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest) throws IOException;
 
+	default PagedResource<SellerListing> getSellerListings(HALLink link) throws IOException {
+		return this.getSellerListings(SellerListingRequest.from(link));
+	}
+
 	/**
 	 * List all seller listings.
 	 *
@@ -38,13 +44,15 @@ public interface SellerListingService {
 	 * @throws IOException indicates IO exception.
 	 */
 	default List<SellerListing> getAllSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
-		List<SellerListing> sellerListings = new ArrayList<>();
-		PagedResource<SellerListing> res;
-		do {
-			res = this.getSellerListings(sellerListingRequest);
-			sellerListings.addAll(res.getItems());
-			sellerListingRequest.setPage(sellerListingRequest.getPage() + 1);
-		} while (res.getNextLink() != null);
+		var pagedSellerListings = this.getSellerListings(sellerListingRequest);
+		var sellerListings = new ArrayList<SellerListing>(pagedSellerListings.getTotalItems());
+		sellerListings.addAll(pagedSellerListings.getItems());
+
+		while (pagedSellerListings.getNextLink() != null) {
+			pagedSellerListings = this.getSellerListings(pagedSellerListings.getNextLink());
+			sellerListings.addAll(pagedSellerListings.getItems());
+		}
+
 		return sellerListings;
 	}
 
