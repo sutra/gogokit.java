@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
 import org.oxerr.viagogo.client.rescu.ViagogoException;
@@ -46,6 +47,36 @@ public interface EventResource {
 		@QueryParam("max_distance_in_meters") Integer maxDistanceInmeters,
 		@QueryParam("genre_id") Integer genreId
 	) throws ViagogoException, IOException;
+
+	/**
+	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_GetEventByExternalEventId">
+	 * Get an event on the viagogo platform using an identifier from an external platform.
+	 * </a>
+	 *
+	 * @param platform The name of the external platform. Can be legacy_stubhub
+	 * @param externalEventId The event identifier from the external platform.
+	 * @return the event.
+	 */
+	@GET
+	@Path("/external_mappings/{platform}/{externalEventId}")
+	Event getEventByExternalEventId(@PathParam("platform") String platform, @PathParam("externalEventId") Long externalEventId);
+
+	/**
+	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_GetEvent">Get an event</a>
+	 * 
+	 * <p>Note that the eventID being passed can already be merged with
+	 * another event. And in this case, details of the new event will be
+	 * returned, if a different eventId is returned then it means that the
+	 * event has been merged with the returned event. Also inside _embedded
+	 * field of the response, a mapping between the original eventId
+	 * and new eventId will be provided.
+	 * </p>
+	 * @param eventId The event identifier.
+	 * @return the event.
+	 */
+	@GET
+	@Path("/{eventId}")
+	Event getEvent(@PathParam("eventId") Long eventId);
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_SearchEvents">Search events</a>

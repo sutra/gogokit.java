@@ -146,6 +146,24 @@ class EventServiceTest {
 
 	@Test
 	@Disabled("Token is required")
+	void testGetEventByExternalEventId() throws IOException {
+		long externalEventId = 104683510L;
+		var event = this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId);
+		assertNotNull(event);
+		log.info("event: {} {} {}", event.getId(), event.getName(), event.getStartDate());
+	}
+
+	@Test
+	@Disabled("Token is required")
+	void testGetEvent() throws IOException {
+		long eventId  = 4502151L;
+		var event = this.eventService.getEvent(eventId);
+		assertNotNull(event);
+		log.info("event: {} {}", event.getName(), event.getStartDate());
+	}
+
+	@Test
+	@Disabled("Token is required")
 	void testSearchEvents() throws ViagogoException, IOException {
 		var q = "The Chicks";
 		var zoneId = ZoneId.of("America/Los_Angeles");

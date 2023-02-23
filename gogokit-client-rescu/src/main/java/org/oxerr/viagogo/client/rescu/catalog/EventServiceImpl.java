@@ -33,6 +33,16 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
+	public Event getEventByExternalEventId(String platform, Long externalEventId) throws IOException {
+		return this.eventResource.getEventByExternalEventId(platform, externalEventId);
+	}
+
+	@Override
+	public Event getEvent(Long eventId) throws IOException {
+		return this.eventResource.getEvent(eventId);
+	}
+
+	@Override
 	public PagedResource<Event> searchEvents(SearchEventRequest r) throws IOException {
 		return this.eventResource.searchEvents(
 			r.getQ(),
