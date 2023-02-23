@@ -14,6 +14,9 @@ import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
 import org.oxerr.viagogo.client.sale.SaleService;
 import org.oxerr.viagogo.model.response.sale.Sale;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 class SaleServiceImplTest {
 
 	private final Logger log = LogManager.getLogger();
@@ -27,7 +30,14 @@ class SaleServiceImplTest {
 		Integer saleId = 512171600;
 		Sale sale = this.saleService.getSale(saleId);
 		assertNotNull(sale);
-		log.info("sale: {}", ToStringBuilder.reflectionToString(sale, ToStringStyle.MULTI_LINE_STYLE));
+		log.info("sale: {}", () -> {
+			try {
+				return new ObjectMapper().findAndRegisterModules().writeValueAsString(sale);
+			} catch (JsonProcessingException e) {
+				log.error("{}", e.getMessage(), e);
+				return null;
+			}
+		});
 	}
 
 }

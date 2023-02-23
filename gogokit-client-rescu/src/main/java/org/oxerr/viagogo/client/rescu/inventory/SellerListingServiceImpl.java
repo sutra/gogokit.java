@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.client.rescu.inventory;
 
 import java.io.IOException;
+import java.time.Instant;
 
 import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
@@ -20,6 +21,11 @@ public class SellerListingServiceImpl implements SellerListingService {
 	@Override
 	public SellerListing getSellerListing(Long listingId) throws IOException {
 		return this.sellerListingsResource.getSellerListing(listingId);
+	}
+
+	@Override
+	public PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince) throws IOException {
+		return this.sellerListingsResource.getSellerListingsRecentUpdates(updatedSince);
 	}
 
 	@Override

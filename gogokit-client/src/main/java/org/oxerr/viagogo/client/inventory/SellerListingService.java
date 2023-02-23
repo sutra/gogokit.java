@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.client.inventory;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,19 @@ public interface SellerListingService {
 	 * @throws IOException indicates IO exception.
 	 */
 	SellerListing getSellerListing(Long listingId) throws IOException;
+
+	/**
+	 * List seller listings (recent updates)
+	 *
+	 * <p>List seller listings for the authenticated user
+	 * that have been created or updated over a certain period of time.</p>
+	 *
+	 * @param updatedSince Filters the response to only return items
+	 * that have been updated since the given timestamp
+	 * @return recent updates
+	 * @throws IOException indicates IO exception.
+	 */
+	PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince) throws IOException;
 
 	/**
 	 * List seller listings.

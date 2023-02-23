@@ -49,6 +49,11 @@ public class CachedSellerListingsService implements SellerListingService {
 	}
 
 	@Override
+	public PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince) throws IOException {
+		return this.sellerListingsService.getSellerListingsRecentUpdates(updatedSince);
+	}
+
+	@Override
 	public PagedResource<SellerListing> getSellerListings(SellerListingRequest r) throws IOException {
 		return this.sellerListingsService.getSellerListings(r);
 	}

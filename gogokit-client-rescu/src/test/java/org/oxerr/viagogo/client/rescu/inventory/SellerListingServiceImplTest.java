@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +50,23 @@ class SellerListingServiceImplTest {
 		var sellerListing = this.sellerListingService.getSellerListing(listingId);
 		assertNotNull(sellerListing);
 		log.info("{}", ToStringBuilder.reflectionToString(sellerListingService, ToStringStyle.MULTI_LINE_STYLE));
+	}
+
+	@Test
+	@Disabled("Token is required")
+	void testGetSellerListingsRecentUpdates() throws IOException {
+		var updatedSince = Instant.now().minus(1, ChronoUnit.HOURS);
+		var recentUpdates = this.sellerListingService.getSellerListingsRecentUpdates(updatedSince);
+		log.info("total items: {}", recentUpdates.getTotalItems());
+
+		for (var item : recentUpdates.getItems()) {
+			log.info(
+				"external ID: {}, created at: {}, updated at: {}",
+				item.getExternalId(),
+				item.getCreatedAt(),
+				item.getUpdatedAt()
+			);
+		}
 	}
 
 	@Test

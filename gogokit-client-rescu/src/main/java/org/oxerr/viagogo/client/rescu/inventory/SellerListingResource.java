@@ -26,10 +26,28 @@ public interface SellerListingResource {
 	 *
 	 * @param listingId the listing ID.
 	 * @return the seller listing of the specified listing ID.
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates IO exception
 	 */
 	@GET
 	@Path("/sellerlistings/{listingId}")
-	SellerListing getSellerListing(@PathParam("listingId") Long listingId);
+	SellerListing getSellerListing(@PathParam("listingId") Long listingId) throws ViagogoException, IOException;
+
+	/**
+	 * List seller listings (recent updates)
+	 *
+	 * <p>List seller listings for the authenticated user
+	 * that have been created or updated over a certain period of time.</p>
+	 *
+	 * @param updatedSince Filters the response to only return items
+	 * that have been updated since the given timestamp
+	 * @return recent updates
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates IO exception
+	 */
+	@GET
+	@Path("/sellerlistings/recentupdates")
+	PagedResource<SellerListing> getSellerListingsRecentUpdates(@QueryParam("updated_since") Instant updatedSince) throws ViagogoException, IOException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_GetSellerListings">List seller listings</a>
