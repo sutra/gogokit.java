@@ -11,6 +11,6 @@ public interface SellerEventService {
 
 	PagedResource<SellerEvent> getSellerEvents(SellerEventRequest r) throws IOException;
 
-	SellerEvent createSellerEvent(CreateSellerEventRequest r);
+	SellerEvent createSellerEvent(CreateSellerEventRequest r) throws IOException;
 
 }
