@@ -27,7 +27,7 @@ public interface SellerListingResource {
 	 * @param listingId the listing ID.
 	 * @return the seller listing of the specified listing ID.
 	 * @throws ViagogoException indicates business exception
-	 * @throws IOException indicates IO exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@GET
 	@Path("/sellerlistings/{listingId}")
@@ -43,7 +43,7 @@ public interface SellerListingResource {
 	 * that have been updated since the given timestamp
 	 * @return recent updates
 	 * @throws ViagogoException indicates business exception
-	 * @throws IOException indicates IO exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@GET
 	@Path("/sellerlistings/recentupdates")
@@ -67,7 +67,7 @@ public interface SellerListingResource {
 	 * {@code resource_version}, {@code orticket_availability_date}.
 	 * @return seller listings
 	 * @throws ViagogoException indicates business exception
-	 * @throws IOException indicates IO exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@GET
 	@Path("/sellerlistings")
@@ -86,7 +86,7 @@ public interface SellerListingResource {
 	 * @param createSellerListingRequest PostRequestedEventSellerListingRequest
 	 * @return {@link SellerListing}
 	 * @throws ViagogoException indicates business exception
-	 * @throws IOException indicates IO exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@POST
 	@Path("/sellerlistings")
@@ -101,7 +101,7 @@ public interface SellerListingResource {
 	 * @param createSellerListingRequest the request.
 	 * @return the created seller listing.
 	 * @throws ViagogoException indicates business exception
-	 * @throws IOException indicates IO exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@POST
 	@Path("/events/{eventId}/sellerlistings")
@@ -114,10 +114,12 @@ public interface SellerListingResource {
 	 *
 	 * @param externalListingId the external listing ID.
 	 * @return the seller listing.
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@GET
 	@Path("/externalsellerlistings/{externalListingId}")
-	SellerListing getSellerListingByExternalId(@PathParam("externalListingId") String externalListingId);
+	SellerListing getSellerListingByExternalId(@PathParam("externalListingId") String externalListingId) throws ViagogoException, IOException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/inventory#operation/SellerListings_DeleteListingByExternalListingId">Delete a seller listing by external ID</a>
@@ -127,9 +129,11 @@ public interface SellerListingResource {
 	 *
 	 * @param externalId An identifier that has been assigned to the listing in an
 	 *                   external inventory management system.
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@DELETE
 	@Path("/externalsellerlistings/{externalId}")
-	void deleteListingByExternalListingId(@PathParam("externalId") String externalId) throws IOException;
+	void deleteListingByExternalListingId(@PathParam("externalId") String externalId) throws ViagogoException, IOException;
 
 }

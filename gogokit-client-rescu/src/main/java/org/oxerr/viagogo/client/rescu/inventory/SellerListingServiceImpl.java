@@ -2,6 +2,7 @@ package org.oxerr.viagogo.client.rescu.inventory;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Optional;
 
 import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
@@ -9,6 +10,8 @@ import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
+
+import si.mazi.rescu.HttpStatusIOException;
 
 public class SellerListingServiceImpl implements SellerListingService {
 
@@ -19,8 +22,16 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing getSellerListing(Long listingId) throws IOException {
-		return this.sellerListingsResource.getSellerListing(listingId);
+	public Optional<SellerListing> getSellerListing(Long listingId) throws IOException {
+		try {
+			return Optional.ofNullable(this.sellerListingsResource.getSellerListing(listingId));
+		} catch (HttpStatusIOException e) {
+			if (e.getHttpStatusCode() == 404) {
+				return Optional.empty();
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	@Override
@@ -51,8 +62,16 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing getSellerListingByExternalId(String externalListingId) {
-		return this.sellerListingsResource.getSellerListingByExternalId(externalListingId);
+	public Optional<SellerListing> getSellerListingByExternalId(String externalListingId) throws IOException {
+		try {
+			return Optional.ofNullable(this.sellerListingsResource.getSellerListingByExternalId(externalListingId));
+		} catch (HttpStatusIOException e) {
+			if (e.getHttpStatusCode() == 404) {
+				return Optional.empty();
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	@Override

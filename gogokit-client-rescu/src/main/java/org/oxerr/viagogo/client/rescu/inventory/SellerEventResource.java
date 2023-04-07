@@ -30,6 +30,8 @@ public interface SellerEventResource {
 	 * containing {@code id}, {@code number_of_tickets},
 	 * 	{@code orresource_version}.
 	 * @return events with listings that belong to the authenticated user.
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates I/O exception
 	 */
 	@GET
 	PagedResource<SellerEvent> getSellerEvents(
@@ -39,9 +41,17 @@ public interface SellerEventResource {
 		@QueryParam("sort") String sort
 	) throws ViagogoException, IOException;
 
+	/**
+	 * Creates seller event.
+	 *
+	 * @param r the {@link CreateSellerEventRequest}
+	 * @return the seller event.
+	 * @throws ViagogoException indicates business exception
+	 * @throws IOException indicates I/O exception
+	 */
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	SellerEvent createSellerEvent(CreateSellerEventRequest r);
+	SellerEvent createSellerEvent(CreateSellerEventRequest r) throws ViagogoException, IOException;
 
 }

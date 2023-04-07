@@ -132,7 +132,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5000").compareTo(sl1.getTicketPrice().getAmount()));
 
 		// when: get
-		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId());
+		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5000").compareTo(sellerListing1.getTicketPrice().getAmount()));
@@ -162,7 +162,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5001").compareTo(sl2.getTicketPrice().getAmount()));
 
 		// when: get again
-		var sellerListing2 = sellerListingService.getSellerListing(sl1.getId());
+		var sellerListing2 = sellerListingService.getSellerListing(sl1.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5001").compareTo(sellerListing2.getTicketPrice().getAmount()));
@@ -208,7 +208,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5000").compareTo(sl1.getTicketPrice().getAmount()));
 
 		// when: get
-		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId());
+		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5000").compareTo(sellerListing1.getTicketPrice().getAmount()));
@@ -239,7 +239,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5001").compareTo(sl2.getTicketPrice().getAmount()));
 
 		// when: get again
-		var sellerListing2 = sellerListingService.getSellerListing(sl2.getId());
+		var sellerListing2 = sellerListingService.getSellerListing(sl2.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5001").compareTo(sellerListing2.getTicketPrice().getAmount()));
@@ -261,10 +261,9 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSellerListingByExternalListingId() {
+	void testGetSellerListingByExternalListingId() throws IOException {
 		var externalListingId = "1626048103687655433";
-		var sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId);
-		assertNotNull(sellerListing);
+		var sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId).get();
 		sellerListing.getSeating();
 		this.print(1, sellerListing);
 	}

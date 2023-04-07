@@ -27,7 +27,7 @@ public class SellerEventServiceImpl implements SellerEventService {
 	}
 
 	@Override
-	public SellerEvent createSellerEvent(CreateSellerEventRequest r) {
+	public SellerEvent createSellerEvent(CreateSellerEventRequest r) throws IOException {
 		return this.sellerEventResource.createSellerEvent(r);
 	}
 

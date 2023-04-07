@@ -21,7 +21,7 @@ public interface EventService {
 	 *
 	 * @param eventRequest the request.
 	 * @return the events.
-	 * @throws IOException indicates I/O exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	PagedResource<Event> getEvents(EventRequest eventRequest) throws IOException;
 
@@ -36,24 +36,25 @@ public interface EventService {
 	 * Can be {@code legacy_stubhub}.
 	 * @param externalEventId The event identifier from the external platform.
 	 * @return the event.
+	 * @throws IOException indicates any I/O exception.
 	 */
-	Event getEventByExternalEventId(String platform, Long externalEventId) throws IOException;
+	Optional<Event> getEventByExternalEventId(String platform, Long externalEventId) throws IOException;
 
 	/**
 	 * Get an event.
 	 *
 	 * @param eventId The event identifier.
 	 * @return the event.
-	 * @throws IOException indicates I/O exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
-	Event getEvent(Long eventId) throws IOException;
+	Optional<Event> getEvent(Long eventId) throws IOException;
 
 	/**
 	 * Search events.
 	 *
 	 * @param searchEventRequest the request.
 	 * @return the events.
-	 * @throws IOException indicates I/O exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	PagedResource<Event> searchEvents(SearchEventRequest searchEventRequest) throws IOException;
 

@@ -1,12 +1,15 @@
 package org.oxerr.viagogo.client.rescu.catalog;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.oxerr.viagogo.client.catalog.EventService;
 import org.oxerr.viagogo.model.request.catalog.EventRequest;
 import org.oxerr.viagogo.model.request.catalog.SearchEventRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.catalog.Event;
+
+import si.mazi.rescu.HttpStatusIOException;
 
 public class EventServiceImpl implements EventService {
 
@@ -33,13 +36,29 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Event getEventByExternalEventId(String platform, Long externalEventId) throws IOException {
-		return this.eventResource.getEventByExternalEventId(platform, externalEventId);
+	public Optional<Event> getEventByExternalEventId(String platform, Long externalEventId) throws IOException {
+		try {
+			return Optional.ofNullable(this.eventResource.getEventByExternalEventId(platform, externalEventId));
+		} catch (HttpStatusIOException e) {
+			if (e.getHttpStatusCode() == 404) {
+				return Optional.empty();
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	@Override
-	public Event getEvent(Long eventId) throws IOException {
-		return this.eventResource.getEvent(eventId);
+	public Optional<Event> getEvent(Long eventId) throws IOException {
+		try {
+			return Optional.ofNullable(this.eventResource.getEvent(eventId));
+		} catch (HttpStatusIOException e) {
+			if (e.getHttpStatusCode() == 404) {
+				return Optional.empty();
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	@Override

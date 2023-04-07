@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
@@ -20,9 +21,9 @@ public interface SellerListingService {
 	 *
 	 * @param listingId the listing ID.
 	 * @return the seller listing of the specified listing ID.
-	 * @throws IOException indicates IO exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
-	SellerListing getSellerListing(Long listingId) throws IOException;
+	Optional<SellerListing> getSellerListing(Long listingId) throws IOException;
 
 	/**
 	 * List seller listings (recent updates)
@@ -33,7 +34,7 @@ public interface SellerListingService {
 	 * @param updatedSince Filters the response to only return items
 	 * that have been updated since the given timestamp
 	 * @return recent updates
-	 * @throws IOException indicates IO exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince) throws IOException;
 
@@ -42,7 +43,7 @@ public interface SellerListingService {
 	 *
 	 * @param r the request.
 	 * @return the seller listings.
-	 * @throws IOException indicates IO exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest) throws IOException;
 
@@ -55,7 +56,7 @@ public interface SellerListingService {
 	 *
 	 * @param r the request.
 	 * @return the seller listings.
-	 * @throws IOException indicates IO exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	default List<SellerListing> getAllSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
 		var pagedSellerListings = this.getSellerListings(sellerListingRequest);
@@ -75,7 +76,7 @@ public interface SellerListingService {
 	 *
 	 * @param eventId the event ID.
 	 * @return the seller listings.
-	 * @throws IOException indicates IO exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	default List<SellerListing> getAllSellerListings(Long eventId) throws IOException {
 		SellerListingRequest r = new SellerListingRequest(eventId);
@@ -88,7 +89,7 @@ public interface SellerListingService {
 	 *
 	 * @param r the request.
 	 * @return the created seller listing.
-	 * @throws IOException indicates IO exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	SellerListing createListingForRequestedEvent(CreateSellerListingForRequestedEventRequest createSellerListingForRequestedEventRequest) throws IOException;
 
@@ -98,7 +99,7 @@ public interface SellerListingService {
 	 * @param eventId the event ID.
 	 * @param r the request.
 	 * @return the created seller listing.
-	 * @throws IOException
+	 * @throws IOException indicates any I/O exception.
 	 */
 	SellerListing createListing(Long eventId, CreateSellerListingRequest createSellerListingRequest) throws IOException;
 
@@ -110,8 +111,9 @@ public interface SellerListingService {
 	 * </p>
 	 * @param externalListingId the external ID.
 	 * @return the seller listing.
+	 * @throws IOException indicates any I/O exception.
 	 */
-	SellerListing getSellerListingByExternalId(String externalListingId);
+	Optional<SellerListing> getSellerListingByExternalId(String externalListingId) throws IOException;
 
 	/**
 	 * Delete a seller listing by external ID.
@@ -121,7 +123,7 @@ public interface SellerListingService {
 	 * </p>
 	 * 
 	 * @param externalId the external ID.
-	 * @throws IOException indicates IO exception.
+	 * @throws IOException indicates any I/O exception.
 	 */
 	void deleteListingByExternalListingId(String externalId) throws IOException;
 

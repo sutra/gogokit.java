@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.cached.inventory;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +45,7 @@ public class CachedSellerListingsService implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing getSellerListing(Long listingId) throws IOException {
+	public Optional<SellerListing> getSellerListing(Long listingId) throws IOException {
 		return this.sellerListingsService.getSellerListing(listingId);
 	}
 
@@ -99,7 +100,7 @@ public class CachedSellerListingsService implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing getSellerListingByExternalId(String externalListingId) {
+	public Optional<SellerListing> getSellerListingByExternalId(String externalListingId) throws IOException {
 		return this.sellerListingsService.getSellerListingByExternalId(externalListingId);
 	}
 

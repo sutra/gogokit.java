@@ -1,7 +1,5 @@
 package org.oxerr.viagogo.client.rescu.sale;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,8 +24,7 @@ class SaleServiceImplTest {
 	@Disabled("Token is required")
 	void testGetSale() throws IOException {
 		Integer saleId = 512171600;
-		Sale sale = this.saleService.getSale(saleId);
-		assertNotNull(sale);
+		Sale sale = this.saleService.getSale(saleId).get();
 		log.info("sale: {}", () -> {
 			try {
 				return new ObjectMapper().findAndRegisterModules().writeValueAsString(sale);
