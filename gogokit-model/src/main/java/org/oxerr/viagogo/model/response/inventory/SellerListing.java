@@ -365,4 +365,9 @@ public class SellerListing extends Resource {
 		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
+	@Override
+	public String toString() {
+		return String.format("seller listing id=%s(externalId=%s)", this.id, this.externalId);
+	}
+
 }
