@@ -73,7 +73,7 @@ class SellerListingServiceImplTest {
 	@Disabled("Token is required")
 	void testGetSellerListings() throws ViagogoException, IOException {
 		var r = new SellerListingRequest();
-		r.setPageSize(1);
+		r.setPageSize(10_000); // seems the maximum page size is 10_000
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		var sellerListings = sellerListingService.getSellerListings(r);
@@ -81,6 +81,8 @@ class SellerListingServiceImplTest {
 		assertNotNull(sellerListings);
 
 		log.info("[{}]Total items: {}", stopWatch, sellerListings.getTotalItems());
+
+		log.info("Next link: {}", sellerListings.getNextLink().getHref());
 
 		for (SellerListing l : sellerListings.getItems()) {
 			log.info(l.getSelfLink().getHref());
