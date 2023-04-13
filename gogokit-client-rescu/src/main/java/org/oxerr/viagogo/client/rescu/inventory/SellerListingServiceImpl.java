@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.oxerr.viagogo.client.inventory.SellerListingService;
+import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
@@ -25,7 +26,7 @@ public class SellerListingServiceImpl implements SellerListingService {
 	public Optional<SellerListing> getSellerListing(Long listingId) throws IOException {
 		try {
 			return Optional.ofNullable(this.sellerListingsResource.getSellerListing(listingId));
-		} catch (HttpStatusIOException e) {
+		} catch (ViagogoException | HttpStatusIOException e) {
 			if (e.getHttpStatusCode() == 404) {
 				return Optional.empty();
 			} else {
@@ -65,7 +66,7 @@ public class SellerListingServiceImpl implements SellerListingService {
 	public Optional<SellerListing> getSellerListingByExternalId(String externalListingId) throws IOException {
 		try {
 			return Optional.ofNullable(this.sellerListingsResource.getSellerListingByExternalId(externalListingId));
-		} catch (HttpStatusIOException e) {
+		} catch (ViagogoException | HttpStatusIOException e) {
 			if (e.getHttpStatusCode() == 404) {
 				return Optional.empty();
 			} else {

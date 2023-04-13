@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.rescu.sale;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.client.sale.SaleService;
 import org.oxerr.viagogo.model.response.sale.Sale;
 
@@ -20,7 +21,7 @@ public class SaleServiceImpl implements SaleService {
 	public Optional<Sale> getSale(Integer saleId) throws IOException {
 		try {
 			return Optional.ofNullable(this.saleResource.getSale(saleId));
-		} catch (HttpStatusIOException e) {
+		} catch (ViagogoException | HttpStatusIOException e) {
 			if (e.getHttpStatusCode() == 404) {
 				return Optional.empty();
 			} else {

@@ -2,6 +2,7 @@ package org.oxerr.viagogo.client.rescu.catalog;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -150,6 +151,13 @@ class EventServiceTest {
 		long externalEventId = 104683510L;
 		var event = this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).get();
 		log.info("event: {} {} {}", event.getId(), event.getName(), event.getStartDate());
+	}
+
+	@Test
+	@Disabled("Token is required")
+	void testGetEventByExternalEventIdNotExists() throws IOException {
+		long externalEventId = 1L;
+		assertTrue(this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).isEmpty());
 	}
 
 	@Test

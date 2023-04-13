@@ -17,11 +17,11 @@ public interface SaleResource {
 	 *
 	 * @param saleId the sale ID.
 	 * @return the sale.
-	 * @throws ViagogoException indicates business exception
 	 * @throws IOException indicates I/O exception
+	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
 	@Path("/sales/{saleId}")
-	Sale getSale(@PathParam("saleId") Integer saleId) throws ViagogoException, IOException;
+	Sale getSale(@PathParam("saleId") Integer saleId) throws IOException, ViagogoException;
 
 }

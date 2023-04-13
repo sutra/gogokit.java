@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.oxerr.viagogo.client.catalog.EventService;
+import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.request.catalog.EventRequest;
 import org.oxerr.viagogo.model.request.catalog.SearchEventRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
@@ -39,7 +40,7 @@ public class EventServiceImpl implements EventService {
 	public Optional<Event> getEventByExternalEventId(String platform, Long externalEventId) throws IOException {
 		try {
 			return Optional.ofNullable(this.eventResource.getEventByExternalEventId(platform, externalEventId));
-		} catch (HttpStatusIOException e) {
+		} catch (ViagogoException | HttpStatusIOException e) {
 			if (e.getHttpStatusCode() == 404) {
 				return Optional.empty();
 			} else {
@@ -52,7 +53,7 @@ public class EventServiceImpl implements EventService {
 	public Optional<Event> getEvent(Long eventId) throws IOException {
 		try {
 			return Optional.ofNullable(this.eventResource.getEvent(eventId));
-		} catch (HttpStatusIOException e) {
+		} catch (ViagogoException | HttpStatusIOException e) {
 			if (e.getHttpStatusCode() == 404) {
 				return Optional.empty();
 			} else {

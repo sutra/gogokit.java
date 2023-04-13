@@ -33,8 +33,8 @@ public interface EventResource {
 	 * @param maxDistanceInmeters When provided with latitude and longitude filters events returned to ones within the specified distance of the lat/long.
 	 * @param genreId Filters results to only include events for the specified genre id.
 	 * @return all events on the viagogo platform.
-	 * @throws ViagogoException indicates business exception
 	 * @throws IOException indicates I/O exception
+	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
 	PagedResource<Event> getEvents(
@@ -48,7 +48,7 @@ public interface EventResource {
 		@QueryParam("longitude") Double longitude,
 		@QueryParam("max_distance_in_meters") Integer maxDistanceInmeters,
 		@QueryParam("genre_id") Integer genreId
-	) throws ViagogoException, IOException;
+	) throws IOException, ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_GetEventByExternalEventId">
@@ -58,15 +58,15 @@ public interface EventResource {
 	 * @param platform The name of the external platform. Can be legacy_stubhub
 	 * @param externalEventId The event identifier from the external platform.
 	 * @return the event.
-	 * @throws ViagogoException indicates business exception
 	 * @throws IOException indicates I/O exception
+	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
 	@Path("/external_mappings/{platform}/{externalEventId}")
 	Event getEventByExternalEventId(
 		@PathParam("platform") String platform,
 		@PathParam("externalEventId") Long externalEventId
-	) throws ViagogoException, IOException;
+	) throws IOException, ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_GetEvent">Get an event</a>
@@ -80,12 +80,12 @@ public interface EventResource {
 	 * </p>
 	 * @param eventId The event identifier.
 	 * @return the event.
-	 * @throws ViagogoException indicates business exception
 	 * @throws IOException indicates I/O exception
+	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
 	@Path("/{eventId}")
-	Event getEvent(@PathParam("eventId") Long eventId) throws ViagogoException, IOException;
+	Event getEvent(@PathParam("eventId") Long eventId) throws IOException, ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/catalog#operation/Events_SearchEvents">Search events</a>
@@ -105,8 +105,8 @@ public interface EventResource {
 	 * @param maxDistanceInMeters When provided with latitude and longitude filters events returned to ones within the specified distance of the lat/long.
 	 * @param genreId Filters results to only include events for the specified genre id.
 	 * @return events.
-	 * @throws ViagogoException indicates business exception
 	 * @throws IOException indicates I/O exception
+	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
 	@Path("/search")
@@ -123,6 +123,6 @@ public interface EventResource {
 		@QueryParam("longitude") Double longitude,
 		@QueryParam("max_distance_in_meters") Integer maxDistanceInMeters,
 		@QueryParam("genre_id") Integer genreId
-	) throws ViagogoException, IOException;
+	) throws IOException, ViagogoException;
 
 }
