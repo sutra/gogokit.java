@@ -41,7 +41,7 @@ public interface SellerListingService {
 	/**
 	 * List seller listings.
 	 *
-	 * @param r the request.
+	 * @param sellerListingRequest the request.
 	 * @return the seller listings.
 	 * @throws IOException indicates any I/O exception.
 	 */
@@ -54,7 +54,7 @@ public interface SellerListingService {
 	/**
 	 * List all seller listings.
 	 *
-	 * @param r the request.
+	 * @param sellerListingRequest the request.
 	 * @return the seller listings.
 	 * @throws IOException indicates any I/O exception.
 	 */
@@ -87,17 +87,19 @@ public interface SellerListingService {
 	/**
 	 * Create a seller listing for a requested event.
 	 *
-	 * @param r the request.
+	 * @param createSellerListingForRequestedEventRequest the request.
 	 * @return the created seller listing.
 	 * @throws IOException indicates any I/O exception.
 	 */
-	SellerListing createListingForRequestedEvent(CreateSellerListingForRequestedEventRequest createSellerListingForRequestedEventRequest) throws IOException;
+	SellerListing createListingForRequestedEvent(
+		CreateSellerListingForRequestedEventRequest
+			createSellerListingForRequestedEventRequest) throws IOException;
 
 	/**
 	 * Create a seller listing.
 	 *
 	 * @param eventId the event ID.
-	 * @param r the request.
+	 * @param createSellerListingRequest the request.
 	 * @return the created seller listing.
 	 * @throws IOException indicates any I/O exception.
 	 */

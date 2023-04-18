@@ -18,7 +18,7 @@ public class DeliveryMethod implements Serializable {
 
 	/**
 	 * The type of delivery method.
-	 * Can be {@code ETicket}, {@code Post} or {@code Pickup].
+	 * Can be {@code ETicket}, {@code Post} or {@code Pickup}.
 	 */
 	private String type;
 
