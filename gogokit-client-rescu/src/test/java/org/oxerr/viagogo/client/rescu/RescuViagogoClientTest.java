@@ -23,7 +23,7 @@ public class RescuViagogoClientTest {
 				LOG.warn("No resource found: {}", name);
 			}
 		} catch (IOException e) {
-			throw new java.lang.IllegalArgumentException("Read /viagogo.properties failed.");
+			throw new java.lang.IllegalArgumentException("Read " + name + " failed.");
 		}
 
 		var token = props.getProperty("token");
