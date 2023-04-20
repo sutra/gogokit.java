@@ -33,6 +33,9 @@ class SaleServiceImplTest {
 				return null;
 			}
 		});
+		log.info(
+			"Sale ID: {}, external listing ID: {}, event ID: {}, event start date: {}",
+			sale.getId(), sale.getExternalListingId(), sale.getEvent().getId(), sale.getEvent().getStartDate());
 	}
 
 }

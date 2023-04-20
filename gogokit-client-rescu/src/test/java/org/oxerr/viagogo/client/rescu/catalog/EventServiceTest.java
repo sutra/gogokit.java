@@ -165,7 +165,7 @@ class EventServiceTest {
 	void testGetEvent() throws IOException {
 		long eventId  = 4502151L;
 		var event = this.eventService.getEvent(eventId).get();
-		log.info("event: {} {}", event.getName(), event.getStartDate());
+		log.info("event: {} {} {}", event.getId(), event.getName(), event.getStartDate());
 	}
 
 	@Test
