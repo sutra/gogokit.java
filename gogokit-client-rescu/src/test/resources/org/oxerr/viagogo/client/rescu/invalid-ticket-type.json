@@ -1,0 +1,9 @@
+{
+	"code": "validation_failed",
+	"message": null,
+	"errors": {
+		"seller_listing.ticket_type": [
+			"Invalid ticket type"
+		]
+	}
+}

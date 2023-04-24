@@ -25,4 +25,14 @@ class ViagogoExceptionTest {
 		}
 	}
 
+	@Test
+	void testInvalidTicketType() throws StreamReadException, DatabindException, IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try (var src = this.getClass().getResourceAsStream("invalid-ticket-type.json")) {
+			var e = objectMapper.readValue(src, ViagogoException.class);
+			assertEquals("validation_failed", e.getCode());
+			assertEquals("Invalid ticket type", e.getErrors().get("seller_listing.ticket_type").get(0));
+		}
+	}
+
 }

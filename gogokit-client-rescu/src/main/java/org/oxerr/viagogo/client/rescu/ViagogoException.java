@@ -1,5 +1,6 @@
 package org.oxerr.viagogo.client.rescu;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +23,7 @@ public class ViagogoException extends HttpStatusExceptionSupport {
 
 	private final String code;
 
-	private final Map<String, String> errors;
+	private final Map<String, List<String>> errors;
 
 	public ViagogoException(
 		@JsonProperty("type") String type,
@@ -31,7 +32,7 @@ public class ViagogoException extends HttpStatusExceptionSupport {
 		@JsonProperty("traceId") String traceId,
 		@JsonProperty("code") String code,
 		@JsonProperty("message") String message,
-		@JsonProperty("errors") Map<String, String> errors
+		@JsonProperty("errors") Map<String, List<String>> errors
 	) {
 		super(StringUtils.defaultString(title, message));
 		this.type = type;
@@ -65,7 +66,7 @@ public class ViagogoException extends HttpStatusExceptionSupport {
 		return code;
 	}
 
-	public Map<String, String> getErrors() {
+	public Map<String, List<String>> getErrors() {
 		return errors;
 	}
 
