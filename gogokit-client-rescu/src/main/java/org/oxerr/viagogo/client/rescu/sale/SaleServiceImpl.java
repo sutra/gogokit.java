@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.client.rescu.sale;
 
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -22,7 +24,7 @@ public class SaleServiceImpl implements SaleService {
 		try {
 			return Optional.ofNullable(this.saleResource.getSale(saleId));
 		} catch (ViagogoException | HttpStatusIOException e) {
-			if (e.getHttpStatusCode() == 404) {
+			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
 				throw e;

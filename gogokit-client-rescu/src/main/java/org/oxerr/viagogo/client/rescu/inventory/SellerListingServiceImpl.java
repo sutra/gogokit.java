@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.client.rescu.inventory;
 
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
@@ -27,7 +29,7 @@ public class SellerListingServiceImpl implements SellerListingService {
 		try {
 			return Optional.ofNullable(this.sellerListingsResource.getSellerListing(listingId));
 		} catch (ViagogoException | HttpStatusIOException e) {
-			if (e.getHttpStatusCode() == 404) {
+			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
 				throw e;
@@ -67,7 +69,7 @@ public class SellerListingServiceImpl implements SellerListingService {
 		try {
 			return Optional.ofNullable(this.sellerListingsResource.getSellerListingByExternalId(externalListingId));
 		} catch (ViagogoException | HttpStatusIOException e) {
-			if (e.getHttpStatusCode() == 404) {
+			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
 				throw e;
@@ -77,7 +79,13 @@ public class SellerListingServiceImpl implements SellerListingService {
 
 	@Override
 	public void deleteListingByExternalListingId(String externalId) throws IOException {
-		this.sellerListingsResource.deleteListingByExternalListingId(externalId);
+		try {
+			this.sellerListingsResource.deleteListingByExternalListingId(externalId);
+		} catch (ViagogoException | HttpStatusIOException e) {
+			if (e.getHttpStatusCode() != NOT_FOUND.getStatusCode()) {
+				throw e;
+			}
+		}
 	}
 
 }

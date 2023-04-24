@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.client.rescu.catalog;
 
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -41,7 +43,7 @@ public class EventServiceImpl implements EventService {
 		try {
 			return Optional.ofNullable(this.eventResource.getEventByExternalEventId(platform, externalEventId));
 		} catch (ViagogoException | HttpStatusIOException e) {
-			if (e.getHttpStatusCode() == 404) {
+			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
 				throw e;
@@ -54,7 +56,7 @@ public class EventServiceImpl implements EventService {
 		try {
 			return Optional.ofNullable(this.eventResource.getEvent(eventId));
 		} catch (ViagogoException | HttpStatusIOException e) {
-			if (e.getHttpStatusCode() == 404) {
+			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
 				throw e;
