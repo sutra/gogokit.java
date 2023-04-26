@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -165,7 +166,7 @@ class EventServiceTest {
 	void testGetEvent() throws IOException {
 		long eventId  = 4502151L;
 		var event = this.eventService.getEvent(eventId).get();
-		log.info("event: {} {} {}", event.getId(), event.getName(), event.getStartDate());
+		log.info("event: {} {} {}({})", event.getId(), event.getName(), event.getStartDate(), event.getStartDate().withOffsetSameInstant(ZoneOffset.UTC).toInstant());
 	}
 
 	@Test
