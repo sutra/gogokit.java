@@ -40,6 +40,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.oxerr.rescu</groupId>
+			<artifactId>rescu-ext-singleton</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.evanlennick</groupId>
 			<artifactId>retry4j</artifactId>
 			<scope>test</scope>

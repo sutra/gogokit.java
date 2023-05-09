@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.rescu;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 
+import org.oxerr.rescu.ext.singleton.RestProxyFactorySingletonImpl;
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.catalog.EventService;
 import org.oxerr.viagogo.client.inventory.SellerEventService;
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.openapitools.jackson.dataformat.hal.HALMapper;
 import si.mazi.rescu.ClientConfig;
 import si.mazi.rescu.IRestProxyFactory;
+import si.mazi.rescu.RestProxyFactoryImpl;
 import si.mazi.rescu.serialization.jackson.DefaultJacksonObjectMapperFactory;
 import si.mazi.rescu.serialization.jackson.JacksonObjectMapperFactory;
 
@@ -77,7 +79,7 @@ public class RescuViagogoClient implements ViagogoClient {
 		clientConfig.addDefaultParam(HeaderParam.class, "Authorization", "Bearer " + token);
 		clientConfig.setJacksonObjectMapperFactory(jacksonObjectMapperFactory);
 
-		this.restProxyFactory = new RestProxyFactorySingletonImpl();
+		this.restProxyFactory = new RestProxyFactorySingletonImpl(new RestProxyFactoryImpl());
 
 		this.eventService = new EventServiceImpl(createProxy(EventResource.class));
 		this.sellerListingService = new SellerListingServiceImpl(createProxy(SellerListingResource.class));
