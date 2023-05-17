@@ -47,9 +47,9 @@ class SellerListingServiceImplTest {
 	@Disabled("Token is required")
 	void testGetSellerListing() throws IOException {
 		long listingId = 0L;
-		var sellerListing = this.sellerListingService.getSellerListing(listingId);
+		var sellerListing = this.sellerListingService.getSellerListing(listingId).get();
 		assertNotNull(sellerListing);
-		log.info("{}", ToStringBuilder.reflectionToString(sellerListingService, ToStringStyle.MULTI_LINE_STYLE));
+		log.info("{}", ToStringBuilder.reflectionToString(sellerListing, ToStringStyle.MULTI_LINE_STYLE));
 	}
 
 	@Test
