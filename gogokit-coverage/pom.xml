@@ -36,6 +36,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
+			<artifactId>gogokit-client-cached-redisson</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>gogokit-client-rescu</artifactId>
 			<version>${project.version}</version>
 		</dependency>

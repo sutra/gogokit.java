@@ -1,4 +1,4 @@
-package org.oxerr.viagogo.client.cached.inventory;
+package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.beans.Transient;
 import java.io.IOException;
