@@ -59,8 +59,8 @@ public interface SellerListingService {
 	 * @throws IOException indicates any I/O exception.
 	 */
 	default List<SellerListing> getAllSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
-		var pagedSellerListings = this.getSellerListings(sellerListingRequest);
-		var sellerListings = new ArrayList<SellerListing>(pagedSellerListings.getTotalItems());
+		PagedResource<SellerListing> pagedSellerListings = this.getSellerListings(sellerListingRequest);
+		List<SellerListing> sellerListings = new ArrayList<SellerListing>(pagedSellerListings.getTotalItems());
 		sellerListings.addAll(pagedSellerListings.getItems());
 
 		while (pagedSellerListings.getNextLink() != null) {

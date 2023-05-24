@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.oxerr.viagogo.client.rescu.RescuViagogoClient;
 import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
 import org.oxerr.viagogo.model.request.inventory.CountryRequest;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerEventRequest;
@@ -24,7 +25,7 @@ class SellerEventServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetSellerEvents() throws IOException {
-		var client = RescuViagogoClientTest.getClient();
+		RescuViagogoClient client = RescuViagogoClientTest.getClient();
 
 		PagedResource<SellerEvent> sellerEvents = client.getSellerEventService().getSellerEvents(new SellerEventRequest());
 		assertNotNull(sellerEvents);
@@ -36,15 +37,15 @@ class SellerEventServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testCreateSellerEvent() throws IOException {
-		var client = RescuViagogoClientTest.getClient();
+		RescuViagogoClient client = RescuViagogoClientTest.getClient();
 
-		var sellerEvents = client.getSellerEventService().getSellerEvents(new SellerEventRequest());
+		PagedResource<SellerEvent> sellerEvents = client.getSellerEventService().getSellerEvents(new SellerEventRequest());
 		SellerEvent existingSellerEvent = sellerEvents.getItems().get(0);
 		assertNotNull(existingSellerEvent);
 
-		var event = new EventRequest(existingSellerEvent.getName(), existingSellerEvent.getStartDate().toLocalDateTime());
-		var venue = new VenueRequest(existingSellerEvent.getVenue().getName(), existingSellerEvent.getVenue().getCity());
-		var country = new CountryRequest(existingSellerEvent.getVenue().getCountry().getCode());
+		EventRequest event = new EventRequest(existingSellerEvent.getName(), existingSellerEvent.getStartDate().toLocalDateTime());
+		VenueRequest venue = new VenueRequest(existingSellerEvent.getVenue().getName(), existingSellerEvent.getVenue().getCity());
+		CountryRequest country = new CountryRequest(existingSellerEvent.getVenue().getCountry().getCode());
 
 		CreateSellerEventRequest r = new CreateSellerEventRequest(event, venue, country);
 		SellerEvent createdSellerEvent = client.getSellerEventService().createSellerEvent(r);

@@ -1,5 +1,6 @@
 package org.oxerr.viagogo.model;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -63,7 +64,13 @@ public final class Link {
 
 	private static String decode(final String encoded) {
 		return Optional.ofNullable(encoded)
-			.map(e -> URLDecoder.decode(e, StandardCharsets.UTF_8))
+			.map(e -> {
+				try {
+					return URLDecoder.decode(e, StandardCharsets.UTF_8.name());
+				} catch (UnsupportedEncodingException ex) {
+					return e;
+				}
+			})
 			.orElse(null);
 	}
 

@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr</groupId>
 		<artifactId>oxerr-parent</artifactId>
-		<version>1.6.2</version>
+		<version>1.6.3</version>
 	</parent>
 	<groupId>org.oxerr.viagogo</groupId>
 	<artifactId>gogokit</artifactId>
@@ -20,9 +20,9 @@
 	<url>https://www.oxerr.org/gogokit</url>
 	<inceptionYear>2023</inceptionYear>
 	<properties>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
-		<ticket-inventory-support.version>0.0.1-SNAPSHOT</ticket-inventory-support.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<ticket-inventory-support.version>0.0.1</ticket-inventory-support.version>
 	</properties>
 	<modules>
 		<module>gogokit-model</module>

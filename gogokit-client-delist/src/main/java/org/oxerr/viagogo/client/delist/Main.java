@@ -34,7 +34,7 @@ public class Main implements AutoCloseable {
 	public void delist() {
 		PagedResource<SellerListing> listings = null;
 
-		var r = new SellerListingRequest();
+		SellerListingRequest r = new SellerListingRequest();
 		r.setPageSize(this.pageSize);
 
 		do {
@@ -51,7 +51,7 @@ public class Main implements AutoCloseable {
 	private void delist(PagedResource<SellerListing> listings) {
 		log.info("Left items: {}", listings.getTotalItems());
 
-		for (var item : listings.getItems()) {
+		for (SellerListing item : listings.getItems()) {
 			this.executorService.execute(() -> {
 				try {
 					this.client.getSellerListingService().deleteListingByExternalListingId(item.getExternalId());
@@ -86,9 +86,9 @@ public class Main implements AutoCloseable {
 	}
 
 	public static void main(String[] args) {
-		var token = args[0];
-		var pageSize = Integer.parseInt(args[1]);
-		try (var main = new Main(token, pageSize)) {
+		String token = args[0];
+		int pageSize = Integer.parseInt(args[1]);
+		try (Main main = new Main(token, pageSize)) {
 			main.delist();
 		}
 	}

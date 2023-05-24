@@ -17,8 +17,8 @@ class CreateSellerListingRequestTest {
 		boolean equals = new CreateSellerListingRequest().equals(new CreateSellerListingRequest());
 		assertTrue(equals);
 
-		var a = new CreateSellerListingRequest();
-		var b = new CreateSellerListingRequest();
+		CreateSellerListingRequest a = new CreateSellerListingRequest();
+		CreateSellerListingRequest b = new CreateSellerListingRequest();
 		b.setTicketPrice(new Money());
 
 		assertNotEquals(a.hashCode(), b.hashCode());

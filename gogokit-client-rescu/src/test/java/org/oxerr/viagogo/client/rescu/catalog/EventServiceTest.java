@@ -2,7 +2,7 @@ package org.oxerr.viagogo.client.rescu.catalog;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ class EventServiceTest {
 
 		assertEquals(0, events.getDeletedItems().size());
 		assertEquals(500, events.getItems().size());
-		var event = events.getItems().get(0);
+		Event event = events.getItems().get(0);
 		log.info("event.id: {}", event.getId());
 		log.info("event.name: {}", event.getName());
 		log.info("event.startDate: {}", event.getStartDate());
@@ -111,7 +111,7 @@ class EventServiceTest {
 			.withExponentialBackoff()
 			.build();
 
-		var events = eventService.getEvents(eventRequest);
+		PagedResource<Event> events = eventService.getEvents(eventRequest);
 
 		while(events.getNextLink() != null) {
 			log.info("events.self: {}", Optional.ofNullable(events.getSelfLink()).map(HALLink::getHref).orElse(null));
@@ -122,7 +122,7 @@ class EventServiceTest {
 			long count = counter.addAndGet(events.getItems().size());
 			log.info("count: {}", count);
 
-			var next = events.getNextLink();
+			HALLink next = events.getNextLink();
 			Callable<PagedResource<Event>> callable = () -> {
 				return eventService.getEvents(next);
 			};
@@ -150,7 +150,7 @@ class EventServiceTest {
 	@Disabled("Token is required")
 	void testGetEventByExternalEventId() throws IOException {
 		long externalEventId = 104683510L;
-		var event = this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).get();
+		Event event = this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).get();
 		log.info("event: {} {} {}", event.getId(), event.getName(), event.getStartDate());
 	}
 
@@ -158,30 +158,30 @@ class EventServiceTest {
 	@Disabled("Token is required")
 	void testGetEventByExternalEventIdNotExists() throws IOException {
 		long externalEventId = 1L;
-		assertTrue(this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).isEmpty());
+		assertFalse(this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).isPresent());
 	}
 
 	@Test
 	@Disabled("Token is required")
 	void testGetEvent() throws IOException {
 		long eventId  = 4502151L;
-		var event = this.eventService.getEvent(eventId).get();
+		Event event = this.eventService.getEvent(eventId).get();
 		log.info("event: {} {} {}({})", event.getId(), event.getName(), event.getStartDate(), event.getStartDate().withOffsetSameInstant(ZoneOffset.UTC).toInstant());
 	}
 
 	@Test
 	@Disabled("Token is required")
 	void testSearchEvents() throws ViagogoException, IOException {
-		var q = "The Chicks";
-		var zoneId = ZoneId.of("America/Los_Angeles");
-		var dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
+		String q = "The Chicks";
+		ZoneId zoneId = ZoneId.of("America/Los_Angeles");
+		LocalDateTime dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
 		log.info("dateLocal: {}", dateLocal);
 		SearchEventRequest r = new SearchEventRequest();
 		r.setQ(q);
 		r.setDateLocal(dateLocal);
 		PagedResource<Event> events = eventService.searchEvents(r);
 		assertNotNull(events);
-		for (var event : events.getItems()) {
+		for (Event event : events.getItems()) {
 			log.info(
 				"https://www.stubhub.com/E-{}, startDate: {}({}), WebPage: {}, Venue: {} {} {}",
 				event.getId(),
@@ -204,8 +204,8 @@ class EventServiceTest {
 	@Test
 	@Disabled("Token is required")
 	void testSearchFirst() throws ViagogoException, IOException {
-		var q = "The";
-		var dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
+		String q = "The";
+		LocalDateTime dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
 		log.info("dateLocal: {}", dateLocal);
 
 		SearchEventRequest r = new SearchEventRequest();
@@ -219,8 +219,8 @@ class EventServiceTest {
 	@Test
 	@Disabled("Token is required")
 	void testSearchAll() throws ViagogoException, IOException {
-		var q = "The";
-		var dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
+		String q = "The";
+		LocalDateTime dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
 		log.info("dateLocal: {}", dateLocal);
 
 		SearchEventRequest r = new SearchEventRequest();
@@ -239,7 +239,7 @@ class EventServiceTest {
 			return event.getName().equals("Legends - The Home of Football");
 		});
 		assertEquals(64, allMatched.size());
-		for (var event : allMatched) {
+		for (Event event : allMatched) {
 			log.info(
 				"[Event] ID: {}, start date: {}, name: {}, venue: {}, {}",
 				event.getId(),

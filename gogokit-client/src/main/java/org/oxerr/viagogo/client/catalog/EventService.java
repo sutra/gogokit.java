@@ -63,8 +63,8 @@ public interface EventService {
 	}
 
 	default List<Event> searchAll(SearchEventRequest searchEventRequest, Predicate<Event> predicate) throws IOException {
-		var pagedEvents = this.searchEvents(searchEventRequest);
-		var matched = new ArrayList<Event>(pagedEvents.getTotalItems());
+		PagedResource<Event> pagedEvents = this.searchEvents(searchEventRequest);
+		List<Event> matched = new ArrayList<Event>(pagedEvents.getTotalItems());
 		matched.addAll(pagedEvents.getItems().stream().filter(predicate).collect(Collectors.toList()));
 
 		while (pagedEvents.getNextLink() != null) {
@@ -76,10 +76,10 @@ public interface EventService {
 	}
 
 	default Optional<Event> searchFirst(SearchEventRequest searchEventRequest, Predicate<Event> predicate) throws IOException {
-		var pagedEvents = this.searchEvents(searchEventRequest);
-		var matched = this.findFirst(pagedEvents, predicate);
+		PagedResource<Event> pagedEvents = this.searchEvents(searchEventRequest);
+		Optional<Event> matched = this.findFirst(pagedEvents, predicate);
 
-		while (matched.isEmpty() && pagedEvents.getNextLink() != null) {
+		while (!matched.isPresent() && pagedEvents.getNextLink() != null) {
 			pagedEvents = this.searchEvents(pagedEvents.getNextLink());
 			matched = findFirst(pagedEvents, predicate);
 		}
@@ -88,7 +88,7 @@ public interface EventService {
 	}
 
 	default Optional<Event> findFirst(PagedResource<Event> pagedEvents, Predicate<Event> predicate) {
-		for (var event : pagedEvents.getItems()) {
+		for (Event event : pagedEvents.getItems()) {
 			if (predicate.test(event)) {
 				return Optional.of(event);
 			}

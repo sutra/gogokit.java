@@ -32,7 +32,7 @@ class EventTest {
 			.setSerializationInclusion(Include.NON_ABSENT)
 			.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-		var json = objectMapper.writeValueAsString(event);
+		String json = objectMapper.writeValueAsString(event);
 		assertNotNull(json);
 
 		log.info("json: {}", json);

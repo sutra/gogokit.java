@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import org.oxerr.viagogo.model.request.inventory.EventRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.VenueRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
+import org.oxerr.viagogo.model.response.catalog.Event;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
 class SellerListingServiceImplTest {
@@ -47,7 +49,7 @@ class SellerListingServiceImplTest {
 	@Disabled("Token is required")
 	void testGetSellerListing() throws IOException {
 		long listingId = 0L;
-		var sellerListing = this.sellerListingService.getSellerListing(listingId).get();
+		SellerListing sellerListing = this.sellerListingService.getSellerListing(listingId).get();
 		assertNotNull(sellerListing);
 		log.info("{}", ToStringBuilder.reflectionToString(sellerListing, ToStringStyle.MULTI_LINE_STYLE));
 	}
@@ -55,11 +57,11 @@ class SellerListingServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetSellerListingsRecentUpdates() throws IOException {
-		var updatedSince = Instant.now().minus(1, ChronoUnit.HOURS);
-		var recentUpdates = this.sellerListingService.getSellerListingsRecentUpdates(updatedSince);
+		Instant updatedSince = Instant.now().minus(1, ChronoUnit.HOURS);
+		PagedResource<SellerListing> recentUpdates = this.sellerListingService.getSellerListingsRecentUpdates(updatedSince);
 		log.info("total items: {}", recentUpdates.getTotalItems());
 
-		for (var item : recentUpdates.getItems()) {
+		for (SellerListing item : recentUpdates.getItems()) {
 			log.info(
 				"external ID: {}, created at: {}, updated at: {}",
 				item.getExternalId(),
@@ -72,11 +74,11 @@ class SellerListingServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetSellerListings() throws ViagogoException, IOException {
-		var r = new SellerListingRequest();
+		SellerListingRequest r = new SellerListingRequest();
 		r.setPageSize(10_000); // seems the maximum page size is 10_000
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		var sellerListings = sellerListingService.getSellerListings(r);
+		PagedResource<SellerListing> sellerListings = sellerListingService.getSellerListings(r);
 		stopWatch.stop();
 		assertNotNull(sellerListings);
 
@@ -92,13 +94,13 @@ class SellerListingServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetAllSellerListingsOfOneEvent() throws IOException {
-		var eventId = 150471162L;
-		var sellerListings = sellerListingService.getAllSellerListings(eventId);
+		long eventId = 150471162L;
+		List<SellerListing> sellerListings = sellerListingService.getAllSellerListings(eventId);
 		assertNotNull(sellerListings);
-		var listings = sellerListings.stream()
+		List<SellerListing> listings = sellerListings.stream()
 			.sorted((a, b) -> a.getSeating().compareTo(b.getSeating())).collect(Collectors.toList());
 		int i = 0;
-		for (var listing : listings) {
+		for (SellerListing listing : listings) {
 			print(++i, listing);
 		}
 	}
@@ -109,7 +111,7 @@ class SellerListingServiceImplTest {
 		// given
 		final String externalId = "1";
 
-		var cslr = new CreateSellerListingForRequestedEventRequest();
+		CreateSellerListingForRequestedEventRequest cslr = new CreateSellerListingForRequestedEventRequest();
 		cslr.setTicketPrice(Money.of("5000", "USD"));
 		cslr.setSeating(new Seating("S1", "R1", "1", "5"));
 		cslr.setTicketType("TicketMasterMobile");
@@ -134,7 +136,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5000").compareTo(sl1.getTicketPrice().getAmount()));
 
 		// when: get
-		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId()).get();
+		SellerListing sellerListing1 = sellerListingService.getSellerListing(sl1.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5000").compareTo(sellerListing1.getTicketPrice().getAmount()));
@@ -164,7 +166,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5001").compareTo(sl2.getTicketPrice().getAmount()));
 
 		// when: get again
-		var sellerListing2 = sellerListingService.getSellerListing(sl1.getId()).get();
+		SellerListing sellerListing2 = sellerListingService.getSellerListing(sl1.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5001").compareTo(sellerListing2.getTicketPrice().getAmount()));
@@ -192,7 +194,7 @@ class SellerListingServiceImplTest {
 		Long eventId1 = 151369736L;
 		Long eventId2 = 151369737L;
 
-		var cslr = new CreateSellerListingRequest();
+		CreateSellerListingRequest cslr = new CreateSellerListingRequest();
 		cslr.setTicketPrice(Money.of("5000", "USD"));
 		cslr.setSeating(new Seating("S1", "R1", "1", "5"));
 		cslr.setTicketType("TicketMasterMobile");
@@ -210,7 +212,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5000").compareTo(sl1.getTicketPrice().getAmount()));
 
 		// when: get
-		var sellerListing1 = sellerListingService.getSellerListing(sl1.getId()).get();
+		SellerListing sellerListing1 = sellerListingService.getSellerListing(sl1.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5000").compareTo(sellerListing1.getTicketPrice().getAmount()));
@@ -241,7 +243,7 @@ class SellerListingServiceImplTest {
 		assertEquals(0, new BigDecimal("5001").compareTo(sl2.getTicketPrice().getAmount()));
 
 		// when: get again
-		var sellerListing2 = sellerListingService.getSellerListing(sl2.getId()).get();
+		SellerListing sellerListing2 = sellerListingService.getSellerListing(sl2.getId()).get();
 
 		// then
 		assertEquals(0, new BigDecimal("5001").compareTo(sellerListing2.getTicketPrice().getAmount()));
@@ -264,8 +266,8 @@ class SellerListingServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetSellerListingByExternalListingId() throws IOException {
-		var externalListingId = "1626048103687655433";
-		var sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId).get();
+		String externalListingId = "1626048103687655433";
+		SellerListing sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId).get();
 		sellerListing.getSeating();
 		this.print(1, sellerListing);
 	}
@@ -282,7 +284,7 @@ class SellerListingServiceImplTest {
 
 		do {
 			try {
-				var r = new SellerListingRequest();
+				SellerListingRequest r = new SellerListingRequest();
 				r.setPage(page);
 				r.setPageSize(pageSize);
 				all = sellerListingService.getSellerListings(r);
@@ -299,7 +301,7 @@ class SellerListingServiceImplTest {
 			log.info("total items: {}, externalIds.size: {}", all.getTotalItems(), externalIds.size());
 		} while (all == null || all.getItems().size() > 0);
 
-		var executorService = Executors.newFixedThreadPool(100);
+		ExecutorService executorService = Executors.newFixedThreadPool(100);
 
 		for (String externalId : externalIds) {
 			log.trace("Deleting {}", externalId);
@@ -331,8 +333,8 @@ class SellerListingServiceImplTest {
 	}
 
 	private void print(int num, SellerListing listing) {
-		var event = listing.getEvent();
-		var seating = listing.getSeating();
+		Event event = listing.getEvent();
+		Seating seating = listing.getSeating();
 
 		log.info(
 			"{} {}({})\t{} | Row {} | Seat {}-{}\t{}\t{}\tE{} {}@{}",

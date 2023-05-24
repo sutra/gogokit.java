@@ -35,14 +35,14 @@ class JacksonOffsetDateTimeTest {
 	@Test
 	void testOffsetDateTime() throws JsonMappingException, JsonProcessingException {
 		// given
-		var content = "{\"start_date\": \"2023-05-03T20:00:00-07:00\"}";
+		String content = "{\"start_date\": \"2023-05-03T20:00:00-07:00\"}";
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 		objectMapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 
 		// when
-		var event = objectMapper.readValue(content, Event.class);
+		Event event = objectMapper.readValue(content, Event.class);
 
 		// then
 		log.info("startDate: {}", event.getStartDate());

@@ -18,7 +18,7 @@ class InstantDeserializerTest {
 	@Test
 	void testDateFormat() throws ParseException {
 		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX").withZone(ZoneId.systemDefault());
-		var s = fmt.format(Instant.now());
+		String s = fmt.format(Instant.now());
 		log.info("{}", s);
 
 		Instant instant = Instant.from(fmt.parse("2023-02-24T19:30:00+11:00"));

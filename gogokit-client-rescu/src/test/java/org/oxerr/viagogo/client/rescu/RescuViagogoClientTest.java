@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.rescu;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +17,7 @@ public class RescuViagogoClientTest {
 	public static RescuViagogoClient getClient() {
 		Properties props = new Properties();
 		String name = "/viagogo.properties";
-		try (var in = RescuViagogoClientTest.class.getResourceAsStream(name)) {
+		try (InputStream in = RescuViagogoClientTest.class.getResourceAsStream(name)) {
 			if (in != null) {
 				props.load(in);
 			} else {
@@ -26,7 +27,7 @@ public class RescuViagogoClientTest {
 			throw new java.lang.IllegalArgumentException("Read " + name + " failed.");
 		}
 
-		var token = props.getProperty("token");
+		String token = props.getProperty("token");
 		return new RescuViagogoClient(token);
 	}
 
