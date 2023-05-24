@@ -1,15 +1,15 @@
-package org.oxerr.viagogo.model.request;
+package org.oxerr.viagogo.model.request.inventory;
 
-import org.oxerr.viagogo.model.Event;
+import java.io.Serializable;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
-import org.oxerr.viagogo.model.Venue;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+public class CreateSellerListingRequest implements Serializable {
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class NewSellerListing {
+	private static final long serialVersionUID = 2023021301L;
 
 	private Money ticketPrice;
 
@@ -24,10 +24,6 @@ public class NewSellerListing {
 	private String externalId;
 
 	private String notes;
-
-	private Event event;
-
-	private Venue venue;
 
 	public Money getTicketPrice() {
 		return ticketPrice;
@@ -85,20 +81,24 @@ public class NewSellerListing {
 		this.notes = notes;
 	}
 
-	public Event getEvent() {
-		return event;
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 
-	public void setEvent(Event event) {
-		this.event = event;
-	}
-
-	public Venue getVenue() {
-		return venue;
-	}
-
-	public void setVenue(Venue venue) {
-		this.venue = venue;
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		CreateSellerListingRequest rhs = (CreateSellerListingRequest) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }
