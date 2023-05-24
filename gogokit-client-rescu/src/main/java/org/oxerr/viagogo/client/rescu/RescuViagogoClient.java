@@ -28,6 +28,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.openapitools.jackson.dataformat.hal.HALMapper;
 import si.mazi.rescu.ClientConfig;
 import si.mazi.rescu.IRestProxyFactory;
+import si.mazi.rescu.Interceptor;
 import si.mazi.rescu.RestProxyFactoryImpl;
 import si.mazi.rescu.serialization.jackson.DefaultJacksonObjectMapperFactory;
 import si.mazi.rescu.serialization.jackson.JacksonObjectMapperFactory;
@@ -48,11 +49,11 @@ public class RescuViagogoClient implements ViagogoClient {
 
 	private final SaleService saleService;
 
-	public RescuViagogoClient(String token) {
-		this("https://api.viagogo.net", token);
+	public RescuViagogoClient(String token, Interceptor... interceptors) {
+		this("https://api.viagogo.net", token, interceptors);
 	}
 
-	public RescuViagogoClient(String baseUrl, String token) {
+	public RescuViagogoClient(String baseUrl, String token, Interceptor... interceptors) {
 		this.baseUrl = baseUrl;
 
 		JacksonObjectMapperFactory jacksonObjectMapperFactory = new DefaultJacksonObjectMapperFactory() {
@@ -81,10 +82,10 @@ public class RescuViagogoClient implements ViagogoClient {
 
 		this.restProxyFactory = new RestProxyFactorySingletonImpl(new RestProxyFactoryImpl());
 
-		this.eventService = new EventServiceImpl(createProxy(EventResource.class));
-		this.sellerListingService = new SellerListingServiceImpl(createProxy(SellerListingResource.class));
-		this.sellerEventService = new SellerEventServiceImpl(createProxy(SellerEventResource.class));
-		this.saleService = new SaleServiceImpl(createProxy(SaleResource.class));
+		this.eventService = new EventServiceImpl(createProxy(EventResource.class, interceptors));
+		this.sellerListingService = new SellerListingServiceImpl(createProxy(SellerListingResource.class, interceptors));
+		this.sellerEventService = new SellerEventServiceImpl(createProxy(SellerEventResource.class, interceptors));
+		this.saleService = new SaleServiceImpl(createProxy(SaleResource.class, interceptors));
 	}
 
 	@Override
@@ -107,8 +108,8 @@ public class RescuViagogoClient implements ViagogoClient {
 		return this.saleService;
 	}
 
-	protected <I> I createProxy(Class<I> restInterface) {
-		return this.restProxyFactory.createProxy(restInterface, baseUrl, this.clientConfig);
+	protected <I> I createProxy(Class<I> restInterface, Interceptor... interceptors) {
+		return this.restProxyFactory.createProxy(restInterface, baseUrl, this.clientConfig, interceptors);
 	}
 
 }
