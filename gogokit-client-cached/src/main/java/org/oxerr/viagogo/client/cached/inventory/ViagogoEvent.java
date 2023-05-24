@@ -1,36 +1,30 @@
 package org.oxerr.viagogo.client.cached.inventory;
 
-import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.oxerr.ticket.inventory.support.Event;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
-public class Listing implements Serializable {
+public class ViagogoEvent extends Event<CreateSellerListingRequest, ViagogoListing> {
 
 	private static final long serialVersionUID = 2023031901L;
 
-	private String id;
-
 	private Long viagogoEventId;
 
-	private CreateSellerListingRequest request;
-
-	public Listing() {
+	public ViagogoEvent() {
+		this(null, null, null, Collections.emptyList());
 	}
 
-	public Listing(String id, Long viagogoEventId, CreateSellerListingRequest request) {
-		this.id = id;
-		this.viagogoEventId = viagogoEventId;
-		this.request = request;
+	public ViagogoEvent(String id, OffsetDateTime startDate, Long viagogoEventId) {
+		this(id, startDate, viagogoEventId, Collections.emptyList());
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+	public ViagogoEvent(String id, OffsetDateTime startDate, Long viagogoEventId, List<ViagogoListing> listings) {
+		super(id, startDate, listings);
 	}
 
 	public Long getViagogoEventId() {
@@ -39,14 +33,6 @@ public class Listing implements Serializable {
 
 	public void setViagogoEventId(Long viagogoEventId) {
 		this.viagogoEventId = viagogoEventId;
-	}
-
-	public CreateSellerListingRequest getRequest() {
-		return request;
-	}
-
-	public void setRequest(CreateSellerListingRequest request) {
-		this.request = request;
 	}
 
 	@Override
