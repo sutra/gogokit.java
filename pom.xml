@@ -16,7 +16,7 @@
 	<name>GogoKit</name>
 	<description>GogoKit - viagogo API Client Library for Java.</description>
 	<packaging>pom</packaging>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<url>https://www.oxerr.org/gogokit</url>
 	<inceptionYear>2023</inceptionYear>
 	<properties>
@@ -101,7 +101,7 @@
 			<dependency>
 				<groupId>org.oxerr.rescu</groupId>
 				<artifactId>rescu-ext-singleton</artifactId>
-				<version>0.0.1</version>
+				<version>0.0.8</version>
 			</dependency>
 			<dependency>
 				<groupId>org.oxerr.ticket.inventory.support</groupId>
