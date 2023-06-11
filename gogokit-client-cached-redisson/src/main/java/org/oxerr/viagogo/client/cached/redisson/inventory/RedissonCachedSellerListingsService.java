@@ -20,10 +20,11 @@ public class RedissonCachedSellerListingsService
 
 	public RedissonCachedSellerListingsService(
 		SellerListingService sellerListingsService,
-		RedissonClient redisson,
-		String keyPrefix
+		RedissonClient redissonClient,
+		String keyPrefix,
+		boolean create
 	) {
-		super(redisson, keyPrefix);
+		super(redissonClient, keyPrefix, create);
 		this.sellerListingsService = sellerListingsService;
 	}
 
