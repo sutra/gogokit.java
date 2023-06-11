@@ -13,14 +13,24 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 
 	public RedissonCachedViagogoClient(
 		ViagogoClient client,
-		RedissonClient redission,
+		RedissonClient redissionClient,
 		String keyPrefix
+	) {
+		this(client, redissionClient, keyPrefix, true);
+	}
+
+	public RedissonCachedViagogoClient(
+		ViagogoClient client,
+		RedissonClient redissionClient,
+		String keyPrefix,
+		boolean create
 	) {
 		this.client = client;
 		this.cachedSellerListingsService = new RedissonCachedSellerListingsService(
 			client.getSellerListingService(),
-			redission,
-			keyPrefix
+			redissionClient,
+			keyPrefix,
+			create
 		);
 	}
 
