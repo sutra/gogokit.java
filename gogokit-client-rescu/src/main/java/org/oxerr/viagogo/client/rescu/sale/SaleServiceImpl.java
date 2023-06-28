@@ -1,6 +1,6 @@
 package org.oxerr.viagogo.client.rescu.sale;
 
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
 import java.io.IOException;
 import java.util.Optional;
