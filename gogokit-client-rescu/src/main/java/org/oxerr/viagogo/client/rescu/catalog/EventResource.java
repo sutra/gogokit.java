@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-
 import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.catalog.Event;
+
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 
 @Path("/catalog/events")
 public interface EventResource {

@@ -1,8 +1,5 @@
 package org.oxerr.viagogo.client.rescu;
 
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PathParam;
-
 import org.oxerr.rescu.ext.singleton.RestProxyFactorySingletonImpl;
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.catalog.EventService;
@@ -26,6 +23,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.openapitools.jackson.dataformat.hal.HALMapper;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.PathParam;
 import si.mazi.rescu.ClientConfig;
 import si.mazi.rescu.IRestProxyFactory;
 import si.mazi.rescu.Interceptor;

@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo</groupId>
 		<artifactId>gogokit</artifactId>
-		<version>0.1.0</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>gogokit-model</artifactId>
 	<name>GogoKit Model</name>
