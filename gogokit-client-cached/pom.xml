@@ -9,31 +9,14 @@
 	<parent>
 		<groupId>org.oxerr.viagogo</groupId>
 		<artifactId>gogokit</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
+	<groupId>org.oxerr.viagogo.cached</groupId>
 	<artifactId>gogokit-client-cached</artifactId>
 	<name>GogoKit Client - Cached</name>
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.oxerr.ticket.inventory.support</groupId>
-			<artifactId>ticket-inventory-support-cached</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.mmazi</groupId>
-			<artifactId>rescu</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+	<packaging>pom</packaging>
+	<modules>
+		<module>gogokit-client-cached-core</module>
+		<module>gogokit-client-cached-redisson</module>
+	</modules>
 </project>

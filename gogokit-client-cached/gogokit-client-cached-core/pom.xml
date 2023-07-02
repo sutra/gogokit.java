@@ -7,32 +7,32 @@
 		https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.oxerr.viagogo</groupId>
-		<artifactId>gogokit</artifactId>
-		<version>1.0.0</version>
+		<groupId>org.oxerr.viagogo.cached</groupId>
+		<artifactId>gogokit-client-cached</artifactId>
+		<version>1.0.1</version>
 	</parent>
-	<artifactId>gogokit-client-cached-redisson</artifactId>
-	<name>GogoKit Client - Cached - Redisson</name>
+	<artifactId>gogokit-client-cached-core</artifactId>
+	<name>GogoKit Client - Cached - Core</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson</artifactId>
+			<groupId>org.oxerr.ticket.inventory.support.cached</groupId>
+			<artifactId>ticket-inventory-support-cached-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.oxerr.ticket.inventory.support</groupId>
-			<artifactId>ticket-inventory-support-cached-redisson</artifactId>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.github.mmazi</groupId>
 			<artifactId>rescu</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-cached</artifactId>
+			<groupId>org.oxerr.viagogo</groupId>
+			<artifactId>gogokit-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

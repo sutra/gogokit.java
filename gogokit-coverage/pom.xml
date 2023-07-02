@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo</groupId>
 		<artifactId>gogokit</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 	<artifactId>gogokit-coverage</artifactId>
 	<name>GogoKit Coverage</name>
@@ -31,22 +31,17 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-cached</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-cached-redisson</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>gogokit-client-rescu</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-delist</artifactId>
+			<groupId>org.oxerr.viagogo.cached</groupId>
+			<artifactId>gogokit-client-cached-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.oxerr.viagogo.cached</groupId>
+			<artifactId>gogokit-client-cached-redisson</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
