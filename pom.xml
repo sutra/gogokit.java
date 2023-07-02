@@ -23,14 +23,13 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<log4j.version>2.20.0</log4j.version>
-		<ticket-inventory-support.version>0.0.2</ticket-inventory-support.version>
+		<ticket-inventory-support.version>0.0.4</ticket-inventory-support.version>
 	</properties>
 	<modules>
 		<module>gogokit-model</module>
 		<module>gogokit-client</module>
 		<module>gogokit-client-cached</module>
 		<module>gogokit-client-rescu</module>
-		<module>gogokit-client-delist</module>
 		<module>gogokit-coverage</module>
 	</modules>
 	<build>
@@ -104,12 +103,12 @@
 				<version>0.0.9</version>
 			</dependency>
 			<dependency>
-				<groupId>org.oxerr.ticket.inventory.support</groupId>
-				<artifactId>ticket-inventory-support-cached</artifactId>
+				<groupId>org.oxerr.ticket.inventory.support.cached</groupId>
+				<artifactId>ticket-inventory-support-cached-core</artifactId>
 				<version>${ticket-inventory-support.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.oxerr.ticket.inventory.support</groupId>
+				<groupId>org.oxerr.ticket.inventory.support.cached</groupId>
 				<artifactId>ticket-inventory-support-cached-redisson</artifactId>
 				<version>${ticket-inventory-support.version}</version>
 			</dependency>

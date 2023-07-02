@@ -23,7 +23,7 @@
 			<artifactId>redisson</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.oxerr.ticket.inventory.support</groupId>
+			<groupId>org.oxerr.ticket.inventory.support.cached</groupId>
 			<artifactId>ticket-inventory-support-cached-redisson</artifactId>
 		</dependency>
 		<dependency>

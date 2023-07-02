@@ -35,11 +35,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-delist</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.oxerr.viagogo.cached</groupId>
 			<artifactId>gogokit-client-cached-core</artifactId>
 			<version>${project.version}</version>
