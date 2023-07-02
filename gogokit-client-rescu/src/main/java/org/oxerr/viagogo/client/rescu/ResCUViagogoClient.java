@@ -32,7 +32,7 @@ import si.mazi.rescu.RestProxyFactoryImpl;
 import si.mazi.rescu.serialization.jackson.DefaultJacksonObjectMapperFactory;
 import si.mazi.rescu.serialization.jackson.JacksonObjectMapperFactory;
 
-public class RescuViagogoClient implements ViagogoClient {
+public class ResCUViagogoClient implements ViagogoClient {
 
 	private final String baseUrl;
 
@@ -48,11 +48,11 @@ public class RescuViagogoClient implements ViagogoClient {
 
 	private final SaleService saleService;
 
-	public RescuViagogoClient(String token, Interceptor... interceptors) {
+	public ResCUViagogoClient(String token, Interceptor... interceptors) {
 		this("https://api.viagogo.net", token, interceptors);
 	}
 
-	public RescuViagogoClient(String baseUrl, String token, Interceptor... interceptors) {
+	public ResCUViagogoClient(String baseUrl, String token, Interceptor... interceptors) {
 		this.baseUrl = baseUrl;
 
 		JacksonObjectMapperFactory jacksonObjectMapperFactory = new DefaultJacksonObjectMapperFactory() {

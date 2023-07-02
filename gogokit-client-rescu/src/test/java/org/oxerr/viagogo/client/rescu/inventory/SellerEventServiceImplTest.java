@@ -8,8 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.oxerr.viagogo.client.rescu.RescuViagogoClient;
-import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
+import org.oxerr.viagogo.client.rescu.ResCUViagogoClient;
+import org.oxerr.viagogo.client.rescu.ResCUViagogoClientTest;
 import org.oxerr.viagogo.model.request.inventory.CountryRequest;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerEventRequest;
 import org.oxerr.viagogo.model.request.inventory.EventRequest;
@@ -25,7 +25,7 @@ class SellerEventServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testGetSellerEvents() throws IOException {
-		RescuViagogoClient client = RescuViagogoClientTest.getClient();
+		ResCUViagogoClient client = ResCUViagogoClientTest.getClient();
 
 		PagedResource<SellerEvent> sellerEvents = client.getSellerEventService().getSellerEvents(new SellerEventRequest());
 		assertNotNull(sellerEvents);
@@ -37,7 +37,7 @@ class SellerEventServiceImplTest {
 	@Test
 	@Disabled("Token is required")
 	void testCreateSellerEvent() throws IOException {
-		RescuViagogoClient client = RescuViagogoClientTest.getClient();
+		ResCUViagogoClient client = ResCUViagogoClientTest.getClient();
 
 		PagedResource<SellerEvent> sellerEvents = client.getSellerEventService().getSellerEvents(new SellerEventRequest());
 		SellerEvent existingSellerEvent = sellerEvents.getItems().get(0);

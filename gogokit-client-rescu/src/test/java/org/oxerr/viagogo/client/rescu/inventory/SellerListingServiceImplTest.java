@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
-import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
+import org.oxerr.viagogo.client.rescu.ResCUViagogoClientTest;
 import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
@@ -43,7 +43,7 @@ class SellerListingServiceImplTest {
 	private final Logger log = LogManager.getLogger();
 
 	private final SellerListingService sellerListingService
-		= RescuViagogoClientTest.getClient().getSellerListingService();;
+		= ResCUViagogoClientTest.getClient().getSellerListingService();;
 
 	@Test
 	@Disabled("Token is required")
