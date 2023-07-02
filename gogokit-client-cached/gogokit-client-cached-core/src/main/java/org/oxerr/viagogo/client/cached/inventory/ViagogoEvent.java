@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.ticket.inventory.support.Event;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
-public class ViagogoEvent extends Event<CreateSellerListingRequest, ViagogoListing> {
+public class ViagogoEvent extends Event<String, String, CreateSellerListingRequest, ViagogoListing> {
 
 	private static final long serialVersionUID = 2023031901L;
 

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.ticket.inventory.support.Listing;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
-public class ViagogoListing extends Listing<CreateSellerListingRequest> {
+public class ViagogoListing extends Listing<String, CreateSellerListingRequest> {
 
 	private static final long serialVersionUID = 2023031901L;
 
