@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.catalog.EventService;
-import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
+import org.oxerr.viagogo.client.rescu.ResCUViagogoClientTest;
 import org.oxerr.viagogo.client.rescu.ViagogoException;
 import org.oxerr.viagogo.model.request.catalog.EventRequest;
 import org.oxerr.viagogo.model.request.catalog.SearchEventRequest;
@@ -42,7 +42,7 @@ class EventServiceTest {
 
 	private final Logger log = LogManager.getLogger();
 
-	private final EventService eventService = RescuViagogoClientTest.getClient().getEventService();
+	private final EventService eventService = ResCUViagogoClientTest.getClient().getEventService();
 
 	@Test
 	@Disabled("Token is required")

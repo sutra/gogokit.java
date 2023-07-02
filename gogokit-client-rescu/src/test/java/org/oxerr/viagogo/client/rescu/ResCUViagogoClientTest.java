@@ -10,14 +10,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-public class RescuViagogoClientTest {
+public class ResCUViagogoClientTest {
 
 	private static final Logger LOG = LogManager.getLogger();
 
-	public static RescuViagogoClient getClient() {
+	public static ResCUViagogoClient getClient() {
 		Properties props = new Properties();
 		String name = "/viagogo.properties";
-		try (InputStream in = RescuViagogoClientTest.class.getResourceAsStream(name)) {
+		try (InputStream in = ResCUViagogoClientTest.class.getResourceAsStream(name)) {
 			if (in != null) {
 				props.load(in);
 			} else {
@@ -28,12 +28,12 @@ public class RescuViagogoClientTest {
 		}
 
 		String token = props.getProperty("token");
-		return new RescuViagogoClient(token);
+		return new ResCUViagogoClient(token);
 	}
 
 	@Test
 	void testGetClient() {
-		assertNotNull(RescuViagogoClientTest.getClient());
+		assertNotNull(ResCUViagogoClientTest.getClient());
 	}
 
 }

@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.oxerr.viagogo.client.rescu.RescuViagogoClientTest;
+import org.oxerr.viagogo.client.rescu.ResCUViagogoClientTest;
 import org.oxerr.viagogo.client.sale.SaleService;
 import org.oxerr.viagogo.model.response.sale.Sale;
 
@@ -18,7 +18,7 @@ class SaleServiceImplTest {
 	private final Logger log = LogManager.getLogger();
 
 	private final SaleService saleService
-		= RescuViagogoClientTest.getClient().getSaleService();
+		= ResCUViagogoClientTest.getClient().getSaleService();
 
 	@Test
 	@Disabled("Token is required")
