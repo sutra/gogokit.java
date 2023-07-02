@@ -31,22 +31,22 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-cached</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-cached-redisson</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>gogokit-client-rescu</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>gogokit-client-delist</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.oxerr.viagogo.cached</groupId>
+			<artifactId>gogokit-client-cached-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.oxerr.viagogo.cached</groupId>
+			<artifactId>gogokit-client-cached-redisson</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

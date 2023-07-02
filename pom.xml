@@ -29,7 +29,6 @@
 		<module>gogokit-model</module>
 		<module>gogokit-client</module>
 		<module>gogokit-client-cached</module>
-		<module>gogokit-client-cached-redisson</module>
 		<module>gogokit-client-rescu</module>
 		<module>gogokit-client-delist</module>
 		<module>gogokit-coverage</module>
