@@ -13,7 +13,7 @@ import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.redisson.api.RedissonClient;
 
 public class RedissonCachedSellerListingsService
-	extends RedissonCachedListingServiceSupport<CreateSellerListingRequest, ViagogoListing, ViagogoEvent, ViagogoCachedListing>
+	extends RedissonCachedListingServiceSupport<String, String, CreateSellerListingRequest, ViagogoListing, ViagogoEvent, ViagogoCachedListing>
 	implements CachedSellerListingsService {
 
 	private final SellerListingService sellerListingsService;
@@ -40,18 +40,18 @@ public class RedissonCachedSellerListingsService
 	}
 
 	@Override
-	protected void doDelete(String ticketId) throws IOException {
-		this.sellerListingsService.deleteListingByExternalListingId(ticketId);
-	}
-
-	@Override
 	protected boolean shouldCreate(ViagogoEvent event, ViagogoListing listing, ViagogoCachedListing cachedListing) {
 		boolean shouldCreate = super.shouldCreate(event, listing, cachedListing);
 		return shouldCreate || !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId());
 	}
 
 	@Override
-	protected void doCreate(ViagogoEvent event, ViagogoListing listing) throws IOException {
+	protected void deleteListing(ViagogoEvent event, String ticketId) throws IOException {
+		this.sellerListingsService.deleteListingByExternalListingId(ticketId);
+	}
+
+	@Override
+	protected void createListing(ViagogoEvent event, ViagogoListing listing) throws IOException {
 		this.sellerListingsService.createListing(listing.getViagogoEventId(), listing.getRequest());
 	}
 
