@@ -13,7 +13,10 @@ import org.oxerr.viagogo.client.rescu.inventory.SellerListingResource;
 import org.oxerr.viagogo.client.rescu.inventory.SellerListingServiceImpl;
 import org.oxerr.viagogo.client.rescu.sale.SaleResource;
 import org.oxerr.viagogo.client.rescu.sale.SaleServiceImpl;
+import org.oxerr.viagogo.client.rescu.webhook.WebhookResource;
+import org.oxerr.viagogo.client.rescu.webhook.WebhookServiceImpl;
 import org.oxerr.viagogo.client.sale.SaleService;
+import org.oxerr.viagogo.client.webhook.WebhookService;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -47,6 +50,8 @@ public class ResCUViagogoClient implements ViagogoClient {
 	private final SellerEventService sellerEventService;
 
 	private final SaleService saleService;
+
+	private final WebhookService webhookService;
 
 	public ResCUViagogoClient(String token, Interceptor... interceptors) {
 		this("https://api.viagogo.net", token, interceptors);
@@ -85,6 +90,7 @@ public class ResCUViagogoClient implements ViagogoClient {
 		this.sellerListingService = new SellerListingServiceImpl(createProxy(SellerListingResource.class, interceptors));
 		this.sellerEventService = new SellerEventServiceImpl(createProxy(SellerEventResource.class, interceptors));
 		this.saleService = new SaleServiceImpl(createProxy(SaleResource.class, interceptors));
+		this.webhookService = new WebhookServiceImpl(createProxy(WebhookResource.class, interceptors));
 	}
 
 	@Override
@@ -105,6 +111,11 @@ public class ResCUViagogoClient implements ViagogoClient {
 	@Override
 	public SaleService getSaleService() {
 		return this.saleService;
+	}
+
+	@Override
+	public WebhookService getWebhookService() {
+		return this.webhookService;
 	}
 
 	protected <I> I createProxy(Class<I> restInterface, Interceptor... interceptors) {
