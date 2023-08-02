@@ -82,7 +82,7 @@ public interface WebhookResource {
 	Webhook updateWebhook(@PathParam("webhookId") Integer webhookId, Webhook webhook) throws IOException, ViagogoException;
 
 	/**
-	 * <a href="https://developer.viagogo.net/api-reference/webhooks#operation/Webhooks_Delete>Delete a webhook</a>
+	 * <a href="https://developer.viagogo.net/api-reference/webhooks#operation/Webhooks_Delete">Delete a webhook</a>
 	 *
 	 * @param webhookId the webhook ID.
 	 * @throws IOException indicates I/O exception
