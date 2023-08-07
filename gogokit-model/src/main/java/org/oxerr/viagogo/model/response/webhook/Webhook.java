@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.response.Resource;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
@@ -113,6 +115,26 @@ public class Webhook extends Resource {
 
 	public void setUpdateLink(HALLink updateLink) {
 		this.updateLink = updateLink;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		Webhook rhs = (Webhook) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 
 }

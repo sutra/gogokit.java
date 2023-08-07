@@ -10,12 +10,18 @@ import org.oxerr.viagogo.client.rescu.ResCUViagogoClientTest;
 import org.oxerr.viagogo.client.webhook.WebhookService;
 import org.oxerr.viagogo.model.response.webhook.Webhook;
 
+/**
+ * Tests for {@link WebhookServiceImpl}.
+ */
 class WebhookServiceImplTest {
 
 	private final Logger log = LogManager.getLogger();
 
 	private final WebhookService webhookService = ResCUViagogoClientTest.getClient().getWebhookService();
 
+	/**
+	 * Test for {@link WebhookServiceImpl#getWebhooks(Integer, Integer, String)}.
+	 */
 	@Test
 	@Disabled("Token is required")
 	void testGetWebhooks() throws IOException {
@@ -23,6 +29,9 @@ class WebhookServiceImplTest {
 		log.info("webhook count: {}", webhooks.getItems().size());
 	}
 
+	/**
+	 * Test for {@link WebhookServiceImpl#createWebhook(Webhook)}.
+	 */
 	@Test
 	@Disabled("Token is required")
 	void testCreateWebhook() throws IOException {
@@ -31,6 +40,10 @@ class WebhookServiceImplTest {
 		log.info("created webhook: {}", createdWebhook.getId());
 	}
 
+	/**
+	 * Test for {@link WebhookServiceImpl#getWebhook(Integer)}.
+	 * @throws IOException
+	 */
 	@Test
 	@Disabled("Token is required")
 	void testGetWebhook() throws IOException {
@@ -39,6 +52,9 @@ class WebhookServiceImplTest {
 		log.info("webhook: {}", webhook.getDeleteLink().getHref());
 	}
 
+	/**
+	 * Tests for {@link WebhookServiceImpl#updateWebhook(Integer, Webhook)}.
+	 */
 	@Test
 	@Disabled("Token is required")
 	void testUpdateWebhook() throws IOException {
@@ -47,6 +63,9 @@ class WebhookServiceImplTest {
 		this.webhookService.updateWebhook(id, webhook);
 	}
 
+	/**
+	 * Test for {@link WebhookServiceImpl#deleteWebhook(Integer)}.
+	 */
 	@Test
 	@Disabled("Token is required")
 	void testDeleteWebhook() throws IOException {
@@ -54,6 +73,9 @@ class WebhookServiceImplTest {
 		this.webhookService.deleteWebhook(id);
 	}
 
+	/**
+	 * Test for {@link WebhookServiceImpl#ping(Integer)}.
+	 */
 	@Test
 	@Disabled("Token is required")
 	void testPing() throws IOException {
