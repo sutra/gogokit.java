@@ -50,6 +50,7 @@ public class SellerListingRequest implements Serializable {
 		r.setPage(link.getFirstAsInteger("page"));
 		r.setPageSize(link.getFirstAsInteger("page_size"));
 		r.setUpdatedSince(link.getFirstAsInstant("updated_since"));
+		r.setSort(link.getFirstAsString("sort"));
 		return r;
 	}
 
