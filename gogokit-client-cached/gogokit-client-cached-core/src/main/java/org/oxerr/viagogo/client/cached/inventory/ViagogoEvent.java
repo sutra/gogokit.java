@@ -25,6 +25,7 @@ public class ViagogoEvent extends Event<String, String, CreateSellerListingReque
 
 	public ViagogoEvent(String id, OffsetDateTime startDate, Long viagogoEventId, List<ViagogoListing> listings) {
 		super(id, startDate, listings);
+		this.viagogoEventId = viagogoEventId;
 	}
 
 	public Long getViagogoEventId() {
