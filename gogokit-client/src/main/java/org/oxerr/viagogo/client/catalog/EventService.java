@@ -64,7 +64,7 @@ public interface EventService {
 
 	default List<Event> searchAll(SearchEventRequest searchEventRequest, Predicate<Event> predicate) throws IOException {
 		PagedResource<Event> pagedEvents = this.searchEvents(searchEventRequest);
-		List<Event> matched = new ArrayList<Event>(pagedEvents.getTotalItems());
+		List<Event> matched = new ArrayList<>(pagedEvents.getTotalItems());
 		matched.addAll(pagedEvents.getItems().stream().filter(predicate).collect(Collectors.toList()));
 
 		while (pagedEvents.getNextLink() != null) {

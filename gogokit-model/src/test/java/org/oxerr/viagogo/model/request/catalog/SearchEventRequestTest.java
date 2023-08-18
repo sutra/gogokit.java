@@ -8,6 +8,9 @@ import io.openapitools.jackson.dataformat.hal.HALLink;
 
 class SearchEventRequestTest {
 
+	/**
+	 * Test for {@link SearchEventRequest#from(HALLink)}.
+	 */
 	@Test
 	void testFrom() {
 		String href = "https://api.viagogo.net/catalog/events/search?q=The&dateLocal=2023-05-03T20%3A00&page=2&page_size=500";

@@ -26,7 +26,7 @@ public interface EventResource {
 	 * @param pageSize Set custom page sizes on response.
 	 * @param updatedSince Filters the response to only return items that have been updated since the given timestamp
 	 * @param sort Determines the ordering of items. A comma-separated string containing {@code resource_version}.
-	 * @param minResourceVersion
+	 * @param minResourceVersion the minimum resource version.
 	 * @param countryCode Filters results to only include events located in the specified country.
 	 * @param latitude When provided with longitude and distance filters events returned to ones within the specified distance of the lat/long.
 	 * @param longitude When provided with latitude and distance filters events returned to ones within the specified distance of the lat/long.
@@ -98,7 +98,7 @@ public interface EventResource {
 	 * @param pageSize Set custom page sizes on response.
 	 * @param updatedSince Filters the response to only return items that have been updated since the given timestamp
 	 * @param sort Determines the ordering of items. A comma-separated string containing {@code resource_version}.
-	 * @param minResourceVersion
+	 * @param minResourceVersion the minimum resource version.
 	 * @param countryCode Filters results to only include events located in the specified country.
 	 * @param latitude When provided with longitude and distance filters events returned to ones within the specified distance of the lat/long.
 	 * @param longitude When provided with latitude and distance filters events returned to ones within the specified distance of the lat/long.

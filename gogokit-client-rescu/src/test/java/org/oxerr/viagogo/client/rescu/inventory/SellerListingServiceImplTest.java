@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +77,7 @@ class SellerListingServiceImplTest {
 	void testGetSellerListings() throws ViagogoException, IOException {
 		SellerListingRequest r = new SellerListingRequest();
 		r.setPageSize(10_000); // seems the maximum page size is 10_000
+		r.setSort("created_at");
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		PagedResource<SellerListing> sellerListings = sellerListingService.getSellerListings(r);
@@ -87,7 +89,7 @@ class SellerListingServiceImplTest {
 		log.info("Next link: {}", sellerListings.getNextLink().getHref());
 
 		for (SellerListing l : sellerListings.getItems()) {
-			log.info(l.getSelfLink().getHref());
+			log.info("{} event start date: {}, created at: {}", l.getSelfLink().getHref(), l.getEvent().getStartDate().atZoneSameInstant(ZoneId.systemDefault()), l.getCreatedAt());
 		}
 	}
 

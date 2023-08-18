@@ -54,8 +54,8 @@ public interface SellerListingResource {
 	 *
 	 * <p>List seller listings for the authenticated user.</p>
 	 *
-	 * @param eventId
-	 * @param requestedEventId
+	 * @param eventId the event ID.
+	 * @param requestedEventId the requested event ID.
 	 * @param page Specifies which page of data to retrieve.
 	 * @param pageSize Set custom page sizes on response.
 	 * @param updatedSince Filters the response to only return items that have been updated since the given timestamp
