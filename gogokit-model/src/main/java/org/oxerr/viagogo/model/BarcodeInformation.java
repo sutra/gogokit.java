@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -30,9 +31,14 @@ public class BarcodeInformation implements Serializable {
 	private String status;
 
 	/**
+	 * Barcode(s) values for this seat.
+	 */
+	private List<String> barcodeValues;
+
+	/**
 	 * SHA256-hashed barcode(s) for this seat.
 	 */
-	private String[] barcodeValuesSha256Hashed;
+	private List<String> barcodeValuesSha256Hashed;
 
 	public Long getSeatOrdinal() {
 		return seatOrdinal;
@@ -66,11 +72,19 @@ public class BarcodeInformation implements Serializable {
 		this.status = status;
 	}
 
-	public String[] getBarcodeValuesSha256Hashed() {
+	public List<String> getBarcodeValues() {
+		return barcodeValues;
+	}
+
+	public void setBarcodeValues(List<String> barcodeValues) {
+		this.barcodeValues = barcodeValues;
+	}
+
+	public List<String> getBarcodeValuesSha256Hashed() {
 		return barcodeValuesSha256Hashed;
 	}
 
-	public void setBarcodeValuesSha256Hashed(String[] barcodeValuesSha256Hashed) {
+	public void setBarcodeValuesSha256Hashed(List<String> barcodeValuesSha256Hashed) {
 		this.barcodeValuesSha256Hashed = barcodeValuesSha256Hashed;
 	}
 
