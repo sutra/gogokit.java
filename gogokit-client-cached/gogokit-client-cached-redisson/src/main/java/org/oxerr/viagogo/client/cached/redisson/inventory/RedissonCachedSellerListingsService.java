@@ -2,6 +2,7 @@ package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import org.oxerr.ticket.inventory.support.cached.redisson.RedissonCachedListingServiceSupport;
 import org.oxerr.ticket.inventory.support.cached.redisson.Status;
@@ -22,9 +23,10 @@ public class RedissonCachedSellerListingsService
 		SellerListingService sellerListingsService,
 		RedissonClient redissonClient,
 		String keyPrefix,
+		Executor executor,
 		boolean create
 	) {
-		super(redissonClient, keyPrefix, create);
+		super(redissonClient, keyPrefix, executor, create);
 		this.sellerListingsService = sellerListingsService;
 	}
 
