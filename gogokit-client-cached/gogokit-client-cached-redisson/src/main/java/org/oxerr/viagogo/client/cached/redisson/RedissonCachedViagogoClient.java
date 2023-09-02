@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.client.cached.redisson;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.cached.CachedViagogoClient;
@@ -9,47 +10,57 @@ import org.redisson.api.RedissonClient;
 
 public class RedissonCachedViagogoClient implements CachedViagogoClient {
 
-	private final ViagogoClient client;
+	private final ViagogoClient viagogoClient;
 
 	private final RedissonCachedSellerListingsService cachedSellerListingsService;
 
 	public RedissonCachedViagogoClient(
-		ViagogoClient client,
-		RedissonCachedSellerListingsService cachedSellerListingsService
-	) {
-		this.client = client;
-		this.cachedSellerListingsService = cachedSellerListingsService;
-	}
-
-	public RedissonCachedViagogoClient(
-		ViagogoClient client,
-		RedissonClient redissionClient,
-		Executor executor,
+		ViagogoClient viagogoClient,
+		RedissonClient redissonClient,
 		String keyPrefix
 	) {
-		this(client, redissionClient, keyPrefix, executor, true);
+		this(viagogoClient, redissonClient, keyPrefix, ForkJoinPool.commonPool());
 	}
 
 	public RedissonCachedViagogoClient(
-		ViagogoClient client,
-		RedissonClient redissionClient,
+		ViagogoClient viagogoClient,
+		RedissonClient redissonClient,
+		String keyPrefix,
+		Executor executor
+	) {
+		this(viagogoClient, redissonClient, keyPrefix, executor, true);
+	}
+
+	public RedissonCachedViagogoClient(
+		ViagogoClient viagogoClient,
+		RedissonClient redissonClient,
 		String keyPrefix,
 		Executor executor,
 		boolean create
 	) {
-		this.client = client;
-		this.cachedSellerListingsService = new RedissonCachedSellerListingsService(
-			client.getSellerListingService(),
-			redissionClient,
-			keyPrefix,
-			executor,
-			create
+		this(
+			viagogoClient,
+			new RedissonCachedSellerListingsService(
+				viagogoClient.getSellerListingService(),
+				redissonClient,
+				keyPrefix,
+				executor,
+				create
+			)
 		);
+	}
+
+	public RedissonCachedViagogoClient(
+		ViagogoClient viagogoClient,
+		RedissonCachedSellerListingsService cachedSellerListingsService
+	) {
+		this.viagogoClient = viagogoClient;
+		this.cachedSellerListingsService = cachedSellerListingsService;
 	}
 
 	@Override
 	public ViagogoClient getClient() {
-		return client;
+		return viagogoClient;
 	}
 
 	@Override
