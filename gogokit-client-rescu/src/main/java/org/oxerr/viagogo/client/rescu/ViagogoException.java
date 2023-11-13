@@ -2,8 +2,8 @@ package org.oxerr.viagogo.client.rescu;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,7 +35,7 @@ public class ViagogoException extends HttpStatusExceptionSupport {
 		@JsonProperty("message") String message,
 		@JsonProperty("errors") Map<String, List<String>> errors
 	) {
-		super(StringUtils.defaultString(title, message));
+		super(Objects.toString(title, message));
 		this.type = type;
 		this.title = title;
 		this.status = status;
