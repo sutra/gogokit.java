@@ -38,9 +38,9 @@ public class RedissonCachedSellerListingsService
 		String keyPrefix,
 		Executor executor,
 		boolean create,
-		RMapCache<String, ConcurrentMap<String, ViagogoCachedListing>> listingCache
+		RMapCache<String, ConcurrentMap<String, ViagogoCachedListing>> listingsCache
 	) {
-		super(redissonClient, keyPrefix, executor, create, listingCache);
+		super(redissonClient, keyPrefix, executor, create, listingsCache);
 		this.sellerListingsService = sellerListingsService;
 	}
 
