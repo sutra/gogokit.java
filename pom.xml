@@ -23,7 +23,7 @@
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<log4j.version>2.20.0</log4j.version>
-		<ticket-inventory-support.version>2.1.3</ticket-inventory-support.version>
+		<ticket-inventory-support.version>2.1.4-SNAPSHOT</ticket-inventory-support.version>
 	</properties>
 	<modules>
 		<module>gogokit-model</module>
