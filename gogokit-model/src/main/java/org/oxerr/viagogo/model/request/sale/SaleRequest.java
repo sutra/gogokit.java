@@ -27,7 +27,7 @@ public class SaleRequest extends ListRequest {
 
 		private String code;
 
-		private Sort(String code) {
+		Sort(String code) {
 			this.code = code;
 		}
 

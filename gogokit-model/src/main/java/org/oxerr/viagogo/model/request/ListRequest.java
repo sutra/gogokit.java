@@ -13,7 +13,7 @@ public abstract class ListRequest implements Serializable {
 
 	public interface Sort {
 
-		public String getCode();
+		String getCode();
 
 	}
 
