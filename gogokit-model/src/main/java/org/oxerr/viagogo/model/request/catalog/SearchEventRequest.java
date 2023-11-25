@@ -1,45 +1,20 @@
 package org.oxerr.viagogo.model.request.catalog;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Link;
-import org.oxerr.viagogo.model.request.PagedRequest;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
-public class SearchEventRequest extends PagedRequest {
+public class SearchEventRequest extends EventRequest {
 
 	private static final long serialVersionUID = 2023021301L;
 
 	private String q;
 
 	private LocalDateTime dateLocal;
-
-	public enum Sort implements PagedRequest.Sort {
-
-		RESOURCE_VERSION;
-
-		@Override
-		public String getCode() {
-			return this.name().toLowerCase(Locale.US);
-		}
-
-	}
-
-	private Long minResourceVersion;
-
-	private String countryCode;
-
-	private Double latitude;
-
-	private Double longitude;
-
-	private Integer maxDistanceInMeters;
-
-	private Integer genreId;
 
 	public static SearchEventRequest from(HALLink halLink) {
 		return new SearchEventRequest(new Link(halLink));
@@ -53,12 +28,6 @@ public class SearchEventRequest extends PagedRequest {
 
 		this.setQ(link.getFirstAsString("q"));
 		this.setDateLocal(link.getFirstAsLocalDateTime("dateLocal"));
-		this.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
-		this.setCountryCode(link.getFirstAsString("country_code"));
-		this.setLatitude(link.getFirstAsDouble("latitude"));
-		this.setLongitude(link.getFirstAsDouble("longitude"));
-		this.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
-		this.setGenreId(link.getFirstAsInteger("genre_id"));
 	}
 
 	public SearchEventRequest(String q, LocalDateTime dateLocal) {
@@ -80,54 +49,6 @@ public class SearchEventRequest extends PagedRequest {
 
 	public void setDateLocal(LocalDateTime dateLocal) {
 		this.dateLocal = dateLocal;
-	}
-
-	public Long getMinResourceVersion() {
-		return minResourceVersion;
-	}
-
-	public void setMinResourceVersion(Long minResourceVersion) {
-		this.minResourceVersion = minResourceVersion;
-	}
-
-	public String getCountryCode() {
-		return countryCode;
-	}
-
-	public void setCountryCode(String countryCode) {
-		this.countryCode = countryCode;
-	}
-
-	public Double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
-
-	public Double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
-	}
-
-	public Integer getMaxDistanceInMeters() {
-		return maxDistanceInMeters;
-	}
-
-	public void setMaxDistanceInMeters(Integer maxDistanceInMeters) {
-		this.maxDistanceInMeters = maxDistanceInMeters;
-	}
-
-	public Integer getGenreId() {
-		return genreId;
-	}
-
-	public void setGenreId(Integer genreId) {
-		this.genreId = genreId;
 	}
 
 	@Override
