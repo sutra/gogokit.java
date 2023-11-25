@@ -37,18 +37,21 @@ public class EventRequest extends PagedRequest {
 	private Integer genreId;
 
 	public static EventRequest from(HALLink halLink) {
-		Link link = new Link(halLink);
-		EventRequest r = new EventRequest();
-		r.setPage(link.getFirstAsInteger("page"));
-		r.setPageSize(link.getFirstAsInteger("page_size"));
-		r.setSort(link.getFirstAsString("sort"));
-		r.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
-		r.setCountryCode(link.getFirstAsString("country_code"));
-		r.setLatitude(link.getFirstAsDouble("latitude"));
-		r.setLongitude(link.getFirstAsDouble("longitude"));
-		r.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
-		r.setGenreId(link.getFirstAsInteger("genre_id"));
-		return r;
+		return new EventRequest(new Link(halLink));
+	}
+
+	public EventRequest() {
+	}
+
+	public EventRequest(Link link) {
+		super(link);
+
+		this.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
+		this.setCountryCode(link.getFirstAsString("country_code"));
+		this.setLatitude(link.getFirstAsDouble("latitude"));
+		this.setLongitude(link.getFirstAsDouble("longitude"));
+		this.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
+		this.setGenreId(link.getFirstAsInteger("genre_id"));
 	}
 
 	public Long getMinResourceVersion() {

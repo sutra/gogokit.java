@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.oxerr.viagogo.model.Link;
 
 public abstract class PagedRequest implements Serializable {
 
@@ -40,6 +41,16 @@ public abstract class PagedRequest implements Serializable {
 	 * A comma-separated string.
 	 */
 	private String sort;
+
+	protected PagedRequest() {
+	}
+
+	protected PagedRequest(Link link) {
+		this.setPage(link.getFirstAsInteger("page"));
+		this.setPageSize(link.getFirstAsInteger("page_size"));
+		this.setUpdatedSince(link.getFirstAsInstant("updated_since"));
+		this.setSort(link.getFirstAsString("sort"));
+	}
 
 	public Integer getPage() {
 		return page;

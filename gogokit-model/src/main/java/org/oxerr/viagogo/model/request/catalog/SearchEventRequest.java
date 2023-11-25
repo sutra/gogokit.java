@@ -42,24 +42,23 @@ public class SearchEventRequest extends PagedRequest {
 	private Integer genreId;
 
 	public static SearchEventRequest from(HALLink halLink) {
-		Link link = new Link(halLink);
-		SearchEventRequest r = new SearchEventRequest();
-		r.setQ(link.getFirstAsString("q"));
-		r.setDateLocal(link.getFirstAsLocalDateTime("dateLocal"));
-		r.setPage(link.getFirstAsInteger("page"));
-		r.setPageSize(link.getFirstAsInteger("page_size"));
-		r.setUpdatedSince(link.getFirstAsInstant("updated_since"));
-		r.setSort(link.getFirstAsString("sort"));
-		r.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
-		r.setCountryCode(link.getFirstAsString("country_code"));
-		r.setLatitude(link.getFirstAsDouble("latitude"));
-		r.setLongitude(link.getFirstAsDouble("longitude"));
-		r.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
-		r.setGenreId(link.getFirstAsInteger("genre_id"));
-		return r;
+		return new SearchEventRequest(new Link(halLink));
 	}
 
 	public SearchEventRequest() {
+	}
+
+	public SearchEventRequest(Link link) {
+		super(link);
+
+		this.setQ(link.getFirstAsString("q"));
+		this.setDateLocal(link.getFirstAsLocalDateTime("dateLocal"));
+		this.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
+		this.setCountryCode(link.getFirstAsString("country_code"));
+		this.setLatitude(link.getFirstAsDouble("latitude"));
+		this.setLongitude(link.getFirstAsDouble("longitude"));
+		this.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
+		this.setGenreId(link.getFirstAsInteger("genre_id"));
 	}
 
 	public SearchEventRequest(String q, LocalDateTime dateLocal) {

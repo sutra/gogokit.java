@@ -43,18 +43,16 @@ public class SellerListingRequest extends PagedRequest {
 	}
 
 	public static SellerListingRequest from(HALLink halLink) {
-		Link link = new Link(halLink);
-		SellerListingRequest r = new SellerListingRequest();
-		r.setEventId(link.getFirstAsLong("event_id"));
-		r.setRequestedEventId(link.getFirstAsString("requested_event_id"));
-		r.setPage(link.getFirstAsInteger("page"));
-		r.setPageSize(link.getFirstAsInteger("page_size"));
-		r.setUpdatedSince(link.getFirstAsInstant("updated_since"));
-		r.setSort(link.getFirstAsString("sort"));
-		return r;
+		return new SellerListingRequest(new Link(halLink));
 	}
 
 	public SellerListingRequest() {
+	}
+
+	public SellerListingRequest(Link link) {
+		super(link);
+		this.setEventId(link.getFirstAsLong("event_id"));
+		this.setRequestedEventId(link.getFirstAsString("requested_event_id"));
 	}
 
 	public SellerListingRequest(Long eventId) {
