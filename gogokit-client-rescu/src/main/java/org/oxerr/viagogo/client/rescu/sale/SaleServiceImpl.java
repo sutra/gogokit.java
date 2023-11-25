@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.rescu.sale;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Optional;
 
 import org.oxerr.viagogo.client.rescu.ViagogoException;
@@ -19,6 +20,11 @@ public class SaleServiceImpl implements SaleService {
 
 	public SaleServiceImpl(SaleResource saleResource) {
 		this.saleResource = saleResource;
+	}
+
+	@Override
+	public PagedResource<Sale> getSalesRecentUpdates(Instant updatedSince) throws IOException {
+		return this.saleResource.getSalesRecentUpdates(updatedSince);
 	}
 
 	@Override
