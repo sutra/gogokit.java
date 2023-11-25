@@ -1,39 +1,35 @@
 package org.oxerr.viagogo.model.request.sale;
 
-import org.oxerr.viagogo.model.request.ListRequest;
+import java.util.Locale;
+
+import org.oxerr.viagogo.model.request.PagedRequest;
 
 /**
  * Query parameter for <a href=
  * "https://developer.viagogo.net/api-reference/sales#operation/Sales_GetSales">List
  * sales</a>.
  */
-public class SaleRequest extends ListRequest {
+public class SaleRequest extends PagedRequest {
 
 	private static final long serialVersionUID = 2023112401L;
 
-	public enum Sort implements ListRequest.Sort {
+	public enum Sort implements PagedRequest.Sort {
 
-		CREATED_AT("created_at"),
+		CREATED_AT,
 
-		EVENT_DATE("event_date"),
+		EVENT_DATE,
 
-		INHAND_AT("inhand_at"),
+		INHAND_AT,
 
-		PAYMENT_AMOUNT("payment_amount"),
+		PAYMENT_AMOUNT,
 
-		QUANTITY("quantity"),
+		QUANTITY,
 
-		RESOURCE_VERSION("resource_version");
-
-		private String code;
-
-		Sort(String code) {
-			this.code = code;
-		}
+		RESOURCE_VERSION;
 
 		@Override
 		public String getCode() {
-			return code;
+			return this.name().toLowerCase(Locale.US);
 		}
 
 	}

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-public abstract class ListRequest implements Serializable {
+public abstract class PagedRequest implements Serializable {
 
 	public interface Sort {
 
@@ -94,7 +94,7 @@ public abstract class ListRequest implements Serializable {
 		if (obj.getClass() != getClass()) {
 			return false;
 		}
-		ListRequest rhs = (ListRequest) obj;
+		PagedRequest rhs = (PagedRequest) obj;
 		return EqualsBuilder.reflectionEquals(this, rhs);
 	}
 

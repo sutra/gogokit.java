@@ -1,33 +1,29 @@
 package org.oxerr.viagogo.model.request.inventory;
 
-import org.oxerr.viagogo.model.request.ListRequest;
+import java.util.Locale;
+
+import org.oxerr.viagogo.model.request.PagedRequest;
 
 /**
  * Query parameter for <a href=
  * "https://developer.viagogo.net/api-reference/inventory#operation/SellerEvents_GetSellerEvents">List
  * seller events</a>.
  */
-public class SellerEventRequest extends ListRequest {
+public class SellerEventRequest extends PagedRequest {
 
 	private static final long serialVersionUID = 2023112401L;
 
-	public enum Sort implements ListRequest.Sort {
+	public enum Sort implements PagedRequest.Sort {
 
-		ID("id"),
+		ID,
 
-		NUMBER_OF_TICKETS("number_of_tickets"),
+		NUMBER_OF_TICKETS,
 
-		RESOURCE_VERSION("resource_version");
-
-		private String code;
-
-		Sort(String code) {
-			this.code = code;
-		}
+		RESOURCE_VERSION;
 
 		@Override
 		public String getCode() {
-			return this.code;
+			return this.name().toLowerCase(Locale.US);
 		}
 
 	}

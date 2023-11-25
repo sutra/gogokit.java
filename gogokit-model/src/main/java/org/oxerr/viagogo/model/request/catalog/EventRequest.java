@@ -1,25 +1,28 @@
 package org.oxerr.viagogo.model.request.catalog;
 
-import java.io.Serializable;
-import java.time.Instant;
+import java.util.Locale;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Link;
+import org.oxerr.viagogo.model.request.PagedRequest;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
-public class EventRequest implements Serializable {
+public class EventRequest extends PagedRequest {
 
 	private static final long serialVersionUID = 2023021301L;
 
-	private Integer page;
+	public enum Sort implements PagedRequest.Sort {
 
-	private Integer pageSize;
+		RESOURCE_VERSION;
 
-	private Instant updatedSince;
+		@Override
+		public String getCode() {
+			return this.name().toLowerCase(Locale.US);
+		}
 
-	private String sort;
+	}
 
 	private Long minResourceVersion;
 
@@ -46,38 +49,6 @@ public class EventRequest implements Serializable {
 		r.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
 		r.setGenreId(link.getFirstAsInteger("genre_id"));
 		return r;
-	}
-
-	public Integer getPage() {
-		return page;
-	}
-
-	public void setPage(Integer page) {
-		this.page = page;
-	}
-
-	public Integer getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
-
-	public Instant getUpdatedSince() {
-		return updatedSince;
-	}
-
-	public void setUpdatedSince(Instant updatedSince) {
-		this.updatedSince = updatedSince;
-	}
-
-	public String getSort() {
-		return sort;
-	}
-
-	public void setSort(String sort) {
-		this.sort = sort;
 	}
 
 	public Long getMinResourceVersion() {
