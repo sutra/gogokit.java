@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.rescu.ResCUViagogoClientTest;
 import org.oxerr.viagogo.client.sale.SaleService;
+import org.oxerr.viagogo.model.request.sale.SaleRequest;
 import org.oxerr.viagogo.model.response.sale.Sale;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,9 +23,25 @@ class SaleServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
+	void testGetSales() throws IOException {
+		SaleRequest r = new SaleRequest();
+		var sales = this.saleService.getSales(r);
+		log.info("Total items: {}", sales.getTotalItems());
+
+		for (var sale : sales.getItems()) {
+			this.log(sale);
+		}
+	}
+
+	@Test
+	@Disabled("Token is required")
 	void testGetSale() throws IOException {
 		Integer saleId = 512171600;
 		Sale sale = this.saleService.getSale(saleId).get();
+		this.log(sale);
+	}
+
+	void log(Sale sale) {
 		log.info("sale: {}", () -> {
 			try {
 				return new ObjectMapper().findAndRegisterModules().writeValueAsString(sale);
