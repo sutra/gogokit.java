@@ -7,7 +7,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.BarcodeInformation;
 import org.oxerr.viagogo.model.Money;
-import org.oxerr.viagogo.model.Seating;
 import org.oxerr.viagogo.model.SeatingDetail;
 import org.oxerr.viagogo.model.response.Resource;
 import org.oxerr.viagogo.model.response.catalog.Event;
@@ -45,7 +44,7 @@ public class SellerListing extends Resource {
 	/**
 	 * The seating information for the ticket(s) in this listing.
 	 */
-	private Seating seating;
+	private SeatingDetail seating;
 
 	/**
 	 * The seating information that will be displayed to buyers for the ticket(s) in
@@ -169,11 +168,11 @@ public class SellerListing extends Resource {
 		this.numberOfTickets = numberOfTickets;
 	}
 
-	public Seating getSeating() {
+	public SeatingDetail getSeating() {
 		return seating;
 	}
 
-	public void setSeating(Seating seating) {
+	public void setSeating(SeatingDetail seating) {
 		this.seating = seating;
 	}
 

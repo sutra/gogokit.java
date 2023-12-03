@@ -1,4 +1,4 @@
-package org.oxerr.viagogo.model.request.inventory;
+package org.oxerr.viagogo.model.request.sale;
 
 import java.util.Locale;
 
@@ -9,18 +9,24 @@ import io.openapitools.jackson.dataformat.hal.HALLink;
 
 /**
  * Query parameter for <a href=
- * "https://developer.viagogo.net/api-reference/inventory#operation/SellerEvents_GetSellerEvents">List
- * seller events</a>.
+ * "https://developer.viagogo.net/api-reference/sales#operation/Sales_GetSales">List
+ * sales</a>.
  */
-public class SellerEventRequest extends PagedRequest {
+public class SaleRequest extends PagedRequest {
 
 	private static final long serialVersionUID = 2023112401L;
 
 	public enum Sort implements PagedRequest.Sort {
 
-		ID,
+		CREATED_AT,
 
-		NUMBER_OF_TICKETS,
+		EVENT_DATE,
+
+		INHAND_AT,
+
+		PAYMENT_AMOUNT,
+
+		QUANTITY,
 
 		RESOURCE_VERSION;
 
@@ -31,14 +37,14 @@ public class SellerEventRequest extends PagedRequest {
 
 	}
 
-	public static SellerEventRequest from(HALLink halLink) {
-		return new SellerEventRequest(new Link(halLink));
+	public static SaleRequest from(HALLink halLink) {
+		return new SaleRequest(new Link(halLink));
 	}
 
-	public SellerEventRequest() {
+	public SaleRequest() {
 	}
 
-	public SellerEventRequest(Link link) {
+	public SaleRequest(Link link) {
 		super(link);
 	}
 

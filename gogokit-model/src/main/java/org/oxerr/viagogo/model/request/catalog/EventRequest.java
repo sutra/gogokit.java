@@ -1,25 +1,28 @@
 package org.oxerr.viagogo.model.request.catalog;
 
-import java.io.Serializable;
-import java.time.Instant;
+import java.util.Locale;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Link;
+import org.oxerr.viagogo.model.request.PagedRequest;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
-public class EventRequest implements Serializable {
+public class EventRequest extends PagedRequest {
 
 	private static final long serialVersionUID = 2023021301L;
 
-	private Integer page;
+	public enum Sort implements PagedRequest.Sort {
 
-	private Integer pageSize;
+		RESOURCE_VERSION;
 
-	private Instant updatedSince;
+		@Override
+		public String getCode() {
+			return this.name().toLowerCase(Locale.US);
+		}
 
-	private String sort;
+	}
 
 	private Long minResourceVersion;
 
@@ -34,50 +37,21 @@ public class EventRequest implements Serializable {
 	private Integer genreId;
 
 	public static EventRequest from(HALLink halLink) {
-		Link link = new Link(halLink);
-		EventRequest r = new EventRequest();
-		r.setPage(link.getFirstAsInteger("page"));
-		r.setPageSize(link.getFirstAsInteger("page_size"));
-		r.setSort(link.getFirstAsString("sort"));
-		r.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
-		r.setCountryCode(link.getFirstAsString("country_code"));
-		r.setLatitude(link.getFirstAsDouble("latitude"));
-		r.setLongitude(link.getFirstAsDouble("longitude"));
-		r.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
-		r.setGenreId(link.getFirstAsInteger("genre_id"));
-		return r;
+		return new EventRequest(new Link(halLink));
 	}
 
-	public Integer getPage() {
-		return page;
+	public EventRequest() {
 	}
 
-	public void setPage(Integer page) {
-		this.page = page;
-	}
+	public EventRequest(Link link) {
+		super(link);
 
-	public Integer getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
-
-	public Instant getUpdatedSince() {
-		return updatedSince;
-	}
-
-	public void setUpdatedSince(Instant updatedSince) {
-		this.updatedSince = updatedSince;
-	}
-
-	public String getSort() {
-		return sort;
-	}
-
-	public void setSort(String sort) {
-		this.sort = sort;
+		this.setMinResourceVersion(link.getFirstAsLong("min_resource_version"));
+		this.setCountryCode(link.getFirstAsString("country_code"));
+		this.setLatitude(link.getFirstAsDouble("latitude"));
+		this.setLongitude(link.getFirstAsDouble("longitude"));
+		this.setMaxDistanceInMeters(link.getFirstAsInteger("max_distance_in_meters"));
+		this.setGenreId(link.getFirstAsInteger("genre_id"));
 	}
 
 	public Long getMinResourceVersion() {
