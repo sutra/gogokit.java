@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo</groupId>
 		<artifactId>gogokit</artifactId>
-		<version>3.0.0-SNAPSHOT</version>
+		<version>3.0.0</version>
 	</parent>
 	<artifactId>gogokit-client</artifactId>
 	<name>GogoKit Client</name>
