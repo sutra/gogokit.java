@@ -5,4 +5,10 @@ import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
 public interface CachedSellerListingsService
 	extends CachedListingService<String, String, CreateSellerListingRequest, ViagogoListing, ViagogoEvent> {
+
+	/**
+	 * Check all listings and delete which not in cache.
+	 */
+	void check();
+
 }

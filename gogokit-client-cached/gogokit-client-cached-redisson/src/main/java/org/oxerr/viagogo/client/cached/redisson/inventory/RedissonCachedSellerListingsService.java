@@ -1,8 +1,15 @@
 package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.oxerr.ticket.inventory.support.cached.redisson.RedissonCachedListingServiceSupport;
 import org.oxerr.ticket.inventory.support.cached.redisson.Status;
@@ -11,6 +18,8 @@ import org.oxerr.viagogo.client.cached.inventory.ViagogoEvent;
 import org.oxerr.viagogo.client.cached.inventory.ViagogoListing;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
+import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
+import org.oxerr.viagogo.model.response.inventory.SellerListing;
 import org.redisson.api.RedissonClient;
 
 public class RedissonCachedSellerListingsService
@@ -60,6 +69,96 @@ public class RedissonCachedSellerListingsService
 	@Override
 	protected ViagogoCachedListing toCached(ViagogoEvent event, ViagogoListing listing, Status status) {
 		return new ViagogoCachedListing(listing, status);
+	}
+
+	@Override
+	public void check() {
+		// The external IDs in cache.
+		Set<String> externalIds = this.getCacheNamesStream()
+			.map(name -> this.getCache(name).keySet().stream())
+			.flatMap(Function.identity())
+			.collect(Collectors.toUnmodifiableSet());
+
+		var deleting = new ArrayList<CompletableFuture<Void>>();
+
+		// The first page.
+		var r = new SellerListingRequest();
+		r.setPageSize(10_000);
+		r.setSort(SellerListingRequest.Sort.CREATED_AT);
+
+		var listings = this.retry(() -> {
+			try {
+				return this.sellerListingsService.getSellerListings(r);
+			} catch (IOException e) {
+				throw new RetryableException(e);
+			}
+		});
+		deleting.addAll(this.check(listings.getItems(), externalIds));
+
+		// Do until the last page
+		while(listings.getNextLink() != null) {
+			try {
+				listings = this.sellerListingsService.getSellerListings(listings.getNextLink());
+			} catch (IOException e) {
+				throw new RetryableException(e);
+			}
+			deleting.addAll(this.check(listings.getItems(), externalIds));
+		}
+
+		// Wait all future to complete.
+		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
+	}
+
+	private List<CompletableFuture<Void>> check(List<SellerListing> listings, Set<String> externalIds) {
+		return listings.parallelStream()
+			.filter(listing -> !externalIds.contains(listing.getExternalId()))
+			.map(listing ->
+				RedissonCachedListingServiceSupport.<Void>callAsync(() -> {
+						this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
+						return null;
+					},
+					this.executor
+				)
+			)
+			.collect(Collectors.toUnmodifiableList());
+	}
+
+	private final Random random = new Random();
+
+	private <T> T retry(Supplier<T> supplier) {
+		int maxAttempts = 10;
+		int maxDelay = 100;
+		int attempts = 0;
+
+		T t = null;
+
+		try {
+			t = supplier.get();
+		} catch (RetryableException e) {
+			if (++attempts >= maxAttempts) {
+				throw e;
+			} else {
+				long delay = random.nextLong() * maxDelay;
+				try {
+					Thread.sleep(delay);
+				} catch (InterruptedException ie) {
+					Thread.currentThread().interrupt();
+				}
+				throw e;
+			}
+		}
+
+		return t;
+	}
+
+	private static class RetryableException extends RuntimeException {
+
+		private static final long serialVersionUID = 2023120801L;
+
+		public RetryableException(Throwable cause) {
+			super(cause);
+		}
+
 	}
 
 }
