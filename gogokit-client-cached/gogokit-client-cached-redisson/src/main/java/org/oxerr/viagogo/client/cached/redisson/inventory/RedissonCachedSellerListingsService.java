@@ -90,8 +90,6 @@ public class RedissonCachedSellerListingsService
 
 		// The first page.
 		var r = new SellerListingRequest();
-		r.setPageSize(10_000);
-		r.setSort(SellerListingRequest.Sort.CREATED_AT);
 
 		var listings = this.retry(() -> {
 			try {
