@@ -11,6 +11,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.oxerr.ticket.inventory.support.cached.redisson.RedissonCachedListingServiceSupport;
 import org.oxerr.ticket.inventory.support.cached.redisson.Status;
 import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingsService;
@@ -25,6 +27,8 @@ import org.redisson.api.RedissonClient;
 public class RedissonCachedSellerListingsService
 	extends RedissonCachedListingServiceSupport<String, String, CreateSellerListingRequest, ViagogoListing, ViagogoEvent, ViagogoCachedListing>
 	implements CachedSellerListingsService {
+
+	private final Logger log = LogManager.getLogger();
 
 	private final SellerListingService sellerListingsService;
 
@@ -73,11 +77,14 @@ public class RedissonCachedSellerListingsService
 
 	@Override
 	public void check() {
+		log.debug("[check]");
+
 		// The external IDs in cache.
 		Set<String> externalIds = this.getCacheNamesStream()
 			.map(name -> this.getCache(name).keySet().stream())
 			.flatMap(Function.identity())
 			.collect(Collectors.toUnmodifiableSet());
+		log.debug("[check] externalIds.size: {}", externalIds.size());
 
 		var deleting = new ArrayList<CompletableFuture<Void>>();
 
@@ -94,6 +101,7 @@ public class RedissonCachedSellerListingsService
 			}
 		});
 		deleting.addAll(this.check(listings.getItems(), externalIds));
+		log.debug("[check] deleting.size: {}", deleting.size());
 
 		// Do until the last page
 		while(listings.getNextLink() != null) {
@@ -103,6 +111,7 @@ public class RedissonCachedSellerListingsService
 				throw new RetryableException(e);
 			}
 			deleting.addAll(this.check(listings.getItems(), externalIds));
+			log.debug("[check] deleting.size: {}", deleting.size());
 		}
 
 		// Wait all future to complete.
