@@ -103,11 +103,14 @@ public class RedissonCachedSellerListingsService
 
 		// Do until the last page
 		while(listings.getNextLink() != null) {
-			try {
-				listings = this.sellerListingsService.getSellerListings(listings.getNextLink());
-			} catch (IOException e) {
-				throw new RetryableException(e);
-			}
+			var nextLink = listings.getNextLink();
+			listings = this.retry(() -> {
+				try {
+					return this.sellerListingsService.getSellerListings(nextLink);
+				} catch (IOException e) {
+					throw new RetryableException(e);
+				}
+			});
 			deleting.addAll(this.check(listings.getItems(), externalIds));
 			log.debug("[check] deleting.size: {}", deleting.size());
 		}
@@ -143,9 +146,11 @@ public class RedissonCachedSellerListingsService
 			t = supplier.get();
 		} catch (RetryableException e) {
 			if (++attempts >= maxAttempts) {
+				log.debug("attempts: {}", attempts);
 				throw e;
 			} else {
 				long delay = random.nextLong() * maxDelay;
+				log.debug("Sleeping {}", delay);
 				try {
 					Thread.sleep(delay);
 				} catch (InterruptedException ie) {
