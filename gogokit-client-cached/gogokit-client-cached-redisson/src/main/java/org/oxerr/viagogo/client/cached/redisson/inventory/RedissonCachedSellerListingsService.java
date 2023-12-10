@@ -97,9 +97,9 @@ public class RedissonCachedSellerListingsService
 		var last = SellerListingRequest.from(listings.getLastLink());
 
 		var checking = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
-		var request = next;
 
 		for(int i = next.getPage(); i <= last.getPage(); i++) {
+			var request = new SellerListingRequest();
 			request.setPage(i);
 			checking.add(this.check(request, externalIds, deleting));
 		}
