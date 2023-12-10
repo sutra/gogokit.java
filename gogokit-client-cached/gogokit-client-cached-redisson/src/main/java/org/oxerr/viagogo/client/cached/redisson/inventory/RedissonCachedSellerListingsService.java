@@ -80,7 +80,7 @@ public class RedissonCachedSellerListingsService
 
 	@Override
 	public void check() {
-		log.info("[check]");
+		log.info("[check] begin");
 
 		StopWatch stopWatch = StopWatch.createStarted();
 
@@ -109,7 +109,7 @@ public class RedissonCachedSellerListingsService
 		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
 
 		stopWatch.stop();
-		log.info("[checked] {}", stopWatch);
+		log.info("[check] end {}", stopWatch);
 	}
 
 	private Set<String> getExternalIds() {
