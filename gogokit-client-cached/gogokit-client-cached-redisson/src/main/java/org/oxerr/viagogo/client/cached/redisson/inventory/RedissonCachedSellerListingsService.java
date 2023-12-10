@@ -90,7 +90,7 @@ public class RedissonCachedSellerListingsService
 		var deleting = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
 
 		// Check the first page.
-		var listings = this.check(new SellerListingRequest(), externalIds, deleting).join();
+		var listings = this.check(request(1), externalIds, deleting).join();
 
 		// Check the next page to the last page.
 		var next = SellerListingRequest.from(listings.getNextLink());
@@ -99,9 +99,7 @@ public class RedissonCachedSellerListingsService
 		var checking = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
 
 		for(int i = next.getPage(); i <= last.getPage(); i++) {
-			var request = new SellerListingRequest();
-			request.setPage(i);
-			checking.add(this.check(request, externalIds, deleting));
+			checking.add(this.check(request(i), externalIds, deleting));
 		}
 
 		// Wait all checking to complete.
@@ -156,6 +154,13 @@ public class RedissonCachedSellerListingsService
 				throw new RetryableException(e);
 			}
 		});
+	}
+
+	private SellerListingRequest request(int page) {
+		var r = new SellerListingRequest();
+		r.setPage(page);
+		r.setPageSize(10_000);
+		return r;
 	}
 
 	private final Random random = new Random();
