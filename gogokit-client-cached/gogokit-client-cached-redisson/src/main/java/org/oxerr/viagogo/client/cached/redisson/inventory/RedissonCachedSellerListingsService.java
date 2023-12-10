@@ -2,6 +2,7 @@ package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.oxerr.ticket.inventory.support.cached.redisson.RedissonCachedListingServiceSupport;
@@ -21,6 +23,7 @@ import org.oxerr.viagogo.client.cached.inventory.ViagogoListing;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
+import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 import org.redisson.api.RedissonClient;
 
@@ -77,60 +80,82 @@ public class RedissonCachedSellerListingsService
 
 	@Override
 	public void check() {
-		log.debug("[check]");
+		log.info("[check]");
+
+		StopWatch stopWatch = StopWatch.createStarted();
 
 		// The external IDs in cache.
-		Set<String> externalIds = this.getCacheNamesStream()
+		var externalIds = this.getExternalIds();
+
+		var deleting = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
+
+		// Check the first page.
+		var listings = this.check(new SellerListingRequest(), externalIds, deleting).join();
+
+		// Check the next page to the last page.
+		var next = SellerListingRequest.from(listings.getNextLink());
+		var last = SellerListingRequest.from(listings.getLastLink());
+
+		var checking = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
+		var request = next;
+
+		for(int i = next.getPage(); i <= last.getPage(); i++) {
+			request.setPage(i);
+			checking.add(this.check(request, externalIds, deleting));
+		}
+
+		// Wait all checking to complete.
+		CompletableFuture.allOf(checking.toArray(CompletableFuture[]::new)).join();
+
+		// Wait all deleting to complete.
+		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
+
+		stopWatch.stop();
+		log.info("[checked] {}", stopWatch);
+	}
+
+	private Set<String> getExternalIds() {
+		var externalIds = this.getCacheNamesStream()
 			.map(name -> this.getCache(name).keySet().stream())
 			.flatMap(Function.identity())
 			.collect(Collectors.toUnmodifiableSet());
 		log.debug("[check] externalIds.size: {}", externalIds.size());
+		return externalIds;
+	}
 
-		var deleting = new ArrayList<CompletableFuture<Void>>();
+	private CompletableFuture<PagedResource<SellerListing>> check(
+		SellerListingRequest request,
+		Set<String> externalIds,
+		List<CompletableFuture<Void>> deleting
+	) {
+		return this.<PagedResource<SellerListing>>callAsync(() -> {
+			var page = this.getSellerListings(request);
+			deleting.addAll(this.check(page, externalIds));
+			log.debug("[check] page: {}, deleting.size: {}", request.getPage(), deleting.size());
+			return page;
+		});
+	}
 
-		// The first page.
-		var r = new SellerListingRequest();
+	private List<CompletableFuture<Void>> check(
+		PagedResource<SellerListing> page,
+		Set<String> externalIds
+	) {
+		return page.getItems().parallelStream()
+			.filter(listing -> !externalIds.contains(listing.getExternalId()))
+			.map(listing -> this.<Void>callAsync(() -> {
+				this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
+				return null;
+			})).collect(Collectors.toUnmodifiableList());
+	}
 
-		var listings = this.retry(() -> {
+	private PagedResource<SellerListing> getSellerListings(SellerListingRequest request) {
+		return this.retry(() -> {
 			try {
-				return this.sellerListingsService.getSellerListings(r);
+				return this.sellerListingsService.getSellerListings(request);
 			} catch (IOException e) {
 				throw new RetryableException(e);
 			}
 		});
-		deleting.addAll(this.check(listings.getItems(), externalIds));
-		log.debug("[check] deleting.size: {}", deleting.size());
-
-		// Do until the last page
-		while(listings.getNextLink() != null) {
-			var nextLink = listings.getNextLink();
-			listings = this.retry(() -> {
-				try {
-					return this.sellerListingsService.getSellerListings(nextLink);
-				} catch (IOException e) {
-					throw new RetryableException(e);
-				}
-			});
-			deleting.addAll(this.check(listings.getItems(), externalIds));
-			log.debug("[check] deleting.size: {}", deleting.size());
-		}
-
-		// Wait all future to complete.
-		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
-	}
-
-	private List<CompletableFuture<Void>> check(List<SellerListing> listings, Set<String> externalIds) {
-		return listings.parallelStream()
-			.filter(listing -> !externalIds.contains(listing.getExternalId()))
-			.map(listing ->
-				RedissonCachedListingServiceSupport.<Void>callAsync(() -> {
-						this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
-						return null;
-					},
-					this.executor
-				)
-			)
-			.collect(Collectors.toUnmodifiableList());
 	}
 
 	private final Random random = new Random();
@@ -145,22 +170,25 @@ public class RedissonCachedSellerListingsService
 		try {
 			t = supplier.get();
 		} catch (RetryableException e) {
-			if (++attempts >= maxAttempts) {
-				log.debug("attempts: {}", attempts);
-				throw e;
-			} else {
+			if (++attempts < maxAttempts) {
 				long delay = random.nextLong() * maxDelay;
-				log.debug("Sleeping {}", delay);
-				try {
-					Thread.sleep(delay);
-				} catch (InterruptedException ie) {
-					Thread.currentThread().interrupt();
-				}
+				sleep(delay);
+			} else {
+				log.debug("attempts: {}", attempts);
 				throw e;
 			}
 		}
 
 		return t;
+	}
+
+	private void sleep(long millis) {
+		log.debug("sleeping {}", millis);
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException ie) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	private static class RetryableException extends RuntimeException {
