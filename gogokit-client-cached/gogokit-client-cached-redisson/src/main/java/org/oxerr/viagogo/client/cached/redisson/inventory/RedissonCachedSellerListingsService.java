@@ -159,7 +159,8 @@ public class RedissonCachedSellerListingsService
 	private SellerListingRequest request(int page) {
 		var r = new SellerListingRequest();
 		r.setPage(page);
-		r.setPageSize(10_000);
+		// r.setPageSize(10_000);
+		r.setPageSize(1_000);
 		return r;
 	}
 
