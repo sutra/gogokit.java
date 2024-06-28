@@ -1,0 +1,22 @@
+{
+	"total_items": 198245,
+	"page": 1,
+	"page_size": 1,
+	"_links": {
+		"self": {
+			"href": "https://api.viagogo.net/v2/sellerlistings?page_size=1&page=1",
+			"title": null,
+			"templated": false
+		},
+		"last": {
+			"href": "https://api.viagogo.net/v2/sellerlistings?page_size=1&page=198245",
+			"title": null,
+			"templated": false
+		},
+		"next": {
+			"href": "https://api.viagogo.net/v2/sellerlistings?page_size=1&page=2",
+			"title": null,
+			"templated": false
+		}
+	}
+}
