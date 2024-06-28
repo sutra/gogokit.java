@@ -93,6 +93,9 @@ public class RedissonCachedSellerListingsService
 		var listings = this.check(request(1), externalIds, deleting).join();
 
 		// Check the next page to the last page.
+		log.debug("[check] total items: {}, next link: {}, last link: {}",
+			listings.getTotalItems(), listings.getNextLink(), listings.getLastLink());
+
 		var next = SellerListingRequest.from(listings.getNextLink());
 		var last = SellerListingRequest.from(listings.getLastLink());
 
