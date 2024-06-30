@@ -42,6 +42,12 @@ public class SellerListingRequest extends PagedRequest {
 
 	}
 
+	/**
+	 * Obtains an instance of {@code SellerListingRequest} from a {@link HALLink}.
+	 *
+	 * @param halLink the {@link HALLink}, not null
+	 * @return the {@code SellerListingRequest}, not null
+	 */
 	public static SellerListingRequest from(HALLink halLink) {
 		return new SellerListingRequest(new Link(halLink));
 	}

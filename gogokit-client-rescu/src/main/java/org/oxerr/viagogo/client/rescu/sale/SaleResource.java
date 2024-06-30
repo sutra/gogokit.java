@@ -40,6 +40,14 @@ public interface SaleResource {
 	 *
 	 * <p>List sales for the authenticated user.</p>
 	 *
+	 * @param page specifies which page of data to retrieve.
+	 * @param pageSize set custom page sizes on reponses.
+	 * @param updatedSince filters the response to only return items
+	 * that have been updated since the given timestamp.
+	 * @param sort determines the ordering of items.
+	 * A comma-separated string containing {@code created_at},
+	 * {@code event_date}, {@code inhand_at}, {@code payment_amount},
+	 * {@code quantity}, or {@code resource_version}.
 	 * @return the sales for the authenticated user.
 	 * @throws IOException indicates I/O exception.
 	 * @throws ViagogoException indicates business exception.

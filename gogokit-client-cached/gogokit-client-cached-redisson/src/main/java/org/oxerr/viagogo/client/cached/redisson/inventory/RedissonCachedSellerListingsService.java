@@ -1,9 +1,11 @@
 package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -12,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,19 +96,27 @@ public class RedissonCachedSellerListingsService
 		var listings = this.check(request(1), externalIds, deleting).join();
 
 		// Check the next page to the last page.
-		var next = SellerListingRequest.from(listings.getNextLink());
-		var last = SellerListingRequest.from(listings.getLastLink());
+		log.debug("[check] total items: {}, next link: {}, last link: {}",
+			listings.getTotalItems(), listings.getNextLink(), listings.getLastLink());
+
+		// When only 1 page left, the next link and last link is null.
+		var next = Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from);
+		var last = Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from);
 
 		var checking = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
 
-		for(int i = next.getPage(); i <= last.getPage(); i++) {
-			checking.add(this.check(request(i), externalIds, deleting));
+		if (next.isPresent() && last.isPresent()) {
+			for(int i = next.get().getPage(); i <= last.get().getPage(); i++) {
+				checking.add(this.check(request(i), externalIds, deleting));
+			}
 		}
 
 		// Wait all checking to complete.
+		log.debug("[check] checking size: {}", checking.size());
 		CompletableFuture.allOf(checking.toArray(CompletableFuture[]::new)).join();
 
 		// Wait all deleting to complete.
+		log.debug("[check] deleting size: {}", deleting.size());
 		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
 
 		stopWatch.stop();
@@ -188,12 +199,12 @@ public class RedissonCachedSellerListingsService
 	}
 
 	private void sleep(long millis) {
-		log.debug("sleeping {}", millis);
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
+		if (millis < 0) {
+			return;
 		}
+
+		log.debug("sleeping {}", millis);
+		ThreadUtils.sleepQuietly(Duration.ofMillis(millis));
 	}
 
 	private static class RetryableException extends RuntimeException {
