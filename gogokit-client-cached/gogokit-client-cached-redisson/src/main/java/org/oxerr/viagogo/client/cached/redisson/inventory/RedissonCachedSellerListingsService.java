@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -195,12 +197,12 @@ public class RedissonCachedSellerListingsService
 	}
 
 	private void sleep(long millis) {
-		log.debug("sleeping {}", millis);
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException ie) {
-			Thread.currentThread().interrupt();
+		if (millis < 0) {
+			return;
 		}
+
+		log.debug("sleeping {}", millis);
+		ThreadUtils.sleepQuietly(Duration.ofMillis(millis));
 	}
 
 	private static class RetryableException extends RuntimeException {
