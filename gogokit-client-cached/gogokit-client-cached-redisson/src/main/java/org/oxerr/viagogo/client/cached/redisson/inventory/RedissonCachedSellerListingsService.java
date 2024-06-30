@@ -112,9 +112,11 @@ public class RedissonCachedSellerListingsService
 		}
 
 		// Wait all checking to complete.
+		log.debug("[check] checking size: {}", checking.size());
 		CompletableFuture.allOf(checking.toArray(CompletableFuture[]::new)).join();
 
 		// Wait all deleting to complete.
+		log.debug("[check] deleting size: {}", deleting.size());
 		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
 
 		stopWatch.stop();
