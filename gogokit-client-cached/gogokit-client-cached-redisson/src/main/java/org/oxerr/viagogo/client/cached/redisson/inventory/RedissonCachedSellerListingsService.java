@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -96,13 +97,16 @@ public class RedissonCachedSellerListingsService
 		log.debug("[check] total items: {}, next link: {}, last link: {}",
 			listings.getTotalItems(), listings.getNextLink(), listings.getLastLink());
 
-		var next = SellerListingRequest.from(listings.getNextLink());
-		var last = SellerListingRequest.from(listings.getLastLink());
+		// When only 1 page left, the next link and last link is null.
+		var next = Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from);
+		var last = Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from);
 
 		var checking = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
 
-		for(int i = next.getPage(); i <= last.getPage(); i++) {
-			checking.add(this.check(request(i), externalIds, deleting));
+		if (next.isPresent() && last.isPresent()) {
+			for(int i = next.get().getPage(); i <= last.get().getPage(); i++) {
+				checking.add(this.check(request(i), externalIds, deleting));
+			}
 		}
 
 		// Wait all checking to complete.
