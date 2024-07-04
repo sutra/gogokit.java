@@ -83,7 +83,7 @@ public class RedissonCachedSellerListingsService
 
 	@Override
 	public void check() {
-		log.info("[check] begin");
+		log.info("[check] begin.");
 
 		StopWatch stopWatch = StopWatch.createStarted();
 
@@ -120,7 +120,7 @@ public class RedissonCachedSellerListingsService
 		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
 
 		stopWatch.stop();
-		log.info("[check] end {}", stopWatch);
+		log.info("[check] end. Checked {} items in {}", listings.getTotalItems(), stopWatch);
 	}
 
 	private Set<String> getExternalIds() {
@@ -128,7 +128,7 @@ public class RedissonCachedSellerListingsService
 			.map(name -> this.getCache(name).keySet().stream())
 			.flatMap(Function.identity())
 			.collect(Collectors.toUnmodifiableSet());
-		log.debug("[check] externalIds.size: {}", externalIds.size());
+		log.debug("[check] externalIds size: {}", externalIds.size());
 		return externalIds;
 	}
 
@@ -140,7 +140,7 @@ public class RedissonCachedSellerListingsService
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
 			deleting.addAll(this.check(page, externalIds));
-			log.debug("[check] page: {}, deleting.size: {}", request.getPage(), deleting.size());
+			log.debug("[check] page: {}, deleting size: {}", request.getPage(), deleting.size());
 			return page;
 		});
 	}
