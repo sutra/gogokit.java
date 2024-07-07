@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -77,7 +78,7 @@ class SellerListingServiceImplTest {
 	void testGetSellerListings() throws ViagogoException, IOException {
 		SellerListingRequest r = new SellerListingRequest();
 		r.setPageSize(10_000); // seems the maximum page size is 10_000
-		r.setSort("created_at");
+		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		PagedResource<SellerListing> sellerListings = sellerListingService.getSellerListings(r);
@@ -86,10 +87,17 @@ class SellerListingServiceImplTest {
 
 		log.info("[{}]Total items: {}", stopWatch, sellerListings.getTotalItems());
 
-		log.info("Next link: {}", sellerListings.getNextLink().getHref());
+		log.info("Next link: {}", sellerListings.getNextLink());
 
+		OffsetDateTime now = OffsetDateTime.now();
 		for (SellerListing l : sellerListings.getItems()) {
-			log.info("{} event start date: {}, created at: {}", l.getSelfLink().getHref(), l.getEvent().getStartDate().atZoneSameInstant(ZoneId.systemDefault()), l.getCreatedAt());
+			log.info("{} event start date: {}({}), created at: {}, expires at: {}",
+				l.getSelfLink().getHref(),
+				l.getEvent().getStartDate().atZoneSameInstant(ZoneId.systemDefault()),
+				Duration.between(now, l.getEvent().getStartDate()),
+				l.getCreatedAt(),
+				l.getExpiresAt().atZone(ZoneId.systemDefault())
+			);
 		}
 	}
 
