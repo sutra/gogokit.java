@@ -169,6 +169,7 @@ public class RedissonCachedSellerListingsService
 
 	private SellerListingRequest request(int page) {
 		var r = new SellerListingRequest();
+		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
 		r.setPage(page);
 		r.setPageSize(10_000);
 		return r;

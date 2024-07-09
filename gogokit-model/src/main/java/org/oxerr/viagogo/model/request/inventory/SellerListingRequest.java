@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.viagogo.model.Link;
 import org.oxerr.viagogo.model.request.PagedRequest;
+import org.oxerr.viagogo.model.response.catalog.Event;
+import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
@@ -21,12 +23,26 @@ public class SellerListingRequest extends PagedRequest {
 
 		AVAILABLE_TICKETS,
 
+		/**
+		 * @see SellerListing#getCreatedAt()
+		 */
 		CREATED_AT,
 
+		/**
+		 * @see SellerListing#getEvent()
+		 * @see Event#getStartDate()
+		 */
 		EVENT_DATE,
 
+		/**
+		 * @see SellerListing#getEvent()
+		 * @see Event#getName()
+		 */
 		EVENT_NAME,
 
+		/**
+		 * @see SellerListing#getExpiresAt()
+		 */
 		EXPIRATION_DATE,
 
 		PRICE,

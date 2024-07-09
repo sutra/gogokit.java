@@ -3,6 +3,8 @@ package org.oxerr.viagogo.model.response;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -79,6 +81,7 @@ public class PagedResource<T extends Serializable> extends Resource {
 		this.items = items;
 	}
 
+	@CheckForNull
 	public HALLink getNextLink() {
 		return nextLink;
 	}
@@ -87,6 +90,7 @@ public class PagedResource<T extends Serializable> extends Resource {
 		this.nextLink = nextLink;
 	}
 
+	@CheckForNull
 	public HALLink getPrevLink() {
 		return prevLink;
 	}
@@ -95,6 +99,7 @@ public class PagedResource<T extends Serializable> extends Resource {
 		this.prevLink = prevLink;
 	}
 
+	@CheckForNull
 	public HALLink getFirstLink() {
 		return firstLink;
 	}
@@ -103,6 +108,7 @@ public class PagedResource<T extends Serializable> extends Resource {
 		this.firstLink = firstLink;
 	}
 
+	@CheckForNull
 	public HALLink getLastLink() {
 		return lastLink;
 	}
