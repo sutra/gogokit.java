@@ -30,7 +30,7 @@ public class SellerListingRequest extends PagedRequest {
 
 		/**
 		 * @see SellerListing#getEvent()
-		 * @see Event#getStartDate()t
+		 * @see Event#getStartDate()
 		 */
 		EVENT_DATE,
 
