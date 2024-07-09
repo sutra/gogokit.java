@@ -64,7 +64,7 @@ public interface SellerListingResource {
 	 * A comma-separated string containing
 	 * {@code available_tickets}, {@code created_at}, {@code event_date},
 	 * {@code event_name}, {@code expiration_date}, {@code price},
-	 * {@code resource_version}, {@code orticket_availability_date}.
+	 * {@code resource_version}, or {@code ticket_availability_date}.
 	 * @return seller listings
 	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
