@@ -66,8 +66,11 @@ class SaleServiceImplTest {
 			}
 		});
 		log.info(
-			"Sale ID: {}, created at: {}, external listing ID: {}, event ID: {}, event start date: {}",
-			sale.getId(), sale.getCreatedAt(), sale.getExternalListingId(), sale.getEvent().getId(), sale.getEvent().getStartDate());
+			"Sale ID: {}, created at: {}, external listing ID: {}, event ID: {}, event start date: {}, status: {}",
+			sale.getId(), sale.getCreatedAt(), sale.getExternalListingId(),
+			sale.getEvent().getId(), sale.getEvent().getStartDate(),
+			sale.getStatus()
+		);
 	}
 
 }
