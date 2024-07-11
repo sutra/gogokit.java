@@ -15,7 +15,7 @@ public interface SaleService {
 
 	PagedResource<Sale> getSalesRecentUpdates(@Nullable Instant updatedSince) throws IOException;
 
-	PagedResource<Sale> getSales(@Nonnull SaleRequest r) throws IOException;
+	PagedResource<Sale> getSales(@Nonnull SaleRequest saleRequest) throws IOException;
 
 	Optional<Sale> getSale(@Nonnull Integer saleId) throws IOException;
 

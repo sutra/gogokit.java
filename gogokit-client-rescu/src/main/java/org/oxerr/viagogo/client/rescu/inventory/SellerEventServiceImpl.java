@@ -17,18 +17,18 @@ public class SellerEventServiceImpl implements SellerEventService {
 	}
 
 	@Override
-	public PagedResource<SellerEvent> getSellerEvents(SellerEventRequest r) throws IOException {
+	public PagedResource<SellerEvent> getSellerEvents(SellerEventRequest sellerEventRequest) throws IOException {
 		return this.sellerEventResource.getSellerEvents(
-			r.getPage(),
-			r.getPageSize(),
-			r.getUpdatedSince(),
-			r.getSort()
+			sellerEventRequest.getPage(),
+			sellerEventRequest.getPageSize(),
+			sellerEventRequest.getUpdatedSince(),
+			sellerEventRequest.getSort()
 		);
 	}
 
 	@Override
-	public SellerEvent createSellerEvent(CreateSellerEventRequest r) throws IOException {
-		return this.sellerEventResource.createSellerEvent(r);
+	public SellerEvent createSellerEvent(CreateSellerEventRequest createSellerEventRequest) throws IOException {
+		return this.sellerEventResource.createSellerEvent(createSellerEventRequest);
 	}
 
 }
