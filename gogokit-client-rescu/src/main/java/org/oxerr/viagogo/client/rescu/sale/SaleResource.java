@@ -41,7 +41,7 @@ public interface SaleResource {
 	 * <p>List sales for the authenticated user.</p>
 	 *
 	 * @param page specifies which page of data to retrieve.
-	 * @param pageSize set custom page sizes on reponses.
+	 * @param pageSize set custom page sizes on response.
 	 * @param updatedSince filters the response to only return items
 	 * that have been updated since the given timestamp.
 	 * @param sort determines the ordering of items.

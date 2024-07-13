@@ -60,7 +60,7 @@ public interface SellerListingService {
 	 */
 	default List<SellerListing> getAllSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
 		PagedResource<SellerListing> pagedSellerListings = this.getSellerListings(sellerListingRequest);
-		List<SellerListing> sellerListings = new ArrayList<SellerListing>(pagedSellerListings.getTotalItems());
+		List<SellerListing> sellerListings = new ArrayList<>(pagedSellerListings.getTotalItems());
 		sellerListings.addAll(pagedSellerListings.getItems());
 
 		while (pagedSellerListings.getNextLink() != null) {

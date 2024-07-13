@@ -28,12 +28,12 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public PagedResource<Sale> getSales(SaleRequest r) throws IOException {
+	public PagedResource<Sale> getSales(SaleRequest saleRequest) throws IOException {
 		return this.saleResource.getSales(
-			r.getPage(),
-			r.getPageSize(),
-			r.getUpdatedSince(),
-			r.getSort()
+			saleRequest.getPage(),
+			saleRequest.getPageSize(),
+			saleRequest.getUpdatedSince(),
+			saleRequest.getSort()
 		);
 	}
 

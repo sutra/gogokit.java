@@ -9,8 +9,8 @@ import org.oxerr.viagogo.model.response.inventory.SellerEvent;
 
 public interface SellerEventService {
 
-	PagedResource<SellerEvent> getSellerEvents(SellerEventRequest r) throws IOException;
+	PagedResource<SellerEvent> getSellerEvents(SellerEventRequest sellerEventRequest) throws IOException;
 
-	SellerEvent createSellerEvent(CreateSellerEventRequest r) throws IOException;
+	SellerEvent createSellerEvent(CreateSellerEventRequest createSellerEventRequest) throws IOException;
 
 }

@@ -23,18 +23,18 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public PagedResource<Event> getEvents(EventRequest r) throws IOException {
+	public PagedResource<Event> getEvents(EventRequest eventRequest) throws IOException {
 		return this.eventResource.getEvents(
-			r.getPage(),
-			r.getPageSize(),
-			r.getUpdatedSince(),
-			r.getSort(),
-			r.getMinResourceVersion(),
-			r.getCountryCode(),
-			r.getLatitude(),
-			r.getLongitude(),
-			r.getMaxDistanceInMeters(),
-			r.getGenreId()
+			eventRequest.getPage(),
+			eventRequest.getPageSize(),
+			eventRequest.getUpdatedSince(),
+			eventRequest.getSort(),
+			eventRequest.getMinResourceVersion(),
+			eventRequest.getCountryCode(),
+			eventRequest.getLatitude(),
+			eventRequest.getLongitude(),
+			eventRequest.getMaxDistanceInMeters(),
+			eventRequest.getGenreId()
 		);
 	}
 
@@ -65,20 +65,20 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public PagedResource<Event> searchEvents(SearchEventRequest r) throws IOException {
+	public PagedResource<Event> searchEvents(SearchEventRequest searchEventRequest) throws IOException {
 		return this.eventResource.searchEvents(
-			r.getQ(),
-			r.getDateLocal(),
-			r.getPage(),
-			r.getPageSize(),
-			r.getUpdatedSince(),
-			r.getSort(),
-			r.getMinResourceVersion(),
-			r.getCountryCode(),
-			r.getLatitude(),
-			r.getLongitude(),
-			r.getMaxDistanceInMeters(),
-			r.getGenreId()
+			searchEventRequest.getQ(),
+			searchEventRequest.getDateLocal(),
+			searchEventRequest.getPage(),
+			searchEventRequest.getPageSize(),
+			searchEventRequest.getUpdatedSince(),
+			searchEventRequest.getSort(),
+			searchEventRequest.getMinResourceVersion(),
+			searchEventRequest.getCountryCode(),
+			searchEventRequest.getLatitude(),
+			searchEventRequest.getLongitude(),
+			searchEventRequest.getMaxDistanceInMeters(),
+			searchEventRequest.getGenreId()
 		);
 	}
 
