@@ -167,4 +167,10 @@
 		<system>GitHub</system>
 		<url>https://github.com/sutra/gogokit.java/issues</url>
 	</issueManagement>
+	<distributionManagement>
+		<site>
+			<id>oxerr.org</id>
+			<url>scp://oxerr.org/usr/local/www/gogokit.java/</url>
+		</site>
+	</distributionManagement>
 </project>
