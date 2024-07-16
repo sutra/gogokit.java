@@ -38,6 +38,7 @@ import com.evanlennick.retry4j.exception.UnexpectedException;
 
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
+@Disabled("Token is required")
 class EventServiceTest {
 
 	private final Logger log = LogManager.getLogger();

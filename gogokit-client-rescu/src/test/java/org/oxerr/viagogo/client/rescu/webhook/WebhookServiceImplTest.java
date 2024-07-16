@@ -13,6 +13,7 @@ import org.oxerr.viagogo.model.response.webhook.Webhook;
 /**
  * Tests for {@link WebhookServiceImpl}.
  */
+@Disabled("Token is required")
 class WebhookServiceImplTest {
 
 	private final Logger log = LogManager.getLogger();

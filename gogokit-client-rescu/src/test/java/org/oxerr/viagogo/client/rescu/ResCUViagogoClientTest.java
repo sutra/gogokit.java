@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.model.request.sale.SaleRequest;
 
+@Disabled("Token is required")
 public class ResCUViagogoClientTest {
 
 	private final Logger log = LogManager.getLogger();
