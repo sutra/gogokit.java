@@ -46,6 +46,7 @@ public class ResCUViagogoClientTest {
 	}
 
 	@Test
+	@Disabled("Token is required")
 	void testGetClient() {
 		assertNotNull(ResCUViagogoClientTest.getClient());
 	}
