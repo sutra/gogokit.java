@@ -18,6 +18,7 @@ import org.oxerr.viagogo.model.request.inventory.VenueRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerEvent;
 
+@Disabled("Token is required")
 class SellerEventServiceImplTest {
 
 	private final Logger log = LogManager.getLogger();

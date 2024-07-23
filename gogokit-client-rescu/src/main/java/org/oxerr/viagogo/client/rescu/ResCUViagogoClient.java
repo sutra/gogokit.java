@@ -1,5 +1,7 @@
 package org.oxerr.viagogo.client.rescu;
 
+import java.util.function.Supplier;
+
 import org.oxerr.rescu.ext.singleton.RestProxyFactorySingletonImpl;
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.catalog.EventService;
@@ -37,6 +39,8 @@ import si.mazi.rescu.serialization.jackson.JacksonObjectMapperFactory;
 
 public class ResCUViagogoClient implements ViagogoClient {
 
+	private static final String DEFAULT_BASE_URL = "https://api.viagogo.net";
+
 	private final String baseUrl;
 
 	private final ClientConfig clientConfig;
@@ -54,10 +58,18 @@ public class ResCUViagogoClient implements ViagogoClient {
 	private final WebhookService webhookService;
 
 	public ResCUViagogoClient(String token, Interceptor... interceptors) {
-		this("https://api.viagogo.net", token, interceptors);
+		this(DEFAULT_BASE_URL, token, interceptors);
 	}
 
 	public ResCUViagogoClient(String baseUrl, String token, Interceptor... interceptors) {
+		this(baseUrl, () -> token, interceptors);
+	}
+
+	public ResCUViagogoClient(Supplier<String> token, Interceptor... interceptors) {
+		this(DEFAULT_BASE_URL, token, interceptors);
+	}
+
+	public ResCUViagogoClient(String baseUrl, Supplier<String> tokenSupplier, Interceptor... interceptors) {
 		this.baseUrl = baseUrl;
 
 		JacksonObjectMapperFactory jacksonObjectMapperFactory = new DefaultJacksonObjectMapperFactory() {
@@ -81,7 +93,14 @@ public class ResCUViagogoClient implements ViagogoClient {
 
 		this.clientConfig = new ClientConfig();
 		clientConfig.addDefaultParam(PathParam.class, "version", "v2");
-		clientConfig.addDefaultParam(HeaderParam.class, "Authorization", "Bearer " + token);
+		clientConfig.addDefaultParam(HeaderParam.class, "Authorization", new Object() {
+
+			@Override
+			public String toString() {
+				return "Bearer " + tokenSupplier.get();
+			}
+
+		});
 		clientConfig.setJacksonObjectMapperFactory(jacksonObjectMapperFactory);
 
 		this.restProxyFactory = new RestProxyFactorySingletonImpl(new RestProxyFactoryImpl());

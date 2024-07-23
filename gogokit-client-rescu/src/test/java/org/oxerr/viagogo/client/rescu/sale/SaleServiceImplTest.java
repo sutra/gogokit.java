@@ -17,6 +17,7 @@ import org.oxerr.viagogo.model.response.sale.Sale;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Disabled("Token is required")
 class SaleServiceImplTest {
 
 	private final Logger log = LogManager.getLogger();
