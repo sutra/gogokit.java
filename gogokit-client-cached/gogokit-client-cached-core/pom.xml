@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo.cached</groupId>
 		<artifactId>gogokit-client-cached</artifactId>
-		<version>4.1.0</version>
+		<version>4.1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>gogokit-client-cached-core</artifactId>
 	<name>GogoKit Client - Cached - Core</name>
