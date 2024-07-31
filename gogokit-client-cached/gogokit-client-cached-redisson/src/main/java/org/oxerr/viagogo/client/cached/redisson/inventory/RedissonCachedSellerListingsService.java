@@ -188,7 +188,7 @@ public class RedissonCachedSellerListingsService
 			t = supplier.get();
 		} catch (RetryableException e) {
 			if (++attempts < maxAttempts) {
-				long delay = random.nextLong() * maxDelay;
+				long delay = random.nextInt(maxDelay);
 				sleep(delay);
 			} else {
 				log.debug("attempts: {}", attempts);
