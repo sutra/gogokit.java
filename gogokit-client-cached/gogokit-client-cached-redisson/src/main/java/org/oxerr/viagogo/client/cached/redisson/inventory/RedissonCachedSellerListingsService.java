@@ -52,11 +52,11 @@ public class RedissonCachedSellerListingsService
 	@Override
 	protected boolean shouldDelete(
 		ViagogoEvent event,
-		Set<String> inventoryTicketIds,
-		String ticketId,
+		Set<String> inventoryListingIds,
+		String listingId,
 		ViagogoCachedListing cachedListing
 	) {
-		return super.shouldDelete(event, inventoryTicketIds, ticketId, cachedListing)
+		return super.shouldDelete(event, inventoryListingIds, listingId, cachedListing)
 			|| !event.getViagogoEventId().equals(cachedListing.getViagogoEventId());
 	}
 
@@ -67,8 +67,8 @@ public class RedissonCachedSellerListingsService
 	}
 
 	@Override
-	protected void deleteListing(ViagogoEvent event, String ticketId) throws IOException {
-		this.sellerListingsService.deleteListingByExternalListingId(ticketId);
+	protected void deleteListing(ViagogoEvent event, String listingId) throws IOException {
+		this.sellerListingsService.deleteListingByExternalListingId(listingId);
 	}
 
 	@Override
