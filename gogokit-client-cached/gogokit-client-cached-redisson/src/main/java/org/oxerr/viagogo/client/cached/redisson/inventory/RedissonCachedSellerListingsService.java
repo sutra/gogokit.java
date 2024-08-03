@@ -38,6 +38,31 @@ public class RedissonCachedSellerListingsService
 
 	private final SellerListingService sellerListingsService;
 
+	private final int pageSize;
+
+	public static class RetryConfig {
+
+		private final int maxAttempts;
+
+		private final int maxDelay;
+
+		public RetryConfig(int maxAttempts, int maxDelay) {
+			this.maxAttempts = maxAttempts;
+			this.maxDelay = maxDelay;
+		}
+
+		public int getMaxAttempts() {
+			return maxAttempts;
+		}
+
+		public int getMaxDelay() {
+			return maxDelay;
+		}
+
+	}
+
+	private final RetryConfig retryConfig;
+
 	public RedissonCachedSellerListingsService(
 		SellerListingService sellerListingsService,
 		RedissonClient redissonClient,
@@ -45,8 +70,22 @@ public class RedissonCachedSellerListingsService
 		Executor executor,
 		boolean create
 	) {
+		this(sellerListingsService, redissonClient, keyPrefix, executor, create, 10_000, new RetryConfig(10, 100));
+	}
+
+	public RedissonCachedSellerListingsService(
+		SellerListingService sellerListingsService,
+		RedissonClient redissonClient,
+		String keyPrefix,
+		Executor executor,
+		boolean create,
+		int pageSize,
+		RetryConfig retryConfig
+	) {
 		super(redissonClient, keyPrefix, executor, create);
 		this.sellerListingsService = sellerListingsService;
+		this.pageSize = pageSize;
+		this.retryConfig = retryConfig;
 	}
 
 	@Override
@@ -171,15 +210,13 @@ public class RedissonCachedSellerListingsService
 		var r = new SellerListingRequest();
 		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
 		r.setPage(page);
-		r.setPageSize(10_000);
+		r.setPageSize(pageSize);
 		return r;
 	}
 
 	private final Random random = new Random();
 
 	private <T> T retry(Supplier<T> supplier) {
-		int maxAttempts = 10;
-		int maxDelay = 100;
 		int attempts = 0;
 
 		T t = null;
@@ -187,8 +224,8 @@ public class RedissonCachedSellerListingsService
 		try {
 			t = supplier.get();
 		} catch (RetryableException e) {
-			if (++attempts < maxAttempts) {
-				long delay = random.nextInt(maxDelay);
+			if (++attempts < retryConfig.getMaxAttempts()) {
+				long delay = random.nextInt(retryConfig.getMaxDelay());
 				sleep(delay);
 			} else {
 				log.debug("attempts: {}", attempts);
