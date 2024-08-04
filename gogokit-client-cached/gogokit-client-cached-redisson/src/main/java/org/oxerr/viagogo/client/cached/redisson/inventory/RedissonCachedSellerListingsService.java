@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.oxerr.ticket.inventory.support.cached.redisson.ListingConfiguration;
 import org.oxerr.ticket.inventory.support.cached.redisson.RedissonCachedListingServiceSupport;
 import org.oxerr.ticket.inventory.support.cached.redisson.Status;
 import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingsService;
@@ -40,38 +41,9 @@ public class RedissonCachedSellerListingsService
 
 	private final int pageSize;
 
-	/**
-	 * Represents a retry configuration.
-	 *
-	 * @since 4.2.0
-	 */
-	public static class RetryConfig {
+	private final RetryConfiguration retryConfig;
 
-		private final int maxAttempts;
-
-		private final int maxDelay;
-
-		public RetryConfig() {
-			this(10, 1_000);
-		}
-
-		public RetryConfig(int maxAttempts, int maxDelay) {
-			this.maxAttempts = maxAttempts;
-			this.maxDelay = maxDelay;
-		}
-
-		public int getMaxAttempts() {
-			return maxAttempts;
-		}
-
-		public int getMaxDelay() {
-			return maxDelay;
-		}
-
-	}
-
-	private final RetryConfig retryConfig;
-
+	@Deprecated(since = "5.0.0", forRemoval = true)
 	public RedissonCachedSellerListingsService(
 		SellerListingService sellerListingsService,
 		RedissonClient redissonClient,
@@ -79,35 +51,54 @@ public class RedissonCachedSellerListingsService
 		Executor executor,
 		boolean create
 	) {
-		this(sellerListingsService, redissonClient, keyPrefix, executor, create, 10_000, new RetryConfig());
+		this(sellerListingsService, redissonClient, keyPrefix, executor, new ListingConfiguration(create, true, true), 10_000, new RetryConfiguration());
 	}
 
 	/**
-	 * Constructs with retry configuration.
+	 * Constructs with default {@link ListingConfiguration} and default {@link RetryConfiguration}.
 	 *
-	 * @param sellerListingsService the seller listings service to create/update/delete listings.
+	 * @param sellerListingsService the seller listings service.
 	 * @param redissonClient the redisson client.
 	 * @param keyPrefix the key prefix for the cache.
 	 * @param executor the executor.
-	 * @param create indicates if create new listings.
-	 * @param pageSize the page size when do check.
-	 * @param retryConfig the retry configuration.
 	 *
-	 * @since 4.2.0
+	 * @since 5.0.0
+	 */
+	public RedissonCachedSellerListingsService(
+		SellerListingService sellerListingsService,
+		RedissonClient redissonClient,
+		String keyPrefix,
+		Executor executor
+	) {
+		this(sellerListingsService, redissonClient, keyPrefix, executor, new ListingConfiguration(), 10_000, new RetryConfiguration());
+	}
+
+	/**
+	 * Constructs with specified {@link ListingConfiguration} and specified {@link RetryConfiguration}.
+	 *
+	 * @param sellerListingsService the seller listings service.
+	 * @param redissonClient the redisson client.
+	 * @param keyPrefix the key prefix for the cache.
+	 * @param executor the executor.
+	 * @param listingConfiguration the listing configuration.
+	 * @param pageSize the page size when do check.
+	 * @param retryConfiguration the retry configuration.
+	 *
+	 * @since 5.0.0
 	 */
 	public RedissonCachedSellerListingsService(
 		SellerListingService sellerListingsService,
 		RedissonClient redissonClient,
 		String keyPrefix,
 		Executor executor,
-		boolean create,
+		ListingConfiguration listingConfiguration,
 		int pageSize,
-		RetryConfig retryConfig
+		RetryConfiguration retryConfiguration
 	) {
-		super(redissonClient, keyPrefix, executor, create);
+		super(redissonClient, keyPrefix, executor, listingConfiguration);
 		this.sellerListingsService = sellerListingsService;
 		this.pageSize = pageSize;
-		this.retryConfig = retryConfig;
+		this.retryConfig = retryConfiguration;
 	}
 
 	@Override
