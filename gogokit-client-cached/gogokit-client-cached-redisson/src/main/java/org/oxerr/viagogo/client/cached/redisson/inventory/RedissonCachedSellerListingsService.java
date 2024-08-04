@@ -218,7 +218,7 @@ public class RedissonCachedSellerListingsService
 		PagedResource<SellerListing> page,
 		Set<String> externalIds
 	) {
-		return page.getItems().parallelStream()
+		return page.getItems().stream()
 			.filter(listing -> !externalIds.contains(listing.getExternalId()))
 			.map(listing -> this.<Void>callAsync(() -> {
 				this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
