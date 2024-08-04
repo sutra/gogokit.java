@@ -40,11 +40,20 @@ public class RedissonCachedSellerListingsService
 
 	private final int pageSize;
 
+	/**
+	 * Represents a retry configuration.
+	 *
+	 * @since 4.2.0
+	 */
 	public static class RetryConfig {
 
 		private final int maxAttempts;
 
 		private final int maxDelay;
+
+		public RetryConfig() {
+			this(10, 1_000);
+		}
 
 		public RetryConfig(int maxAttempts, int maxDelay) {
 			this.maxAttempts = maxAttempts;
@@ -70,9 +79,22 @@ public class RedissonCachedSellerListingsService
 		Executor executor,
 		boolean create
 	) {
-		this(sellerListingsService, redissonClient, keyPrefix, executor, create, 10_000, new RetryConfig(10, 100));
+		this(sellerListingsService, redissonClient, keyPrefix, executor, create, 10_000, new RetryConfig());
 	}
 
+	/**
+	 * Constructs with retry configuration.
+	 *
+	 * @param sellerListingsService the seller listings service to create/update/delete listings.
+	 * @param redissonClient the redisson client.
+	 * @param keyPrefix the key prefix for the cache.
+	 * @param executor the executor.
+	 * @param create indicates if create new listings.
+	 * @param pageSize the page size when do check.
+	 * @param retryConfig the retry configuration.
+	 *
+	 * @since 4.2.0
+	 */
 	public RedissonCachedSellerListingsService(
 		SellerListingService sellerListingsService,
 		RedissonClient redissonClient,
