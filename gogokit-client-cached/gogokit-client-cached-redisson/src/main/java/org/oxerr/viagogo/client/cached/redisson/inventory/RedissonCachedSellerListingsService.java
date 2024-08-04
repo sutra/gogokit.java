@@ -14,6 +14,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
@@ -102,23 +105,31 @@ public class RedissonCachedSellerListingsService
 	}
 
 	@Override
-	protected boolean shouldCreate(ViagogoEvent event, ViagogoListing listing, ViagogoCachedListing cachedListing) {
+	protected boolean shouldCreate(
+		@Nonnull ViagogoEvent event,
+		@Nonnull ViagogoListing listing,
+		@Nullable ViagogoCachedListing cachedListing
+	) {
 		boolean shouldCreate = super.shouldCreate(event, listing, cachedListing);
-		return shouldCreate || !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+		return shouldCreate || (cachedListing != null && !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId()));
 	}
 
 	@Override
-	protected boolean shouldUpdate(ViagogoEvent event, ViagogoListing listing, ViagogoCachedListing cachedListing) {
+	protected boolean shouldUpdate(
+		@Nonnull ViagogoEvent event,
+		@Nonnull ViagogoListing listing,
+		@Nullable ViagogoCachedListing cachedListing
+	) {
 		boolean shouldUpdate = super.shouldUpdate(event, listing, cachedListing);
-		return shouldUpdate || !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+		return shouldUpdate || (cachedListing != null && !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId()));
 	}
 
 	@Override
 	protected boolean shouldDelete(
-		ViagogoEvent event,
-		Set<String> inventoryListingIds,
-		String listingId,
-		ViagogoCachedListing cachedListing
+		@Nonnull ViagogoEvent event,
+		@Nonnull Set<String> inventoryListingIds,
+		@Nonnull String listingId,
+		@Nonnull ViagogoCachedListing cachedListing
 	) {
 		return super.shouldDelete(event, inventoryListingIds, listingId, cachedListing)
 			|| !event.getViagogoEventId().equals(cachedListing.getViagogoEventId());
