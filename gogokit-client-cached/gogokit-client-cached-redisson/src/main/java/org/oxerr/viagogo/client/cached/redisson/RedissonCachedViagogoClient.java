@@ -28,9 +28,18 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 		String keyPrefix,
 		Executor executor
 	) {
-		this(viagogoClient, redissonClient, keyPrefix, executor, true);
+		this(
+			viagogoClient,
+			new RedissonCachedSellerListingsService(
+				viagogoClient.getSellerListingService(),
+				redissonClient,
+				keyPrefix,
+				executor
+			)
+		);
 	}
 
+	@Deprecated(since = "5.0.0", forRemoval = true)
 	public RedissonCachedViagogoClient(
 		ViagogoClient viagogoClient,
 		RedissonClient redissonClient,

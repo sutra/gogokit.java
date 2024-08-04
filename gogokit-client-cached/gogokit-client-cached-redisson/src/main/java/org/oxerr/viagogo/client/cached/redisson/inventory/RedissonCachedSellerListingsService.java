@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ThreadUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.oxerr.ticket.inventory.support.cached.redisson.ListingConfiguration;
 import org.oxerr.ticket.inventory.support.cached.redisson.RedissonCachedListingServiceSupport;
 import org.oxerr.ticket.inventory.support.cached.redisson.Status;
 import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingsService;
@@ -38,6 +39,11 @@ public class RedissonCachedSellerListingsService
 
 	private final SellerListingService sellerListingsService;
 
+	private final int pageSize;
+
+	private final RetryConfiguration retryConfig;
+
+	@Deprecated(since = "5.0.0", forRemoval = true)
 	public RedissonCachedSellerListingsService(
 		SellerListingService sellerListingsService,
 		RedissonClient redissonClient,
@@ -45,19 +51,54 @@ public class RedissonCachedSellerListingsService
 		Executor executor,
 		boolean create
 	) {
-		super(redissonClient, keyPrefix, executor, create);
-		this.sellerListingsService = sellerListingsService;
+		this(sellerListingsService, redissonClient, keyPrefix, executor, new ListingConfiguration(create, true, true), 10_000, new RetryConfiguration());
 	}
 
-	@Override
-	protected boolean shouldDelete(
-		ViagogoEvent event,
-		Set<String> inventoryTicketIds,
-		String ticketId,
-		ViagogoCachedListing cachedListing
+	/**
+	 * Constructs with default {@link ListingConfiguration} and default {@link RetryConfiguration}.
+	 *
+	 * @param sellerListingsService the seller listings service.
+	 * @param redissonClient the redisson client.
+	 * @param keyPrefix the key prefix for the cache.
+	 * @param executor the executor.
+	 *
+	 * @since 5.0.0
+	 */
+	public RedissonCachedSellerListingsService(
+		SellerListingService sellerListingsService,
+		RedissonClient redissonClient,
+		String keyPrefix,
+		Executor executor
 	) {
-		return super.shouldDelete(event, inventoryTicketIds, ticketId, cachedListing)
-			|| !event.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+		this(sellerListingsService, redissonClient, keyPrefix, executor, new ListingConfiguration(), 10_000, new RetryConfiguration());
+	}
+
+	/**
+	 * Constructs with specified {@link ListingConfiguration} and specified {@link RetryConfiguration}.
+	 *
+	 * @param sellerListingsService the seller listings service.
+	 * @param redissonClient the redisson client.
+	 * @param keyPrefix the key prefix for the cache.
+	 * @param executor the executor.
+	 * @param listingConfiguration the listing configuration.
+	 * @param pageSize the page size when do check.
+	 * @param retryConfiguration the retry configuration.
+	 *
+	 * @since 5.0.0
+	 */
+	public RedissonCachedSellerListingsService(
+		SellerListingService sellerListingsService,
+		RedissonClient redissonClient,
+		String keyPrefix,
+		Executor executor,
+		ListingConfiguration listingConfiguration,
+		int pageSize,
+		RetryConfiguration retryConfiguration
+	) {
+		super(redissonClient, keyPrefix, executor, listingConfiguration);
+		this.sellerListingsService = sellerListingsService;
+		this.pageSize = pageSize;
+		this.retryConfig = retryConfiguration;
 	}
 
 	@Override
@@ -67,13 +108,30 @@ public class RedissonCachedSellerListingsService
 	}
 
 	@Override
-	protected void deleteListing(ViagogoEvent event, String ticketId) throws IOException {
-		this.sellerListingsService.deleteListingByExternalListingId(ticketId);
+	protected boolean shouldUpdate(ViagogoEvent event, ViagogoListing listing, ViagogoCachedListing cachedListing) {
+		boolean shouldUpdate = super.shouldUpdate(event, listing, cachedListing);
+		return shouldUpdate || !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+	}
+
+	@Override
+	protected boolean shouldDelete(
+		ViagogoEvent event,
+		Set<String> inventoryListingIds,
+		String listingId,
+		ViagogoCachedListing cachedListing
+	) {
+		return super.shouldDelete(event, inventoryListingIds, listingId, cachedListing)
+			|| !event.getViagogoEventId().equals(cachedListing.getViagogoEventId());
 	}
 
 	@Override
 	protected void createListing(ViagogoEvent event, ViagogoListing listing) throws IOException {
 		this.sellerListingsService.createListing(listing.getViagogoEventId(), listing.getRequest());
+	}
+
+	@Override
+	protected void deleteListing(ViagogoEvent event, String listingId) throws IOException {
+		this.sellerListingsService.deleteListingByExternalListingId(listingId);
 	}
 
 	@Override
@@ -171,15 +229,13 @@ public class RedissonCachedSellerListingsService
 		var r = new SellerListingRequest();
 		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
 		r.setPage(page);
-		r.setPageSize(10_000);
+		r.setPageSize(pageSize);
 		return r;
 	}
 
 	private final Random random = new Random();
 
 	private <T> T retry(Supplier<T> supplier) {
-		int maxAttempts = 10;
-		int maxDelay = 100;
 		int attempts = 0;
 
 		T t = null;
@@ -187,8 +243,8 @@ public class RedissonCachedSellerListingsService
 		try {
 			t = supplier.get();
 		} catch (RetryableException e) {
-			if (++attempts < maxAttempts) {
-				long delay = random.nextInt(maxDelay);
+			if (++attempts < retryConfig.getMaxAttempts()) {
+				long delay = random.nextInt(retryConfig.getMaxDelay());
 				sleep(delay);
 			} else {
 				log.debug("attempts: {}", attempts);
