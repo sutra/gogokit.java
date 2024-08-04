@@ -102,6 +102,18 @@ public class RedissonCachedSellerListingsService
 	}
 
 	@Override
+	protected boolean shouldCreate(ViagogoEvent event, ViagogoListing listing, ViagogoCachedListing cachedListing) {
+		boolean shouldCreate = super.shouldCreate(event, listing, cachedListing);
+		return shouldCreate || !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+	}
+
+	@Override
+	protected boolean shouldUpdate(ViagogoEvent event, ViagogoListing listing, ViagogoCachedListing cachedListing) {
+		boolean shouldUpdate = super.shouldUpdate(event, listing, cachedListing);
+		return shouldUpdate || !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+	}
+
+	@Override
 	protected boolean shouldDelete(
 		ViagogoEvent event,
 		Set<String> inventoryListingIds,
@@ -113,19 +125,13 @@ public class RedissonCachedSellerListingsService
 	}
 
 	@Override
-	protected boolean shouldCreate(ViagogoEvent event, ViagogoListing listing, ViagogoCachedListing cachedListing) {
-		boolean shouldCreate = super.shouldCreate(event, listing, cachedListing);
-		return shouldCreate || !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+	protected void createListing(ViagogoEvent event, ViagogoListing listing) throws IOException {
+		this.sellerListingsService.createListing(listing.getViagogoEventId(), listing.getRequest());
 	}
 
 	@Override
 	protected void deleteListing(ViagogoEvent event, String listingId) throws IOException {
 		this.sellerListingsService.deleteListingByExternalListingId(listingId);
-	}
-
-	@Override
-	protected void createListing(ViagogoEvent event, ViagogoListing listing) throws IOException {
-		this.sellerListingsService.createListing(listing.getViagogoEventId(), listing.getRequest());
 	}
 
 	@Override
