@@ -11,57 +11,12 @@
 		<artifactId>gogokit</artifactId>
 		<version>5.0.3-SNAPSHOT</version>
 	</parent>
+	<groupId>org.oxerr.viagogo.rescu</groupId>
 	<artifactId>gogokit-client-rescu</artifactId>
 	<name>GogoKit Client - ResCU</name>
-	<dependencies>
-		<dependency>
-			<groupId>jakarta.ws.rs</groupId>
-			<artifactId>jakarta.ws.rs-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j2-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.oxerr.rescu</groupId>
-			<artifactId>rescu-ext-singleton</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.evanlennick</groupId>
-			<artifactId>retry4j</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Java 8 Date/time -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.github.mmazi</groupId>
-			<artifactId>rescu</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-	</dependencies>
+	<packaging>pom</packaging>
+	<modules>
+		<module>gogokit-client-rescu-resource</module>
+		<module>gogokit-client-rescu-impl</module>
+	</modules>
 </project>

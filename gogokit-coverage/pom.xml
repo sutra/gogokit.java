@@ -30,8 +30,13 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-rescu</artifactId>
+			<groupId>org.oxerr.viagogo.rescu</groupId>
+			<artifactId>gogokit-client-rescu-resource</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.oxerr.viagogo.rescu</groupId>
+			<artifactId>gogokit-client-rescu-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
