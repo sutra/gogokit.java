@@ -7,13 +7,17 @@
 		https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.oxerr.viagogo</groupId>
-		<artifactId>gogokit</artifactId>
+		<groupId>org.oxerr.viagogo.rescu</groupId>
+		<artifactId>gogokit-client-rescu</artifactId>
 		<version>6.0.0</version>
 	</parent>
-	<artifactId>gogokit-model</artifactId>
-	<name>GogoKit Model</name>
+	<artifactId>gogokit-client-rescu-resource</artifactId>
+	<name>GogoKit Client - ResCU - Resource</name>
 	<dependencies>
+		<dependency>
+			<groupId>jakarta.ws.rs</groupId>
+			<artifactId>jakarta.ws.rs-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
@@ -35,28 +39,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
+			<groupId>org.oxerr.viagogo</groupId>
+			<artifactId>gogokit-client</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-
-		<!-- Java 8 Date/time -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.openapitools.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-hal</artifactId>
+			<groupId>com.github.mmazi</groupId>
+			<artifactId>rescu</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo</groupId>
 		<artifactId>gogokit</artifactId>
-		<version>5.0.2</version>
+		<version>6.0.0</version>
 	</parent>
 	<artifactId>gogokit-coverage</artifactId>
 	<name>GogoKit Coverage</name>
@@ -30,8 +30,13 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gogokit-client-rescu</artifactId>
+			<groupId>org.oxerr.viagogo.rescu</groupId>
+			<artifactId>gogokit-client-rescu-resource</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.oxerr.viagogo.rescu</groupId>
+			<artifactId>gogokit-client-rescu-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
