@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -122,6 +123,28 @@ public class RedissonCachedSellerListingsService
 	) {
 		boolean shouldUpdate = super.shouldUpdate(event, listing, cachedListing);
 		return shouldUpdate || (cachedListing != null && !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId()));
+	}
+
+	@Override
+	protected int getPriority(
+		@Nonnull ViagogoEvent event,
+		@Nullable ViagogoListing listing,
+		@Nullable ViagogoCachedListing cachedListing
+	) {
+		if (listing == null || cachedListing == null) {
+			return 0;
+		}
+
+		int priority = 0;
+
+		var r = listing.getRequest();
+		var cr = cachedListing.getRequest();
+
+		priority += Objects.equals(r.getNumberOfTickets(), cr.getNumberOfTickets()) ? 0 : 1;
+		priority += Objects.equals(r.getSeating(), cr.getSeating()) ? 0 : 1;
+		priority += Objects.equals(r.getNotes(), cr.getNotes()) ? 0 : 1;
+
+		return priority;
 	}
 
 	@Override
