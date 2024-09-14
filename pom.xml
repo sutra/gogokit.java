@@ -16,7 +16,7 @@
 	<name>GogoKit</name>
 	<description>GogoKit - viagogo API Client Library for Java.</description>
 	<packaging>pom</packaging>
-	<version>6.2.0</version>
+	<version>6.2.1</version>
 	<url>https://www.oxerr.org/gogokit.java</url>
 	<inceptionYear>2023</inceptionYear>
 	<properties>
@@ -115,7 +115,7 @@
 			<dependency>
 				<groupId>org.redisson</groupId>
 				<artifactId>redisson</artifactId>
-				<version>3.35.0</version>
+				<version>3.36.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
