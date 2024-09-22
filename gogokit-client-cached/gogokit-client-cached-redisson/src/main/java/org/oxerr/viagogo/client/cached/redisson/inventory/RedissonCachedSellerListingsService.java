@@ -30,7 +30,6 @@ import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingsService;
 import org.oxerr.viagogo.client.cached.inventory.ViagogoEvent;
 import org.oxerr.viagogo.client.cached.inventory.ViagogoListing;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
-import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
@@ -371,9 +370,7 @@ public class RedissonCachedSellerListingsService
 		);
 		log.trace("r.seating: {}, l.seating: {}", r::getSeating, l::getSeating);
 
-		boolean same = Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
-			&& Objects.compare(r.getTicketPrice(), l.getTicketPrice(), Money::compareTo) == 0
-			&& Objects.equals(r.getSeating(), l.getSeating());
+		var same = ListingUtils.isSame(r, l);
 
 		log.trace("same: {}", same);
 

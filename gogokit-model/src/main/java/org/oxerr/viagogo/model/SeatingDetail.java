@@ -21,13 +21,10 @@ public class SeatingDetail extends Seating {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof SeatingDetail)) {
 			return false;
 		}
 		SeatingDetail rhs = (SeatingDetail) obj;
