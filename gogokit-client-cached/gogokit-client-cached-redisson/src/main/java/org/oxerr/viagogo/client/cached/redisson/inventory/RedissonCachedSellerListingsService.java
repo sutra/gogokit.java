@@ -366,9 +366,13 @@ public class RedissonCachedSellerListingsService
 		log.trace("r.ticketPrice: {}, l.ticketPrice: {}", r.getTicketPrice(), l.getTicketPrice());
 		log.trace("r.seating: {}, l.seating: {}", r.getSeating(), l.getSeating());
 
-		return Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
+		boolean same = Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
 			&& Objects.compare(r.getTicketPrice(), l.getTicketPrice(), Money::compareTo) == 0
 			&& Objects.equals(r.getSeating(), l.getSeating());
+
+		log.trace("same: {}", same);
+
+		return same;
 	}
 
 	/**
