@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.oxerr.ticket.inventory.support.cached.redisson.CachedListing;
 import org.oxerr.ticket.inventory.support.cached.redisson.Status;
+import org.oxerr.viagogo.client.cached.inventory.ViagogoEvent;
 import org.oxerr.viagogo.client.cached.inventory.ViagogoListing;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
@@ -16,6 +17,10 @@ public class ViagogoCachedListing extends CachedListing<CreateSellerListingReque
 	private Long viagogoEventId;
 
 	public ViagogoCachedListing() {
+	}
+
+	public ViagogoCachedListing(ViagogoEvent event, ViagogoListing listing, Status status) {
+		this(new ViagogoCachedEvent(event), listing, status);
 	}
 
 	public ViagogoCachedListing(ViagogoCachedEvent event, ViagogoListing listing, Status status) {
