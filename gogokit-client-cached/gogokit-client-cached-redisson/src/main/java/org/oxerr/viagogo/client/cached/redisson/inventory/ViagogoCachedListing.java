@@ -11,18 +11,29 @@ public class ViagogoCachedListing extends CachedListing<CreateSellerListingReque
 
 	private static final long serialVersionUID = 2023031801L;
 
+	private ViagogoCachedEvent event;
+
 	private Long viagogoEventId;
 
 	public ViagogoCachedListing() {
 	}
 
-	public ViagogoCachedListing(ViagogoListing listing, Status status) {
-		this(status, listing.getViagogoEventId(), listing.getRequest());
+	public ViagogoCachedListing(ViagogoCachedEvent event, ViagogoListing listing, Status status) {
+		this(event, listing.getRequest(), status);
 	}
 
-	public ViagogoCachedListing(Status status, Long viagogoEventId, CreateSellerListingRequest request) {
-		super(status, request);
-		this.viagogoEventId = viagogoEventId;
+	public ViagogoCachedListing(ViagogoCachedEvent event, CreateSellerListingRequest request, Status status) {
+		super(request, status);
+		this.event = event;
+		this.viagogoEventId = event.getViagogoEventId();
+	}
+
+	public ViagogoCachedEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(ViagogoCachedEvent event) {
+		this.event = event;
 	}
 
 	public Long getViagogoEventId() {
@@ -31,6 +42,10 @@ public class ViagogoCachedListing extends CachedListing<CreateSellerListingReque
 
 	public void setViagogoEventId(Long viagogoEventId) {
 		this.viagogoEventId = viagogoEventId;
+	}
+
+	public ViagogoListing toViagogoListing() {
+		return new ViagogoListing(this.getRequest().getExternalId(), this.event.getViagogoEventId(), this.getRequest());
 	}
 
 	@Override
