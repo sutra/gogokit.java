@@ -182,10 +182,11 @@ public class RedissonCachedSellerListingsService
 		// The external IDs in cache.
 		var externalIds = this.getExternalIds();
 
-		var deleting = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
+		// The tasks to delete or update the listings.
+		var tasks = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
 
 		// Check the first page.
-		var listings = this.check(request(1), externalIds, deleting).join();
+		var listings = this.check(request(1), externalIds, tasks).join();
 
 		// Check the next page to the last page.
 		log.debug("[check] total items: {}, next link: {}, last link: {}",
@@ -199,7 +200,7 @@ public class RedissonCachedSellerListingsService
 
 		if (next.isPresent() && last.isPresent()) {
 			for(int i = next.get().getPage(); i <= last.get().getPage(); i++) {
-				checking.add(this.check(request(i), externalIds, deleting));
+				checking.add(this.check(request(i), externalIds, tasks));
 			}
 		}
 
@@ -208,8 +209,8 @@ public class RedissonCachedSellerListingsService
 		CompletableFuture.allOf(checking.toArray(CompletableFuture[]::new)).join();
 
 		// Wait all deleting to complete.
-		log.debug("[check] deleting size: {}", deleting.size());
-		CompletableFuture.allOf(deleting.toArray(CompletableFuture[]::new)).join();
+		log.debug("[check] deleting size: {}", tasks.size());
+		CompletableFuture.allOf(tasks.toArray(CompletableFuture[]::new)).join();
 
 		stopWatch.stop();
 		log.info("[check] end. Checked {} items in {}", listings.getTotalItems(), stopWatch);
@@ -224,19 +225,34 @@ public class RedissonCachedSellerListingsService
 		return externalIds;
 	}
 
+	/**
+	 * Checks the listings of the request.
+	 *
+	 * @param request the request.
+	 * @param externalIds the external IDs in cache.
+	 * @param tasks the tasks to delete or update the listings.
+	 * @return the page in checking.
+	 */
 	private CompletableFuture<PagedResource<SellerListing>> check(
 		SellerListingRequest request,
 		Set<String> externalIds,
-		List<CompletableFuture<Void>> deleting
+		List<CompletableFuture<Void>> tasks
 	) {
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
-			deleting.addAll(this.check(page, externalIds));
-			log.debug("[check] page: {}, deleting size: {}", request.getPage(), deleting.size());
+			tasks.addAll(this.check(page, externalIds));
+			log.debug("[check] page: {}, deleting size: {}", request.getPage(), tasks.size());
 			return page;
 		});
 	}
 
+	/**
+	 * Checks the listings in the page.
+	 *
+	 * @param page the page.
+	 * @param externalIds the external IDs in cache.
+	 * @return the tasks to delete or update the listings.
+	 */
 	private List<CompletableFuture<Void>> check(
 		PagedResource<SellerListing> page,
 		Set<String> externalIds
@@ -249,6 +265,12 @@ public class RedissonCachedSellerListingsService
 			})).collect(Collectors.toUnmodifiableList());
 	}
 
+	/**
+	 * Gets the seller listings.
+	 *
+	 * @param request the request.
+	 * @return the seller listings.
+	 */
 	private PagedResource<SellerListing> getSellerListings(SellerListingRequest request) {
 		return this.retry(() -> {
 			try {
@@ -259,6 +281,12 @@ public class RedissonCachedSellerListingsService
 		});
 	}
 
+	/**
+	 * Creates a seller listing request.
+	 *
+	 * @param page the page.
+	 * @return a seller listing request.
+	 */
 	private SellerListingRequest request(int page) {
 		var r = new SellerListingRequest();
 		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
