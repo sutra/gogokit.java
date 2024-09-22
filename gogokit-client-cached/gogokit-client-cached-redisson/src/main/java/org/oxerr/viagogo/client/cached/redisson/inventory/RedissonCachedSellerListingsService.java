@@ -361,6 +361,10 @@ public class RedissonCachedSellerListingsService
 	}
 
 	private boolean isSame(CreateSellerListingRequest r, SellerListing l) {
+		log.trace("r.numberOfTickets: {}, l.numberOfTickets: {}", r.getNumberOfTickets(), l.getNumberOfTickets());
+		log.trace("r.ticketPrice: {}, l.ticketPrice: {}", r.getTicketPrice(), l.getTicketPrice());
+		log.trace("r.seating: {}, l.seating: {}", r.getSeating(), l.getSeating());
+
 		return Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
 			&& Objects.equals(r.getTicketPrice(), l.getTicketPrice())
 			&& Objects.equals(r.getSeating(), l.getSeating());
