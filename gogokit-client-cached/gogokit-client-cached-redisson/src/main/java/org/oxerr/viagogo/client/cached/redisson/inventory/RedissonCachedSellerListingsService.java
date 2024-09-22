@@ -362,9 +362,14 @@ public class RedissonCachedSellerListingsService
 	}
 
 	private boolean isSame(CreateSellerListingRequest r, SellerListing l) {
-		log.trace("r.numberOfTickets: {}, l.numberOfTickets: {}", r.getNumberOfTickets(), l.getNumberOfTickets());
-		log.trace("r.ticketPrice: {}, l.ticketPrice: {}", r.getTicketPrice(), l.getTicketPrice());
-		log.trace("r.seating: {}, l.seating: {}", r.getSeating(), l.getSeating());
+		log.trace("r.numberOfTickets: {}, l.numberOfTickets: {}", r::getNumberOfTickets, l::getNumberOfTickets);
+		log.trace("r.ticketPrice: {} {}, l.ticketPrice: {} {}",
+			() -> r.getTicketPrice().getCurrencyCode(),
+			() -> r.getTicketPrice().getAmount(),
+			() -> l.getTicketPrice().getCurrencyCode(),
+			() -> l.getTicketPrice().getAmount()
+		);
+		log.trace("r.seating: {}, l.seating: {}", r::getSeating, l::getSeating);
 
 		boolean same = Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
 			&& Objects.compare(r.getTicketPrice(), l.getTicketPrice(), Money::compareTo) == 0
