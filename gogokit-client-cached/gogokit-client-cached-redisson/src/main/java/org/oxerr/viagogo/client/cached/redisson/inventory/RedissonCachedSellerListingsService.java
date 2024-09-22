@@ -5,15 +5,16 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -173,75 +174,136 @@ public class RedissonCachedSellerListingsService
 		return new ViagogoCachedListing(listing, status);
 	}
 
+	private class CheckContext {
+
+		private final Map<String, String> externalIdToCacheName;
+
+		private final List<CompletableFuture<Void>> tasks;
+
+		private final List<CompletableFuture<PagedResource<SellerListing>>> checkings;
+
+		public CheckContext(
+			Map<String, String> externalIdToCacheName,
+			List<CompletableFuture<Void>> tasks,
+			List<CompletableFuture<PagedResource<SellerListing>>> checkings
+		) {
+			this.externalIdToCacheName = externalIdToCacheName;
+			this.tasks = tasks;
+			this.checkings = checkings;
+		}
+
+		public Map<String, String> getExternalIdToCacheName() {
+			return externalIdToCacheName;
+		}
+
+		public List<CompletableFuture<Void>> getTasks() {
+			return tasks;
+		}
+
+		public List<CompletableFuture<PagedResource<SellerListing>>> getCheckings() {
+			return checkings;
+		}
+
+	}
+
 	@Override
 	public void check() {
 		log.info("[check] begin.");
 
+		// Create a stop watch to measure the time taken to check the listings.
 		StopWatch stopWatch = StopWatch.createStarted();
 
-		// The external IDs in cache.
-		var externalIds = this.getExternalIds();
-
-		// The tasks to delete or update the listings.
-		var tasks = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
+		// Create a new check context.
+		CheckContext context = newCheckContext();
 
 		// Check the first page.
-		var listings = this.check(request(1), externalIds, tasks).join();
+		PagedResource<SellerListing> listings = this.check(request(1), context).join();
 
 		// Check the next page to the last page.
 		log.debug("[check] total items: {}, next link: {}, last link: {}",
 			listings.getTotalItems(), listings.getNextLink(), listings.getLastLink());
 
+		// Check subsequent pages if available
 		// When only 1 page left, the next link and last link is null.
-		var next = Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from);
-		var last = Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from);
-
-		var checking = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
-
-		if (next.isPresent() && last.isPresent()) {
-			for(int i = next.get().getPage(); i <= last.get().getPage(); i++) {
-				checking.add(this.check(request(i), externalIds, tasks));
-			}
-		}
+		Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from)
+			.ifPresent(next -> Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from)
+				.ifPresent(last -> IntStream.rangeClosed(next.getPage(), last.getPage())
+					.mapToObj(this::request)
+					.map(request -> this.check(request, context)).forEach(context.getCheckings()::add)
+				)
+			);
 
 		// Wait all checking to complete.
-		log.debug("[check] checking size: {}", checking.size());
-		CompletableFuture.allOf(checking.toArray(CompletableFuture[]::new)).join();
+		log.debug("[check] checking size: {}", context.getCheckings().size());
+		CompletableFuture.allOf(context.getCheckings().toArray(CompletableFuture[]::new)).join();
 
-		// Wait all deleting to complete.
-		log.debug("[check] deleting size: {}", tasks.size());
-		CompletableFuture.allOf(tasks.toArray(CompletableFuture[]::new)).join();
+		// Wait all tasks to complete.
+		log.debug("[check] tasks size: {}", context.getTasks().size());
+		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
 
+		// Log the time taken to check the listings.
 		stopWatch.stop();
 		log.info("[check] end. Checked {} items in {}", listings.getTotalItems(), stopWatch);
 	}
 
-	private Set<String> getExternalIds() {
-		var externalIds = this.getCacheNamesStream()
-			.map(name -> this.getCache(name).keySet().stream())
-			.flatMap(Function.identity())
-			.collect(Collectors.toUnmodifiableSet());
-		log.debug("[check] externalIds size: {}", externalIds.size());
-		return externalIds;
+	/**
+	 * Creates a new check context.
+	 *
+	 * @return a new check context.
+	 */
+	private CheckContext newCheckContext() {
+		// The mapping of external IDs to their corresponding cache names.
+		var externalIdToCacheName = this.getExternalIdToCacheName();
+
+		// The tasks to delete or update the listings.
+		var tasks = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
+
+		// The checking tasks.
+		var checkings = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
+
+		// The context for checking.
+		return new CheckContext(externalIdToCacheName, tasks, checkings);
+	}
+
+	/**
+	 * Retrieves a mapping of external IDs to their corresponding cache names.
+	 *
+	 * This method iterates over all available cache names, retrieves each cache, 
+	 * and then creates a map entry for each external ID pointing to its cache name.
+	 *
+	 * @return a map where the keys are external IDs and the values are cache names.
+	 */
+	private Map<String, String> getExternalIdToCacheName() {
+		// Create a map to hold the external ID to cache name mapping
+		Map<String, String> externalIdToCacheName =
+			this.getCacheNamesStream() // Stream of cache names
+				.flatMap(cacheName ->
+					// Retrieve the cache and create a stream of externalId-to-cacheName entries
+					this.getCache(cacheName).keySet().stream()
+						.map(externalId -> Map.entry(externalId, cacheName))
+				)
+				// Collect the entries into a map
+				.collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+
+		// Log the size of the resulting map for debugging purposes
+		log.debug("[check] externalIdToCacheName size: {}", externalIdToCacheName.size());
+
+		// Return the map of external IDs to cache names
+		return externalIdToCacheName;
 	}
 
 	/**
 	 * Checks the listings of the request.
 	 *
 	 * @param request the request.
-	 * @param externalIds the external IDs in cache.
-	 * @param tasks the tasks to delete or update the listings.
+	 * @param context the context.
 	 * @return the page in checking.
 	 */
-	private CompletableFuture<PagedResource<SellerListing>> check(
-		SellerListingRequest request,
-		Set<String> externalIds,
-		List<CompletableFuture<Void>> tasks
-	) {
+	private CompletableFuture<PagedResource<SellerListing>> check(SellerListingRequest request, CheckContext context) {
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
-			tasks.addAll(this.check(page, externalIds));
-			log.debug("[check] page: {}, deleting size: {}", request.getPage(), tasks.size());
+			this.check(page, context);
+			log.debug("[check] page: {}, tasks size: {}", request.getPage(), context.getTasks().size());
 			return page;
 		});
 	}
@@ -250,19 +312,38 @@ public class RedissonCachedSellerListingsService
 	 * Checks the listings in the page.
 	 *
 	 * @param page the page.
-	 * @param externalIds the external IDs in cache.
-	 * @return the tasks to delete or update the listings.
+	 * @param context the context.
 	 */
-	private List<CompletableFuture<Void>> check(
-		PagedResource<SellerListing> page,
-		Set<String> externalIds
-	) {
-		return page.getItems().stream()
-			.filter(listing -> !externalIds.contains(listing.getExternalId()))
+	private void check(PagedResource<SellerListing> page, CheckContext context) {
+		// Delete the listings not in the page
+		var deleteTasks = page.getItems().stream()
+			.filter(listing -> !context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
 			.map(listing -> this.<Void>callAsync(() -> {
 				this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			})).collect(Collectors.toUnmodifiableList());
+		context.getTasks().addAll(deleteTasks);
+
+		// Check the listings in the page.
+		page.getItems().stream()
+			.filter(listing -> context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
+			.forEach((SellerListing listing) -> {
+				String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
+				ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
+				CreateSellerListingRequest cachedRequest = cachedListing.getRequest();
+				if (!isSame(cachedRequest, listing)) {
+					context.getTasks().add(this.<Void>callAsync(() -> {
+						this.sellerListingsService.createListing(cachedListing.getViagogoEventId(), cachedRequest);
+						return null;
+					}));
+				}
+			});
+	}
+
+	private boolean isSame(CreateSellerListingRequest r, SellerListing l) {
+		return Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
+			&& Objects.equals(r.getTicketPrice(), l.getTicketPrice())
+			&& Objects.equals(r.getSeating(), l.getSeating());
 	}
 
 	/**
