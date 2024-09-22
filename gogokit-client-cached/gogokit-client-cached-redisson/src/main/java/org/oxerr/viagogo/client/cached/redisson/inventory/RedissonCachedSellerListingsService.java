@@ -328,6 +328,8 @@ public class RedissonCachedSellerListingsService
 		page.getItems().stream()
 			.filter(listing -> context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
 			.forEach((SellerListing listing) -> {
+				log.trace("Checking {}", listing.getExternalId());
+
 				String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
 				ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
 
