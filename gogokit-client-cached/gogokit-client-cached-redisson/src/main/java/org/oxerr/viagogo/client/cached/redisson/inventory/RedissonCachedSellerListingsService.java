@@ -337,12 +337,14 @@ public class RedissonCachedSellerListingsService
 					// Double check the listing if it is not cached.
 					// If the listing is not cached, delete the listing from viagogo.
 					context.getTasks().add(this.<Void>callAsync(() -> {
+						log.trace("Deleting {}", listing.getExternalId());
 						this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
 						return null;
 					}));
 				} else if (!isSame(cachedListing.getRequest(), listing)) {
 					// If the listing is not the same as the cached listing, update the listing.
 					context.getTasks().add(this.<Void>callAsync(() -> {
+						log.trace("Updating {}", listing.getExternalId());
 						if (cachedListing.getEvent() != null) {
 							var e = cachedListing.getEvent().toViagogoEvent();
 							var l = cachedListing.toViagogoListing();
