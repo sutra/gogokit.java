@@ -171,7 +171,7 @@ public class RedissonCachedSellerListingsService
 
 	@Override
 	protected ViagogoCachedListing toCached(ViagogoEvent event, ViagogoListing listing, Status status) {
-		return new ViagogoCachedListing(listing, status);
+		return new ViagogoCachedListing(new ViagogoCachedEvent(event), listing, status);
 	}
 
 	private class CheckContext {
@@ -330,10 +330,26 @@ public class RedissonCachedSellerListingsService
 			.forEach((SellerListing listing) -> {
 				String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
 				ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
-				CreateSellerListingRequest cachedRequest = cachedListing.getRequest();
-				if (!isSame(cachedRequest, listing)) {
+
+				if (cachedListing == null) {
+					// Double check the listing if it is not cached.
+					// If the listing is not cached, delete the listing from viagogo.
 					context.getTasks().add(this.<Void>callAsync(() -> {
-						this.sellerListingsService.createListing(cachedListing.getViagogoEventId(), cachedRequest);
+						this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
+						return null;
+					}));
+				} else if (!isSame(cachedListing.getRequest(), listing)) {
+					// If the listing is not the same as the cached listing, update the listing.
+					context.getTasks().add(this.<Void>callAsync(() -> {
+						if (cachedListing.getEvent() != null) {
+							var e = cachedListing.getEvent().toViagogoEvent();
+							var l = cachedListing.toViagogoListing();
+							var p = getPriority(e, l, cachedListing);
+							this.updateListing(e, l, p);
+						} else {
+							// Compatible with the old version.
+							this.sellerListingsService.createListing(cachedListing.getViagogoEventId(), cachedListing.getRequest());
+						}
 						return null;
 					}));
 				}
