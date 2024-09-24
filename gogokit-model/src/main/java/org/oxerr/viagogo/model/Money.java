@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -13,7 +14,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * <a href="https://developer.viagogo.net/api-reference/catalog#tag/BasicType_Money">Money</a>
  */
-public class Money implements Serializable {
+public class Money implements Comparable<Money>, Serializable {
 
 	private static final long serialVersionUID = 2023021301L;
 
@@ -71,19 +72,24 @@ public class Money implements Serializable {
 	}
 
 	@Override
+	public int compareTo(Money o) {
+		return new CompareToBuilder()
+			.append(this.currencyCode, o.currencyCode)
+			.append(this.amount, o.amount)
+			.toComparison();
+	}
+
+	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof Money)) {
 			return false;
 		}
 		Money rhs = (Money) obj;

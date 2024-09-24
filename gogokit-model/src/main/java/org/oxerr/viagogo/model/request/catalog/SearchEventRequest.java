@@ -58,13 +58,10 @@ public class SearchEventRequest extends EventRequest {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof SearchEventRequest)) {
 			return false;
 		}
 		SearchEventRequest rhs = (SearchEventRequest) obj;

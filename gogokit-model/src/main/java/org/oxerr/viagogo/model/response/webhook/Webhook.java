@@ -124,13 +124,10 @@ public class Webhook extends Resource {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof Webhook)) {
 			return false;
 		}
 		Webhook rhs = (Webhook) obj;

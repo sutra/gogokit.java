@@ -328,6 +328,8 @@ public class RedissonCachedSellerListingsService
 		page.getItems().stream()
 			.filter(listing -> context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
 			.forEach((SellerListing listing) -> {
+				log.trace("Checking {}", listing.getExternalId());
+
 				String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
 				ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
 
@@ -335,12 +337,14 @@ public class RedissonCachedSellerListingsService
 					// Double check the listing if it is not cached.
 					// If the listing is not cached, delete the listing from viagogo.
 					context.getTasks().add(this.<Void>callAsync(() -> {
+						log.trace("Deleting {}", listing.getExternalId());
 						this.sellerListingsService.deleteListingByExternalListingId(listing.getExternalId());
 						return null;
 					}));
 				} else if (!isSame(cachedListing.getRequest(), listing)) {
 					// If the listing is not the same as the cached listing, update the listing.
 					context.getTasks().add(this.<Void>callAsync(() -> {
+						log.trace("Updating {}", listing.getExternalId());
 						if (cachedListing.getEvent() != null) {
 							var e = cachedListing.getEvent().toViagogoEvent();
 							var l = cachedListing.toViagogoListing();
@@ -357,9 +361,20 @@ public class RedissonCachedSellerListingsService
 	}
 
 	private boolean isSame(CreateSellerListingRequest r, SellerListing l) {
-		return Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
-			&& Objects.equals(r.getTicketPrice(), l.getTicketPrice())
-			&& Objects.equals(r.getSeating(), l.getSeating());
+		log.trace("r.numberOfTickets: {}, l.numberOfTickets: {}", r::getNumberOfTickets, l::getNumberOfTickets);
+		log.trace("r.ticketPrice: {} {}, l.ticketPrice: {} {}",
+			() -> r.getTicketPrice().getCurrencyCode(),
+			() -> r.getTicketPrice().getAmount(),
+			() -> l.getTicketPrice().getCurrencyCode(),
+			() -> l.getTicketPrice().getAmount()
+		);
+		log.trace("r.seating: {}, l.seating: {}", r::getSeating, l::getSeating);
+
+		var same = ListingUtils.isSame(r, l);
+
+		log.trace("same: {}", same);
+
+		return same;
 	}
 
 	/**

@@ -60,13 +60,10 @@ public class Genre extends Resource {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof Genre)) {
 			return false;
 		}
 		Genre rhs = (Genre) obj;

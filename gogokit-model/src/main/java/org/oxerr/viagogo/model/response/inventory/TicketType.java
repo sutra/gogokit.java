@@ -46,13 +46,10 @@ public class TicketType extends Resource {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof TicketType)) {
 			return false;
 		}
 		TicketType rhs = (TicketType) obj;

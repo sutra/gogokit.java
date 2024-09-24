@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo</groupId>
 		<artifactId>gogokit</artifactId>
-		<version>6.3.1</version>
+		<version>6.4.0</version>
 	</parent>
 	<artifactId>gogokit-model</artifactId>
 	<name>GogoKit Model</name>
@@ -39,6 +39,11 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
@@ -58,5 +63,12 @@
 			<groupId>io.openapitools.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-hal</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>nl.jqno.equalsverifier</groupId>
+			<artifactId>equalsverifier</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 </project>

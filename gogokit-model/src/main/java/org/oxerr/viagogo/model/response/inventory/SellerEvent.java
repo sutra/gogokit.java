@@ -87,13 +87,10 @@ public class SellerEvent extends Event {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof SellerEvent)) {
 			return false;
 		}
 		SellerEvent rhs = (SellerEvent) obj;
