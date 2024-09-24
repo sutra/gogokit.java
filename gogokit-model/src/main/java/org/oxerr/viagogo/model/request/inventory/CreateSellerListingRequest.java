@@ -88,13 +88,10 @@ public class CreateSellerListingRequest implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof CreateSellerListingRequest)) {
 			return false;
 		}
 		CreateSellerListingRequest rhs = (CreateSellerListingRequest) obj;

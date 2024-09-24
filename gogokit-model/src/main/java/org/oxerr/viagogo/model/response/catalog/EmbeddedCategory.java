@@ -32,6 +32,15 @@ public class EmbeddedCategory extends Resource {
 	 */
 	private String role;
 
+	public EmbeddedCategory() {
+	}
+
+	public EmbeddedCategory(Integer id, String name, String role) {
+		this.id = id;
+		this.name = name;
+		this.role = role;
+	}
+
 	/**
 	 * The external mappings for this category.
 	 */
@@ -91,13 +100,10 @@ public class EmbeddedCategory extends Resource {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof EmbeddedCategory)) {
 			return false;
 		}
 		EmbeddedCategory rhs = (EmbeddedCategory) obj;

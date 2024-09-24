@@ -86,13 +86,10 @@ public class Money implements Comparable<Money>, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof Money)) {
 			return false;
 		}
 		Money rhs = (Money) obj;

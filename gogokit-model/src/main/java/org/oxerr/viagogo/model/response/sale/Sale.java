@@ -402,13 +402,10 @@ public class Sale extends EmbeddedSale {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof Sale)) {
 			return false;
 		}
 		Sale rhs = (Sale) obj;

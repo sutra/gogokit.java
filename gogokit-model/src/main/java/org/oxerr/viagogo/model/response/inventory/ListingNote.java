@@ -57,13 +57,10 @@ public class ListingNote extends Resource {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof ListingNote)) {
 			return false;
 		}
 		ListingNote rhs = (ListingNote) obj;

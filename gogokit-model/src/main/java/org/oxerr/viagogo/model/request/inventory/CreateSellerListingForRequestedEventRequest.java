@@ -34,13 +34,10 @@ public class CreateSellerListingForRequestedEventRequest extends CreateSellerLis
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof CreateSellerListingForRequestedEventRequest)) {
 			return false;
 		}
 		CreateSellerListingForRequestedEventRequest rhs = (CreateSellerListingForRequestedEventRequest) obj;

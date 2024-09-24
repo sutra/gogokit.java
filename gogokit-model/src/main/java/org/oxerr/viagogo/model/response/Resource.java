@@ -31,13 +31,10 @@ public abstract class Resource implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
+		if (this == obj) {
 			return true;
 		}
-		if (obj.getClass() != getClass()) {
+		if (!(obj instanceof Resource)) {
 			return false;
 		}
 		Resource rhs = (Resource) obj;
