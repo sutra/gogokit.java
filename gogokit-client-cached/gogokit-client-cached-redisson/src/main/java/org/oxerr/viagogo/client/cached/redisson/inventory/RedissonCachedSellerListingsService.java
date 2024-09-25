@@ -347,6 +347,11 @@ public class RedissonCachedSellerListingsService
 						log.trace("Updating {}", listing.getExternalId());
 						if (cachedListing.getEvent() != null) {
 							var e = cachedListing.getEvent().toViagogoEvent();
+							if (!e.getViagogoEventId().equals(listing.getEvent().getId())) {
+								log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
+									e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
+								e.setViagogoEventId(listing.getEvent().getId());
+							}
 							var l = cachedListing.toViagogoListing();
 							var p = getPriority(e, l, cachedListing);
 							this.updateListing(e, l, p);
