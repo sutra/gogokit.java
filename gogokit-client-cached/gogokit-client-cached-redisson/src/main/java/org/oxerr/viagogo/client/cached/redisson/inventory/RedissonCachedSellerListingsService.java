@@ -347,14 +347,15 @@ public class RedissonCachedSellerListingsService
 						log.trace("Updating {}", listing.getExternalId());
 
 						var e = cachedListing.getEvent().toViagogoEvent();
+						var l = cachedListing.toViagogoListing();
+						var p = getPriority(e, l, cachedListing);
 
 						if (e.getViagogoEventId().equals(listing.getEvent().getId())) {
-							var l = cachedListing.toViagogoListing();
-							var p = getPriority(e, l, cachedListing);
 							this.updateListing(e, l, p);
 						} else {
 							log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
 								e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
+							this.deleteListing(e, listing.getExternalId(), p);
 						}
 						return null;
 					}));
