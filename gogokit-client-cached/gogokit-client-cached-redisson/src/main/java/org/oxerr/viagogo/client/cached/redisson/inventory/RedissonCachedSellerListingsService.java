@@ -345,19 +345,16 @@ public class RedissonCachedSellerListingsService
 					// If the listing is not the same as the cached listing, update the listing.
 					context.getTasks().add(this.<Void>callAsync(() -> {
 						log.trace("Updating {}", listing.getExternalId());
-						if (cachedListing.getEvent() != null) {
-							var e = cachedListing.getEvent().toViagogoEvent();
-							if (!e.getViagogoEventId().equals(listing.getEvent().getId())) {
-								log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
-									e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
-								e.setViagogoEventId(listing.getEvent().getId());
-							}
+
+						var e = cachedListing.getEvent().toViagogoEvent();
+
+						if (e.getViagogoEventId().equals(listing.getEvent().getId())) {
 							var l = cachedListing.toViagogoListing();
 							var p = getPriority(e, l, cachedListing);
 							this.updateListing(e, l, p);
 						} else {
-							// Compatible with the old version.
-							this.sellerListingsService.createListing(cachedListing.getViagogoEventId(), cachedListing.getRequest());
+							log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
+								e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
 						}
 						return null;
 					}));
