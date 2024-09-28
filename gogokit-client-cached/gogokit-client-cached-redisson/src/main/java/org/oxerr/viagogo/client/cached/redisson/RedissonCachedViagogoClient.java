@@ -5,14 +5,14 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.oxerr.viagogo.client.ViagogoClient;
 import org.oxerr.viagogo.client.cached.CachedViagogoClient;
-import org.oxerr.viagogo.client.cached.redisson.inventory.RedissonCachedSellerListingsService;
+import org.oxerr.viagogo.client.cached.redisson.inventory.RedissonCachedSellerListingService;
 import org.redisson.api.RedissonClient;
 
 public class RedissonCachedViagogoClient implements CachedViagogoClient {
 
 	private final ViagogoClient viagogoClient;
 
-	private final RedissonCachedSellerListingsService cachedSellerListingsService;
+	private final RedissonCachedSellerListingService cachedSellerListingsService;
 
 	public RedissonCachedViagogoClient(
 		ViagogoClient viagogoClient,
@@ -30,7 +30,7 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 	) {
 		this(
 			viagogoClient,
-			new RedissonCachedSellerListingsService(
+			new RedissonCachedSellerListingService(
 				viagogoClient.getSellerListingService(),
 				redissonClient,
 				keyPrefix,
@@ -49,7 +49,7 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 	) {
 		this(
 			viagogoClient,
-			new RedissonCachedSellerListingsService(
+			new RedissonCachedSellerListingService(
 				viagogoClient.getSellerListingService(),
 				redissonClient,
 				keyPrefix,
@@ -61,7 +61,7 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 
 	public RedissonCachedViagogoClient(
 		ViagogoClient viagogoClient,
-		RedissonCachedSellerListingsService cachedSellerListingsService
+		RedissonCachedSellerListingService cachedSellerListingsService
 	) {
 		this.viagogoClient = viagogoClient;
 		this.cachedSellerListingsService = cachedSellerListingsService;
@@ -73,7 +73,7 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 	}
 
 	@Override
-	public RedissonCachedSellerListingsService getCachedSellerListingsService() {
+	public RedissonCachedSellerListingService getCachedSellerListingsService() {
 		return cachedSellerListingsService;
 	}
 
