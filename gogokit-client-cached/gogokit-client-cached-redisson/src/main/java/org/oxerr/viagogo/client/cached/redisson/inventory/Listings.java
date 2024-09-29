@@ -14,17 +14,17 @@ final class Listings {
 		throw new AssertionError("No " + this.getClass() + " instances for you!");
 	}
 
-	public static boolean isSame(CreateSellerListingRequest r, SellerListing l) {
-		return Objects.equals(r.getNumberOfTickets(), l.getNumberOfTickets())
-			&& isSame(r.getSeating(), l.getSeating())
-			&& Objects.compare(r.getTicketPrice(), l.getTicketPrice(), Money::compareTo) == 0;
+	public static boolean isSame(SellerListing l, CreateSellerListingRequest r) {
+		return Objects.equals(l.getNumberOfTickets(), r.getNumberOfTickets())
+			&& isSame(l.getSeating(), r.getSeating())
+			&& Objects.compare(l.getTicketPrice(), r.getTicketPrice(), Money::compareTo) == 0;
 	}
 
-	public static boolean isSame(Seating seating, SeatingDetail seatingDetail) {
-		return Objects.equals(seating.getSection(), seatingDetail.getSection())
-			&& Objects.equals(seating.getRow(), seatingDetail.getRow())
-			&& Objects.equals(seating.getSeatFrom(), seatingDetail.getSeatFrom())
-			&& Objects.equals(seating.getSeatTo(), seatingDetail.getSeatTo());
+	public static boolean isSame(SeatingDetail seatingDetail, Seating seating) {
+		return Objects.equals(seatingDetail.getSection(), seating.getSection())
+			&& Objects.equals(seatingDetail.getRow(), seating.getRow())
+			&& Objects.equals(seatingDetail.getSeatFrom(), seating.getSeatFrom())
+			&& Objects.equals(seatingDetail.getSeatTo(), seating.getSeatTo());
 	}
 
 }

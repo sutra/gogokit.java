@@ -342,7 +342,7 @@ public class RedissonCachedSellerListingService
 						this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 						return null;
 					}));
-				} else if (!isSame(cachedListing.getRequest(), listing)) {
+				} else if (!isSame(listing, cachedListing.getRequest())) {
 					// If the listing is not the same as the cached listing, update the listing.
 					context.getTasks().add(this.<Void>callAsync(() -> {
 						log.trace("Updating {}", listing.getExternalId());
@@ -364,19 +364,19 @@ public class RedissonCachedSellerListingService
 			});
 	}
 
-	private boolean isSame(CreateSellerListingRequest r, SellerListing l) {
-		var same = Listings.isSame(r, l);
+	private boolean isSame(SellerListing l, CreateSellerListingRequest r) {
+		var same = Listings.isSame(l, r);
 
-		log.trace("[isSame] externalId: {}, r.numberOfTickets: {}, l.numberOfTickets: {}, r.ticketPrice: {} {}, l.ticketPrice: {} {}, r.seating: {}, l.seating: {}, isSame: {}",
-			r::getExternalId,
-			r::getNumberOfTickets,
+		log.trace("[isSame] externalId: {}, numberOfTickets: {} -> {}, seating: {} -> {}, ticketPrice: {} {} -> {} {}, isSame: {}",
+			l::getExternalId,
 			l::getNumberOfTickets,
-			() -> r.getTicketPrice().getCurrencyCode(),
-			() -> r.getTicketPrice().getAmount(),
+			r::getNumberOfTickets,
+			l::getSeating,
+			r::getSeating,
 			() -> l.getTicketPrice().getCurrencyCode(),
 			() -> l.getTicketPrice().getAmount(),
-			r::getSeating,
-			l::getSeating,
+			() -> r.getTicketPrice().getCurrencyCode(),
+			() -> r.getTicketPrice().getAmount(),
 			() -> same
 		);
 
