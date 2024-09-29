@@ -365,18 +365,20 @@ public class RedissonCachedSellerListingService
 	}
 
 	private boolean isSame(CreateSellerListingRequest r, SellerListing l) {
-		log.trace("r.numberOfTickets: {}, l.numberOfTickets: {}", r::getNumberOfTickets, l::getNumberOfTickets);
-		log.trace("r.ticketPrice: {} {}, l.ticketPrice: {} {}",
+		var same = Listings.isSame(r, l);
+
+		log.trace("[isSame] externalId: {}, r.numberOfTickets: {}, l.numberOfTickets: {}, r.ticketPrice: {} {}, l.ticketPrice: {} {}, r.seating: {}, l.seating: {}, isSame: {}",
+			r::getExternalId,
+			r::getNumberOfTickets,
+			l::getNumberOfTickets,
 			() -> r.getTicketPrice().getCurrencyCode(),
 			() -> r.getTicketPrice().getAmount(),
 			() -> l.getTicketPrice().getCurrencyCode(),
-			() -> l.getTicketPrice().getAmount()
+			() -> l.getTicketPrice().getAmount(),
+			r::getSeating,
+			l::getSeating,
+			() -> same
 		);
-		log.trace("r.seating: {}, l.seating: {}", r::getSeating, l::getSeating);
-
-		var same = Listings.isSame(r, l);
-
-		log.trace("isSame. externalId: {}, isSame: {}", r.getExternalId(), same);
 
 		return same;
 	}
