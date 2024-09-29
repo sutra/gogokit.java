@@ -376,7 +376,7 @@ public class RedissonCachedSellerListingService
 
 		var same = Listings.isSame(r, l);
 
-		log.trace("same: {}", same);
+		log.trace("isSame. externalId: {}, isSame: {}", r.getExternalId(), same);
 
 		return same;
 	}
