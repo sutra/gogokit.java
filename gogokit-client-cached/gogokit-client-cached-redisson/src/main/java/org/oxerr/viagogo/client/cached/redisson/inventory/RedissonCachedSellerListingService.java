@@ -374,7 +374,7 @@ public class RedissonCachedSellerListingService
 		);
 		log.trace("r.seating: {}, l.seating: {}", r::getSeating, l::getSeating);
 
-		var same = ListingUtils.isSame(r, l);
+		var same = Listings.isSame(r, l);
 
 		log.trace("same: {}", same);
 

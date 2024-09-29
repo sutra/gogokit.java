@@ -9,10 +9,10 @@ import org.oxerr.viagogo.model.SeatingDetail;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-class ListingUtilsTest {
+class ListingsTest {
 
 	@Test
-	void test() {
+	void testIsSame_CreateSellerListingRequest_SellerListing() {
 		CreateSellerListingRequest r = new CreateSellerListingRequest();
 		r.setNumberOfTickets(1);
 		r.setTicketPrice(Money.of("1", "GBP"));
@@ -23,7 +23,24 @@ class ListingUtilsTest {
 		l.setTicketPrice(Money.of("1.0", "GBP"));
 		l.setSeating(new SeatingDetail());
 
-		assertTrue(ListingUtils.isSame(r, l));
+		assertTrue(Listings.isSame(r, l));
+	}
+
+	@Test
+	void testIsSame_Seating() {
+		Seating seating = new Seating();
+		seating.setSection("section");
+		seating.setRow("row");
+		seating.setSeatFrom("1");
+		seating.setSeatTo("2");
+
+		SeatingDetail seatingDetail = new SeatingDetail();
+		seatingDetail.setSection("section");
+		seatingDetail.setRow("row");
+		seatingDetail.setSeatFrom("1");
+		seatingDetail.setSeatTo("2");
+
+		assertTrue(Listings.isSame(seating, seatingDetail));
 	}
 
 }
