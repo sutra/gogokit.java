@@ -40,7 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.oxerr.viagogo</groupId>
-			<artifactId>gogokit-client</artifactId>
+			<artifactId>gogokit-model</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
