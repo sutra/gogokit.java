@@ -46,7 +46,7 @@ class SellerListingServiceImplTest {
 	private final Logger log = LogManager.getLogger();
 
 	private final SellerListingService sellerListingService
-		= ResCUViagogoClientTest.getClient().getSellerListingService();;
+		= ResCUViagogoClientTest.getClient().getSellerListingService();
 
 	@Test
 	@Disabled("Token is required")
