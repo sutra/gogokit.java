@@ -15,20 +15,8 @@
 	<name>GogoKit Client - Cached - Core</name>
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.oxerr.ticket.inventory.support.cached</groupId>
 			<artifactId>ticket-inventory-support-cached-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.mmazi</groupId>
-			<artifactId>rescu</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.oxerr.viagogo</groupId>
