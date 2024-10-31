@@ -328,40 +328,42 @@ public class RedissonCachedSellerListingService
 		// Check the listings in the page.
 		page.getItems().stream()
 			.filter(listing -> context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
-			.forEach((SellerListing listing) -> {
-				log.trace("Checking {}", listing.getExternalId());
+			.forEach((SellerListing listing) -> check(listing, context));
+	}
 
-				String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
-				ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
+	private void check(SellerListing listing, CheckContext context) {
+		log.trace("Checking {}", listing.getExternalId());
 
-				if (cachedListing == null) {
-					// Double check the listing if it is not cached.
-					// If the listing is not cached, delete the listing from viagogo.
-					context.getTasks().add(this.<Void>callAsync(() -> {
-						log.trace("Deleting {}", listing.getExternalId());
-						this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
-						return null;
-					}));
-				} else if (!isSame(listing, cachedListing.getRequest())) {
-					// If the listing is not the same as the cached listing, update the listing.
-					context.getTasks().add(this.<Void>callAsync(() -> {
-						log.trace("Updating {}", listing.getExternalId());
+		String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
+		ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
 
-						var e = cachedListing.getEvent().toViagogoEvent();
-						var l = cachedListing.toViagogoListing();
-						var p = getPriority(e, l, cachedListing);
+		if (cachedListing == null) {
+			// Double check the listing if it is not cached.
+			// If the listing is not cached, delete the listing from viagogo.
+			context.getTasks().add(this.<Void>callAsync(() -> {
+				log.trace("Deleting {}", listing.getExternalId());
+				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
+				return null;
+			}));
+		} else if (!isSame(listing, cachedListing.getRequest())) {
+			// If the listing is not the same as the cached listing, update the listing.
+			context.getTasks().add(this.<Void>callAsync(() -> {
+				log.trace("Updating {}", listing.getExternalId());
 
-						if (e.getViagogoEventId().equals(listing.getEvent().getId())) {
-							this.updateListing(e, l, p);
-						} else {
-							log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
-								e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
-							this.deleteListing(e, listing.getExternalId(), p);
-						}
-						return null;
-					}));
+				var e = cachedListing.getEvent().toViagogoEvent();
+				var l = cachedListing.toViagogoListing();
+				var p = getPriority(e, l, cachedListing);
+
+				if (e.getViagogoEventId().equals(listing.getEvent().getId())) {
+					this.updateListing(e, l, p);
+				} else {
+					log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
+						e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
+					this.deleteListing(e, listing.getExternalId(), p);
 				}
-			});
+				return null;
+			}));
+		}
 	}
 
 	private boolean isSame(SellerListing l, CreateSellerListingRequest r) {
