@@ -36,7 +36,6 @@ import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
-import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
 public class RedissonCachedSellerListingService
