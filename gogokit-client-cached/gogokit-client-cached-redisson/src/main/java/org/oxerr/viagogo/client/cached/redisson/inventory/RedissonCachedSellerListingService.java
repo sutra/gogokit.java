@@ -230,7 +230,7 @@ public class RedissonCachedSellerListingService
 		public Set<String> missingExternalIds() {
 			var missingExternalIds = new HashSet<>(externalIdToCacheName.keySet());
 			missingExternalIds.removeAll(listedExternalIds);
-			log.info("missingExternalIds count: {}", missingExternalIds::size);
+			log.debug("missingExternalIds count: {}", missingExternalIds::size);
 			return missingExternalIds();
 		}
 
@@ -271,17 +271,17 @@ public class RedissonCachedSellerListingService
 		log.debug("[check] tasks size: {}", context.getTasks().size());
 		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
 
-		// Create the listing which in cache but not on viagogo.
+		// Create the listings which in cache but not on viagogo.
 		context.missingExternalIds().forEach(t -> {
-			String cacheName = context.getExternalIdToCacheName().get(t);
-			RMap<String, ViagogoCachedListing> cache = this.getCache(cacheName);
-			ViagogoCachedListing vcl = cache.get(t);
-			ViagogoEvent ve = vcl.getEvent().toViagogoEvent();
-			ViagogoListing vl = vcl.toViagogoListing();
+			var cacheName = context.getExternalIdToCacheName().get(t);
+			var cache = this.getCache(cacheName);
+			var viagogoCachedListing = cache.get(t);
+			var viagogoEvent = viagogoCachedListing.getEvent().toViagogoEvent();
+			var viagogoListing = viagogoCachedListing.toViagogoListing();
 			try {
-				this.createListing(ve, vl);
+				this.createListing(viagogoEvent, viagogoListing);
 			} catch (IOException e) {
-				log.warn("Create listing failed, external ID: {}.", vl.getId(), e);
+				log.warn("Create listing failed, external ID: {}.", viagogoListing.getId(), e);
 			}
 		});
 
