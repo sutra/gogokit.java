@@ -227,11 +227,11 @@ public class RedissonCachedSellerListingService
 		 *
 		 * @return the missing external IDs.
 		 */
-		public Set<String> missingExternalIds() {
+		public Set<String> getMissingExternalIds() {
 			var missingExternalIds = new HashSet<>(externalIdToCacheName.keySet());
 			missingExternalIds.removeAll(listedExternalIds);
 			log.debug("missingExternalIds count: {}", missingExternalIds::size);
-			return missingExternalIds();
+			return missingExternalIds;
 		}
 
 	}
@@ -272,7 +272,7 @@ public class RedissonCachedSellerListingService
 		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
 
 		// Create the listings which in cache but not on viagogo.
-		context.missingExternalIds().forEach(t -> {
+		context.getMissingExternalIds().forEach(t -> {
 			var cacheName = context.getExternalIdToCacheName().get(t);
 			var cache = this.getCache(cacheName);
 			var viagogoCachedListing = cache.get(t);
