@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +36,7 @@ import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
+import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
 public class RedissonCachedSellerListingService
@@ -179,6 +181,11 @@ public class RedissonCachedSellerListingService
 
 		private final Map<String, String> externalIdToCacheName;
 
+		/**
+		 * The external IDs listed on viagogo.
+		 */
+		private final Set<String> listedExternalIds;
+
 		private final List<CompletableFuture<Void>> tasks;
 
 		private final List<CompletableFuture<PagedResource<SellerListing>>> checkings;
@@ -189,6 +196,7 @@ public class RedissonCachedSellerListingService
 			List<CompletableFuture<PagedResource<SellerListing>>> checkings
 		) {
 			this.externalIdToCacheName = externalIdToCacheName;
+			this.listedExternalIds = new HashSet<>();
 			this.tasks = tasks;
 			this.checkings = checkings;
 		}
@@ -203,6 +211,26 @@ public class RedissonCachedSellerListingService
 
 		public List<CompletableFuture<PagedResource<SellerListing>>> getCheckings() {
 			return checkings;
+		}
+
+		/**
+		 * Adds external IDs which is listed on viagogo.
+		 *
+		 * @param externalId the external ID.
+		 */
+		public void addListedExternalId(String externalId) {
+			listedExternalIds.add(externalId);
+		}
+
+		/**
+		 * Returns the missing external IDs on viagogo.
+		 *
+		 * @return the missing external IDs.
+		 */
+		public Set<String> missingExternalIds() {
+			var toBeCreated = new HashSet<>(externalIdToCacheName.keySet());
+			toBeCreated.removeAll(listedExternalIds);
+			return toBeCreated;
 		}
 
 	}
@@ -241,6 +269,20 @@ public class RedissonCachedSellerListingService
 		// Wait all tasks to complete.
 		log.debug("[check] tasks size: {}", context.getTasks().size());
 		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
+
+		// Create the listing which in cache but not on viagogo.
+		context.missingExternalIds().forEach(t -> {
+			String cacheName = context.getExternalIdToCacheName().get(t);
+			RMap<String, ViagogoCachedListing> cache = this.getCache(cacheName);
+			ViagogoCachedListing vcl = cache.get(t);
+			ViagogoEvent ve = vcl.getEvent().toViagogoEvent();
+			ViagogoListing vl = vcl.toViagogoListing();
+			try {
+				this.createListing(ve, vl);
+			} catch (IOException e) {
+				log.warn("Create listing failed, external ID: {}.", vl.getId(), e);
+			}
+		});
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
@@ -342,6 +384,8 @@ public class RedissonCachedSellerListingService
 	 */
 	private void check(SellerListing listing, CheckContext context) {
 		log.trace("Checking {}", listing.getExternalId());
+
+		context.addListedExternalId(listing.getExternalId());
 
 		String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
 		ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
