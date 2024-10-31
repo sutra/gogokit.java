@@ -228,9 +228,10 @@ public class RedissonCachedSellerListingService
 		 * @return the missing external IDs.
 		 */
 		public Set<String> missingExternalIds() {
-			var toBeCreated = new HashSet<>(externalIdToCacheName.keySet());
-			toBeCreated.removeAll(listedExternalIds);
-			return toBeCreated;
+			var missingExternalIds = new HashSet<>(externalIdToCacheName.keySet());
+			missingExternalIds.removeAll(listedExternalIds);
+			log.info("missingExternalIds count: {}", missingExternalIds::size);
+			return missingExternalIds();
 		}
 
 	}
