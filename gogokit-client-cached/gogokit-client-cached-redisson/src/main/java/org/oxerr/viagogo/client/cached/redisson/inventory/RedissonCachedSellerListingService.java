@@ -275,12 +275,16 @@ public class RedissonCachedSellerListingService
 			var cacheName = context.getExternalIdToCacheName().get(t);
 			var cache = this.getCache(cacheName);
 			var viagogoCachedListing = cache.get(t);
-			var viagogoEvent = viagogoCachedListing.getEvent().toViagogoEvent();
-			var viagogoListing = viagogoCachedListing.toViagogoListing();
-			try {
-				this.createListing(viagogoEvent, viagogoListing);
-			} catch (IOException e) {
-				log.warn("Create listing failed, external ID: {}.", viagogoListing.getId(), e);
+
+			if (viagogoCachedListing != null) {
+				// Double check if the cached listing still exists.
+				var viagogoEvent = viagogoCachedListing.getEvent().toViagogoEvent();
+				var viagogoListing = viagogoCachedListing.toViagogoListing();
+				try {
+					this.createListing(viagogoEvent, viagogoListing);
+				} catch (IOException e) {
+					log.warn("Create listing failed, external ID: {}.", viagogoListing.getId(), e);
+				}
 			}
 		});
 
