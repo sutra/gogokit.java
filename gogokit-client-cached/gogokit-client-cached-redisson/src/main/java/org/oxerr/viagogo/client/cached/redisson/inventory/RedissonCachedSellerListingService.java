@@ -331,6 +331,15 @@ public class RedissonCachedSellerListingService
 			.forEach((SellerListing listing) -> check(listing, context));
 	}
 
+	/**
+	 * Checks the listing.
+	 *
+	 * If the listing is not cached, delete the listing from viagogo.
+	 * If the listing is not same as the cached listing, update the listing.
+	 *
+	 * @param listing the listing.
+	 * @param context the context.
+	 */
 	private void check(SellerListing listing, CheckContext context) {
 		log.trace("Checking {}", listing.getExternalId());
 
@@ -346,7 +355,7 @@ public class RedissonCachedSellerListingService
 				return null;
 			}));
 		} else if (!isSame(listing, cachedListing.getRequest())) {
-			// If the listing is not the same as the cached listing, update the listing.
+			// If the listing is not same as the cached listing, update the listing.
 			context.getTasks().add(this.<Void>callAsync(() -> {
 				log.trace("Updating {}", listing.getExternalId());
 
