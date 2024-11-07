@@ -12,7 +12,7 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 
 	private final ViagogoClient viagogoClient;
 
-	private final RedissonCachedSellerListingService cachedSellerListingsService;
+	private final RedissonCachedSellerListingService cachedSellerListingService;
 
 	public RedissonCachedViagogoClient(
 		ViagogoClient viagogoClient,
@@ -61,10 +61,10 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 
 	public RedissonCachedViagogoClient(
 		ViagogoClient viagogoClient,
-		RedissonCachedSellerListingService cachedSellerListingsService
+		RedissonCachedSellerListingService cachedSellerListingService
 	) {
 		this.viagogoClient = viagogoClient;
-		this.cachedSellerListingsService = cachedSellerListingsService;
+		this.cachedSellerListingService = cachedSellerListingService;
 	}
 
 	@Override
@@ -74,7 +74,12 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 
 	@Override
 	public RedissonCachedSellerListingService getCachedSellerListingsService() {
-		return cachedSellerListingsService;
+		return this.getCachedSellerListingService();
+	}
+
+	@Override
+	public RedissonCachedSellerListingService getCachedSellerListingService() {
+		return cachedSellerListingService;
 	}
 
 }

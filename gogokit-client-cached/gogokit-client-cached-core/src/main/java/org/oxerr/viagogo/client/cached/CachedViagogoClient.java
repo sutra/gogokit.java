@@ -7,6 +7,9 @@ public interface CachedViagogoClient {
 
 	ViagogoClient getClient();
 
+	@Deprecated(since = "6.5.0", forRemoval = true)
 	CachedSellerListingService getCachedSellerListingsService();
+
+	CachedSellerListingService getCachedSellerListingService();
 
 }
