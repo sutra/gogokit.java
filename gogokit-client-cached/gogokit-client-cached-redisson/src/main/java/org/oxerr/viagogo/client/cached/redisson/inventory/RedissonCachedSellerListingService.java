@@ -147,6 +147,8 @@ public class RedissonCachedSellerListingService
 		priority += Objects.equals(r.getSeating(), cr.getSeating()) ? 0 : 1;
 		priority += Objects.equals(r.getNotes(), cr.getNotes()) ? 0 : 1;
 
+		log.trace("[getPriority] listing request: {}, cached listing request: {} priority: {}", r, cr, priority);
+
 		return priority;
 	}
 
