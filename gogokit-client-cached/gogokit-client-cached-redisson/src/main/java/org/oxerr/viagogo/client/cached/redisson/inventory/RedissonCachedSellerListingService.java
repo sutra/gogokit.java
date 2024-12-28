@@ -147,6 +147,8 @@ public class RedissonCachedSellerListingService
 		priority += Objects.equals(r.getSeating(), cr.getSeating()) ? 0 : 1;
 		priority += Objects.equals(r.getNotes(), cr.getNotes()) ? 0 : 1;
 
+		log.trace("[getPriority] listing request: {}, cached listing request: {} priority: {}", r, cr, priority);
+
 		return priority;
 	}
 
@@ -349,7 +351,7 @@ public class RedissonCachedSellerListingService
 	private CompletableFuture<PagedResource<SellerListing>> check(SellerListingRequest request, CheckContext context) {
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
-			this.check(page, context);
+			Optional.ofNullable(page).ifPresent(t -> this.check(t, context));
 			log.debug("[check] page: {}, tasks size: {}", request.getPage(), context.getTasks().size());
 			return page;
 		});
@@ -448,6 +450,7 @@ public class RedissonCachedSellerListingService
 	 * @param request the request.
 	 * @return the seller listings.
 	 */
+	@Nullable
 	private PagedResource<SellerListing> getSellerListings(SellerListingRequest request) {
 		return this.retry(() -> {
 			try {
@@ -474,6 +477,7 @@ public class RedissonCachedSellerListingService
 
 	private final Random random = new Random();
 
+	@Nullable
 	private <T> T retry(Supplier<T> supplier) {
 		int attempts = 0;
 
