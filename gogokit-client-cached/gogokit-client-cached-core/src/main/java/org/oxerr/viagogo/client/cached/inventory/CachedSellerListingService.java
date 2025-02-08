@@ -11,4 +11,11 @@ public interface CachedSellerListingService
 	 */
 	void check();
 
+	/**
+	 * Check all listings and delete which not in cache.
+	 *
+	 * @param options the check options.
+	 */
+	void check(CheckOptions options);
+
 }
