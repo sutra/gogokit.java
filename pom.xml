@@ -16,14 +16,14 @@
 	<name>GogoKit</name>
 	<description>GogoKit - viagogo API Client Library for Java.</description>
 	<packaging>pom</packaging>
-	<version>6.6.0</version>
+	<version>6.6.1</version>
 	<url>https://www.oxerr.org/gogokit.java</url>
 	<inceptionYear>2023</inceptionYear>
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
 		<log4j.version>2.20.0</log4j.version>
-		<rescu-ext.version>1.0.4</rescu-ext.version>
+		<rescu-ext.version>1.1.0</rescu-ext.version>
 		<ticket-inventory-support.version>5.4.0</ticket-inventory-support.version>
 	</properties>
 	<modules>

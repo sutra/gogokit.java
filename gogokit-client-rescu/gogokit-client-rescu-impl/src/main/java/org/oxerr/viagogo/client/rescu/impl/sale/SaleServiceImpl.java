@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.oxerr.viagogo.client.rescu.resource.ViagogoException;
 import org.oxerr.viagogo.client.rescu.resource.sale.SaleResource;
 import org.oxerr.viagogo.client.sale.SaleService;
@@ -24,12 +27,12 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public PagedResource<Sale> getSalesRecentUpdates(Instant updatedSince) throws IOException {
+	public PagedResource<Sale> getSalesRecentUpdates(@Nullable Instant updatedSince) throws IOException {
 		return this.saleResource.getSalesRecentUpdates(updatedSince);
 	}
 
 	@Override
-	public PagedResource<Sale> getSales(SaleRequest saleRequest) throws IOException {
+	public PagedResource<Sale> getSales(@Nonnull SaleRequest saleRequest) throws IOException {
 		return this.saleResource.getSales(
 			saleRequest.getPage(),
 			saleRequest.getPageSize(),
@@ -39,7 +42,7 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public Optional<Sale> getSale(Integer saleId) throws IOException {
+	public Optional<Sale> getSale(@Nonnull Integer saleId) throws IOException {
 		try {
 			return Optional.ofNullable(this.saleResource.getSale(saleId));
 		} catch (ViagogoException | HttpStatusIOException e) {

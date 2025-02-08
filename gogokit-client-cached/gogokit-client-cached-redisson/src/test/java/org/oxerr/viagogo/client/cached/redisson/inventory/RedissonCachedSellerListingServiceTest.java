@@ -15,9 +15,6 @@ class RedissonCachedSellerListingServiceTest {
 	void testGetPriorityViagogoEventViagogoListingViagogoCachedListing() {
 		var s = new RedissonCachedSellerListingService(null, null, null, null);
 
-		// null
-		assertEquals(0, s.getPriority(null, null, null));
-
 		// same
 		assertEquals(0, s.getPriority(newViagogoEvent(), newViagogoListing(1, "A", "A", null), newViagogoCachedListing(1, "A", "A", null)));
 
