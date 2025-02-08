@@ -252,7 +252,7 @@ public class RedissonCachedSellerListingService
 
 		// Check the next page to the last page.
 		log.debug("[check] total items: {}, next link: {}, last link: {}",
-			listings.getTotalItems(), listings.getNextLink(), listings.getLastLink());
+			listings::getTotalItems, listings::getNextLink, listings::getLastLink);
 
 		// Check subsequent pages if available
 		// When only 1 page left, the next link and last link is null.
@@ -265,11 +265,11 @@ public class RedissonCachedSellerListingService
 			);
 
 		// Wait all checking to complete.
-		log.debug("[check] checking size: {}", context.getCheckings().size());
+		log.debug("[check] checking size: {}", () -> context.getCheckings().size());
 		CompletableFuture.allOf(context.getCheckings().toArray(CompletableFuture[]::new)).join();
 
 		// Wait all tasks to complete.
-		log.debug("[check] tasks size: {}", context.getTasks().size());
+		log.debug("[check] tasks size: {}", () -> context.getTasks().size());
 		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
 
 		// Create the listings which in cache but not on viagogo.
@@ -292,7 +292,7 @@ public class RedissonCachedSellerListingService
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
-		log.info("[check] end. Checked {} items in {}", listings.getTotalItems(), stopWatch);
+		log.info("[check] end. Checked {} items in {}", listings::getTotalItems, () -> stopWatch);
 	}
 
 	/**
@@ -323,6 +323,9 @@ public class RedissonCachedSellerListingService
 	 * @return a map where the keys are external IDs and the values are cache names.
 	 */
 	private Map<String, String> getExternalIdToCacheName() {
+		// Create a stop watch to measure the time taken to retrieve the external ID to cache
+		StopWatch stopWatch = StopWatch.createStarted();
+
 		// Create a map to hold the external ID to cache name mapping
 		Map<String, String> externalIdToCacheName =
 			this.getCacheNamesStream() // Stream of cache names
@@ -334,8 +337,11 @@ public class RedissonCachedSellerListingService
 				// Collect the entries into a map
 				.collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
 
+		// Log the time taken to retrieve the external ID to cache name mapping
 		// Log the size of the resulting map for debugging purposes
-		log.debug("[check] externalIdToCacheName size: {}", externalIdToCacheName.size());
+		stopWatch.stop();
+		log.debug("[check][getExternalIdToCacheName] externalIdToCacheName size: {}, time: {}",
+			externalIdToCacheName::size, () -> stopWatch);
 
 		// Return the map of external IDs to cache names
 		return externalIdToCacheName;
@@ -352,7 +358,7 @@ public class RedissonCachedSellerListingService
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
 			Optional.ofNullable(page).ifPresent(t -> this.check(t, context));
-			log.debug("[check] page: {}, tasks size: {}", request.getPage(), context.getTasks().size());
+			log.debug("[check] page: {}, tasks size: {}", request::getPage, () -> context.getTasks().size());
 			return page;
 		});
 	}
@@ -389,7 +395,7 @@ public class RedissonCachedSellerListingService
 	 * @param context the context.
 	 */
 	private void check(SellerListing listing, CheckContext context) {
-		log.trace("Checking {}", listing.getExternalId());
+		log.trace("Checking {}", listing::getExternalId);
 
 		context.addListedExternalId(listing.getExternalId());
 
@@ -400,14 +406,14 @@ public class RedissonCachedSellerListingService
 			// Double check the listing if it is not cached.
 			// If the listing is not cached, delete the listing from viagogo.
 			context.getTasks().add(this.<Void>callAsync(() -> {
-				log.trace("Deleting {}", listing.getExternalId());
+				log.trace("Deleting {}", listing::getExternalId);
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			}));
 		} else if (!isSame(listing, cachedListing.getRequest())) {
 			// If the listing is not same as the cached listing, update the listing.
 			context.getTasks().add(this.<Void>callAsync(() -> {
-				log.trace("Updating {}", listing.getExternalId());
+				log.trace("Updating {}", listing::getExternalId);
 
 				var e = cachedListing.getEvent().toViagogoEvent();
 				var l = cachedListing.toViagogoListing();
@@ -417,7 +423,7 @@ public class RedissonCachedSellerListingService
 					this.updateListing(e, l, p);
 				} else {
 					log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
-						e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
+						e::getViagogoEventId, () -> listing.getEvent().getId(), e::getId);
 					this.deleteListing(e, listing.getExternalId(), p);
 				}
 				return null;
