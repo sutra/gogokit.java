@@ -29,6 +29,7 @@ import org.oxerr.ticket.inventory.support.cached.redisson.RedissonCachedListingS
 import org.oxerr.ticket.inventory.support.cached.redisson.Status;
 import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingService;
 import org.oxerr.viagogo.client.cached.inventory.CachedSellerListingsService;
+import org.oxerr.viagogo.client.cached.inventory.CheckOptions;
 import org.oxerr.viagogo.client.cached.inventory.ViagogoEvent;
 import org.oxerr.viagogo.client.cached.inventory.ViagogoListing;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
@@ -46,6 +47,12 @@ public class RedissonCachedSellerListingService
 
 	private final SellerListingService sellerListingService;
 
+	/**
+	 * The page size when do check.
+	 *
+	 * @deprecated
+	 */
+	@Deprecated(forRemoval = true, since = "6.6.0")
 	private final int pageSize;
 
 	private final RetryConfiguration retryConfig;
@@ -92,7 +99,9 @@ public class RedissonCachedSellerListingService
 	 * @param retryConfiguration the retry configuration.
 	 *
 	 * @since 5.0.0
+	 * @deprecated since 6.6.0 for removal in 7.0.0
 	 */
+	@Deprecated(forRemoval = true, since = "6.6.0")
 	public RedissonCachedSellerListingService(
 		SellerListingService sellerListingService,
 		RedissonClient redissonClient,
@@ -105,6 +114,32 @@ public class RedissonCachedSellerListingService
 		super(redissonClient, keyPrefix, executor, listingConfiguration);
 		this.sellerListingService = sellerListingService;
 		this.pageSize = pageSize;
+		this.retryConfig = retryConfiguration;
+	}
+
+	/**
+	 * Constructs with specified {@link ListingConfiguration} and specified {@link RetryConfiguration}.
+	 *
+	 * @param sellerListingService the seller listing service.
+	 * @param redissonClient the redisson client.
+	 * @param keyPrefix the key prefix for the cache.
+	 * @param executor the executor.
+	 * @param listingConfiguration the listing configuration.
+	 * @param retryConfiguration the retry configuration.
+	 *
+	 * @since 6.6.0
+	 */
+	public RedissonCachedSellerListingService(
+		SellerListingService sellerListingService,
+		RedissonClient redissonClient,
+		String keyPrefix,
+		Executor executor,
+		ListingConfiguration listingConfiguration,
+		RetryConfiguration retryConfiguration
+	) {
+		super(redissonClient, keyPrefix, executor, listingConfiguration);
+		this.sellerListingService = sellerListingService;
+		this.pageSize = 10_000;
 		this.retryConfig = retryConfiguration;
 	}
 
@@ -239,37 +274,42 @@ public class RedissonCachedSellerListingService
 
 	@Override
 	public void check() {
+		check(CheckOptions.defaults().pageSize(pageSize));
+	}
+
+	@Override
+	public void check(CheckOptions options) {
 		log.info("[check] begin.");
 
 		// Create a stop watch to measure the time taken to check the listings.
 		StopWatch stopWatch = StopWatch.createStarted();
 
 		// Create a new check context.
-		CheckContext context = newCheckContext();
+		CheckContext context = newCheckContext(options);
 
 		// Check the first page.
-		PagedResource<SellerListing> listings = this.check(request(1), context).join();
+		PagedResource<SellerListing> listings = this.check(request(1, options), context).join();
 
 		// Check the next page to the last page.
 		log.debug("[check] total items: {}, next link: {}, last link: {}",
-			listings.getTotalItems(), listings.getNextLink(), listings.getLastLink());
+			listings::getTotalItems, listings::getNextLink, listings::getLastLink);
 
 		// Check subsequent pages if available
 		// When only 1 page left, the next link and last link is null.
 		Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from)
 			.ifPresent(next -> Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from)
 				.ifPresent(last -> IntStream.rangeClosed(next.getPage(), last.getPage())
-					.mapToObj(this::request)
+					.mapToObj(t -> this.request(t, options))
 					.map(request -> this.check(request, context)).forEach(context.getCheckings()::add)
 				)
 			);
 
 		// Wait all checking to complete.
-		log.debug("[check] checking size: {}", context.getCheckings().size());
+		log.debug("[check] checking size: {}", () -> context.getCheckings().size());
 		CompletableFuture.allOf(context.getCheckings().toArray(CompletableFuture[]::new)).join();
 
 		// Wait all tasks to complete.
-		log.debug("[check] tasks size: {}", context.getTasks().size());
+		log.debug("[check] tasks size: {}", () -> context.getTasks().size());
 		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
 
 		// Create the listings which in cache but not on viagogo.
@@ -292,17 +332,18 @@ public class RedissonCachedSellerListingService
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
-		log.info("[check] end. Checked {} items in {}", listings.getTotalItems(), stopWatch);
+		log.info("[check] end. Checked {} items in {}", listings::getTotalItems, () -> stopWatch);
 	}
 
 	/**
 	 * Creates a new check context.
 	 *
+	 * @param options the check options.
 	 * @return a new check context.
 	 */
-	private CheckContext newCheckContext() {
+	private CheckContext newCheckContext(CheckOptions options) {
 		// The mapping of external IDs to their corresponding cache names.
-		var externalIdToCacheName = this.getExternalIdToCacheName();
+		var externalIdToCacheName = this.getExternalIdToCacheName(options);
 
 		// The tasks to delete or update the listings.
 		var tasks = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
@@ -320,12 +361,16 @@ public class RedissonCachedSellerListingService
 	 * This method iterates over all available cache names, retrieves each cache, 
 	 * and then creates a map entry for each external ID pointing to its cache name.
 	 *
+	 * @param options the check options.
 	 * @return a map where the keys are external IDs and the values are cache names.
 	 */
-	private Map<String, String> getExternalIdToCacheName() {
+	private Map<String, String> getExternalIdToCacheName(CheckOptions options) {
+		// Create a stop watch to measure the time taken to retrieve the external ID to cache
+		StopWatch stopWatch = StopWatch.createStarted();
+
 		// Create a map to hold the external ID to cache name mapping
 		Map<String, String> externalIdToCacheName =
-			this.getCacheNamesStream() // Stream of cache names
+			this.getCacheNamesStream(options.chunkSize()) // Stream of cache names
 				.flatMap(cacheName ->
 					// Retrieve the cache and create a stream of externalId-to-cacheName entries
 					this.getCache(cacheName).keySet().stream()
@@ -334,8 +379,11 @@ public class RedissonCachedSellerListingService
 				// Collect the entries into a map
 				.collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
 
+		// Log the time taken to retrieve the external ID to cache name mapping
 		// Log the size of the resulting map for debugging purposes
-		log.debug("[check] externalIdToCacheName size: {}", externalIdToCacheName.size());
+		stopWatch.stop();
+		log.debug("[check][getExternalIdToCacheName] externalIdToCacheName size: {}, time: {}",
+			externalIdToCacheName::size, () -> stopWatch);
 
 		// Return the map of external IDs to cache names
 		return externalIdToCacheName;
@@ -352,7 +400,7 @@ public class RedissonCachedSellerListingService
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
 			Optional.ofNullable(page).ifPresent(t -> this.check(t, context));
-			log.debug("[check] page: {}, tasks size: {}", request.getPage(), context.getTasks().size());
+			log.debug("[check] page: {}, tasks size: {}", request::getPage, () -> context.getTasks().size());
 			return page;
 		});
 	}
@@ -389,7 +437,7 @@ public class RedissonCachedSellerListingService
 	 * @param context the context.
 	 */
 	private void check(SellerListing listing, CheckContext context) {
-		log.trace("Checking {}", listing.getExternalId());
+		log.trace("Checking {}", listing::getExternalId);
 
 		context.addListedExternalId(listing.getExternalId());
 
@@ -400,14 +448,14 @@ public class RedissonCachedSellerListingService
 			// Double check the listing if it is not cached.
 			// If the listing is not cached, delete the listing from viagogo.
 			context.getTasks().add(this.<Void>callAsync(() -> {
-				log.trace("Deleting {}", listing.getExternalId());
+				log.trace("Deleting {}", listing::getExternalId);
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			}));
 		} else if (!isSame(listing, cachedListing.getRequest())) {
 			// If the listing is not same as the cached listing, update the listing.
 			context.getTasks().add(this.<Void>callAsync(() -> {
-				log.trace("Updating {}", listing.getExternalId());
+				log.trace("Updating {}", listing::getExternalId);
 
 				var e = cachedListing.getEvent().toViagogoEvent();
 				var l = cachedListing.toViagogoListing();
@@ -417,7 +465,7 @@ public class RedissonCachedSellerListingService
 					this.updateListing(e, l, p);
 				} else {
 					log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
-						e.getViagogoEventId(), listing.getEvent().getId(), e.getId());
+						e::getViagogoEventId, () -> listing.getEvent().getId(), e::getId);
 					this.deleteListing(e, listing.getExternalId(), p);
 				}
 				return null;
@@ -465,13 +513,14 @@ public class RedissonCachedSellerListingService
 	 * Creates a seller listing request.
 	 *
 	 * @param page the page.
+	 * @param options the check options.
 	 * @return a seller listing request.
 	 */
-	private SellerListingRequest request(int page) {
+	private SellerListingRequest request(int page, CheckOptions options) {
 		var r = new SellerListingRequest();
 		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
 		r.setPage(page);
-		r.setPageSize(pageSize);
+		r.setPageSize(options.pageSize());
 		return r;
 	}
 
