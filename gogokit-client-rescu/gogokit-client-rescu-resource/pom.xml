@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo.rescu</groupId>
 		<artifactId>gogokit-client-rescu</artifactId>
-		<version>6.6.1-SNAPSHOT</version>
+		<version>6.6.1</version>
 	</parent>
 	<artifactId>gogokit-client-rescu-resource</artifactId>
 	<name>GogoKit Client - ResCU - Resource</name>
