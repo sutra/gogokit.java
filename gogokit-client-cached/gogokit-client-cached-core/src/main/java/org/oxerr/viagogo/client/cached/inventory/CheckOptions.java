@@ -1,5 +1,10 @@
 package org.oxerr.viagogo.client.cached.inventory;
 
+/**
+ * The options in check listings.
+ *
+ * @since 6.6.0
+ */
 public interface CheckOptions {
 
 	static CheckOptions defaults() {

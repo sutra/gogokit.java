@@ -52,7 +52,7 @@ public class RedissonCachedSellerListingService
 	 *
 	 * @deprecated
 	 */
-	@Deprecated(forRemoval = true, since = "6.5.5")
+	@Deprecated(forRemoval = true, since = "6.6.0")
 	private final int pageSize;
 
 	private final RetryConfiguration retryConfig;
@@ -99,9 +99,9 @@ public class RedissonCachedSellerListingService
 	 * @param retryConfiguration the retry configuration.
 	 *
 	 * @since 5.0.0
-	 * @deprecated since 6.5.5 for removal in 7.0.0
+	 * @deprecated since 6.6.0 for removal in 7.0.0
 	 */
-	@Deprecated(forRemoval = true, since = "6.5.5")
+	@Deprecated(forRemoval = true, since = "6.6.0")
 	public RedissonCachedSellerListingService(
 		SellerListingService sellerListingService,
 		RedissonClient redissonClient,
@@ -127,7 +127,7 @@ public class RedissonCachedSellerListingService
 	 * @param listingConfiguration the listing configuration.
 	 * @param retryConfiguration the retry configuration.
 	 *
-	 * @since 6.5.5
+	 * @since 6.6.0
 	 */
 	public RedissonCachedSellerListingService(
 		SellerListingService sellerListingService,

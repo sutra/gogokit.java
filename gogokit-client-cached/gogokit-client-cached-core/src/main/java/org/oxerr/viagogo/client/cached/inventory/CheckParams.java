@@ -1,5 +1,10 @@
 package org.oxerr.viagogo.client.cached.inventory;
 
+/**
+ * The check params implements the {@link CheckOptions}.
+ *
+ * @since 6.6.0
+ */
 public class CheckParams implements CheckOptions {
 
 	/**

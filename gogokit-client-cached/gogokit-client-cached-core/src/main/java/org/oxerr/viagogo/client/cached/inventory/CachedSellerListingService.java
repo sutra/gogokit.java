@@ -15,6 +15,7 @@ public interface CachedSellerListingService
 	 * Check all listings and delete which not in cache.
 	 *
 	 * @param options the check options.
+	 * @since 6.6.0
 	 */
 	void check(CheckOptions options);
 
