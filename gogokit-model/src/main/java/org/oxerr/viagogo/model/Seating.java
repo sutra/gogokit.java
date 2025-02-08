@@ -97,12 +97,7 @@ public class Seating implements Comparable<Seating>, Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("%s | Row %s | Seat %s-%s",
-			this.section.trim(),
-			this.row.trim(),
-			this.seatFrom.trim(),
-			this.seatTo.trim()
-		);
+		return String.format("%s | Row %s | Seat %s-%s", section, row, seatFrom, seatTo);
 	}
 
 	@Override
