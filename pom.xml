@@ -16,7 +16,7 @@
 	<name>GogoKit</name>
 	<description>GogoKit - viagogo API Client Library for Java.</description>
 	<packaging>pom</packaging>
-	<version>6.6.0</version>
+	<version>6.6.1-SNAPSHOT</version>
 	<url>https://www.oxerr.org/gogokit.java</url>
 	<inceptionYear>2023</inceptionYear>
 	<properties>
