@@ -380,10 +380,8 @@ public class RedissonCachedSellerListingService
 				.collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
 
 		// Log the time taken to retrieve the external ID to cache name mapping
-		// Log the size of the resulting map for debugging purposes
 		stopWatch.stop();
-		log.debug("[check][getExternalIdToCacheName] externalIdToCacheName size: {}, time: {}",
-			externalIdToCacheName::size, () -> stopWatch);
+		log.debug("[getExternalIdToCacheName] end. Retrieved {} external IDs in {}", externalIdToCacheName::size, () -> stopWatch);
 
 		// Return the map of external IDs to cache names
 		return externalIdToCacheName;
