@@ -25,7 +25,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<log4j.version>2.20.0</log4j.version>
 		<rescu-ext.version>1.1.0</rescu-ext.version>
-		<ticket-inventory-support.version>5.4.0</ticket-inventory-support.version>
+		<ticket-inventory-support.version>5.6.1</ticket-inventory-support.version>
 	</properties>
 	<modules>
 		<module>gogokit-model</module>
@@ -102,7 +102,7 @@
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
 				<artifactId>junit-jupiter-api</artifactId>
-				<version>5.12.0-RC1</version>
+				<version>5.12.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.oxerr.rescu.ext</groupId>
@@ -122,7 +122,7 @@
 			<dependency>
 				<groupId>org.redisson</groupId>
 				<artifactId>redisson</artifactId>
-				<version>3.44.0</version>
+				<version>3.45.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -137,14 +137,14 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>2.18.2</version>
+				<version>2.18.3</version>
 			</dependency>
 
 			<!-- Java 8 Date/time -->
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-jsr310</artifactId>
-				<version>2.18.2</version>
+				<version>2.18.3</version>
 			</dependency>
 
 			<dependency>
@@ -166,7 +166,7 @@
 			<dependency>
 				<groupId>nl.jqno.equalsverifier</groupId>
 				<artifactId>equalsverifier</artifactId>
-				<version>3.19</version>
+				<version>3.19.1</version>
 			</dependency>
 
 		</dependencies>
