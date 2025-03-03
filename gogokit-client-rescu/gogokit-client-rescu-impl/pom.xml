@@ -9,39 +9,14 @@
 	<parent>
 		<groupId>org.oxerr.viagogo.rescu</groupId>
 		<artifactId>gogokit-client-rescu</artifactId>
-		<version>6.6.1</version>
+		<version>6.6.2</version>
 	</parent>
 	<artifactId>gogokit-client-rescu-impl</artifactId>
 	<name>GogoKit Client - ResCU - Implementation</name>
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j2-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.oxerr.rescu.ext</groupId>
 			<artifactId>rescu-ext-singleton</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.evanlennick</groupId>
-			<artifactId>retry4j</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- Java 8 Date/time -->
@@ -61,4 +36,39 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j2-impl</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.junit.jupiter</groupId>
+					<artifactId>junit-jupiter-api</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>com.evanlennick</groupId>
+					<artifactId>retry4j</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

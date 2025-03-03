@@ -1,15 +1,11 @@
-package org.oxerr.viagogo.model;
+package org.oxerr.viagogo.client.cached;
 
 import java.lang.reflect.Method;
-import java.time.OffsetDateTime;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
-import org.oxerr.viagogo.model.response.catalog.EmbeddedCategory;
-import org.oxerr.viagogo.model.response.catalog.Event;
-import org.oxerr.viagogo.model.response.catalog.Venue;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 
@@ -38,8 +34,6 @@ class EqualsHashCodeVerifierTest {
 				&& !clazz.isAnonymousClass()
 				&& !clazz.isMemberClass()
 				&& !clazz.getName().endsWith("Test")
-				&& clazz != SeatingDetail.class
-				&& clazz != Venue.class
 			) {
 				try {
 					Method equalsMethod = clazz.getMethod("equals", Object.class);
@@ -54,16 +48,6 @@ class EqualsHashCodeVerifierTest {
 						log.info("Verifying: {}", clazz::getName);
 						EqualsVerifier.forClass(clazz)
 							.usingGetClass()
-							.withPrefabValues(
-								EmbeddedCategory.class,
-								new EmbeddedCategory(1, "first instance", "first instance"),
-								new EmbeddedCategory(2, "second instance", "second instance")
-							)
-							.withPrefabValues(
-								Event.class,
-								new Event("first instance", OffsetDateTime.now()),
-								new Event("second instance", OffsetDateTime.now())
-							)
 							.suppress(
 								Warning.NONFINAL_FIELDS,
 								Warning.STRICT_INHERITANCE,

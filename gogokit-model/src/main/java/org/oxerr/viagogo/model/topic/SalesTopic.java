@@ -3,6 +3,9 @@ package org.oxerr.viagogo.model.topic;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.oxerr.viagogo.model.BarcodeInformation;
 import org.oxerr.viagogo.model.response.catalog.Event;
 import org.oxerr.viagogo.model.response.catalog.Venue;
@@ -94,6 +97,28 @@ public class SalesTopic implements Serializable {
 
 	public void setVenue(Venue venue) {
 		this.venue = venue;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof SalesTopic)) {
+			return false;
+		}
+		SalesTopic rhs = (SalesTopic) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

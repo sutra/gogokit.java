@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.oxerr.viagogo.rescu</groupId>
 		<artifactId>gogokit-client-rescu</artifactId>
-		<version>6.6.1</version>
+		<version>6.6.2</version>
 	</parent>
 	<artifactId>gogokit-client-rescu-resource</artifactId>
 	<name>GogoKit Client - ResCU - Resource</name>
@@ -17,26 +17,6 @@
 		<dependency>
 			<groupId>jakarta.ws.rs</groupId>
 			<artifactId>jakarta.ws.rs-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j2-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.oxerr.viagogo</groupId>
@@ -48,4 +28,34 @@
 			<artifactId>rescu</artifactId>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-slf4j2-impl</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.junit.jupiter</groupId>
+					<artifactId>junit-jupiter-api</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>
