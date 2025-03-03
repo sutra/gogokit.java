@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.oxerr.ticket.inventory.support.Event;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
@@ -43,7 +44,19 @@ public class ViagogoEvent extends Event<String, String, CreateSellerListingReque
 
 	@Override
 	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ViagogoEvent)) {
+			return false;
+		}
+		ViagogoEvent rhs = (ViagogoEvent) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

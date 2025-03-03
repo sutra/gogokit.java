@@ -2,6 +2,7 @@ package org.oxerr.viagogo.client.cached.inventory;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.oxerr.ticket.inventory.support.Listing;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
@@ -34,7 +35,19 @@ public class ViagogoListing extends Listing<String, CreateSellerListingRequest> 
 
 	@Override
 	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof ViagogoListing)) {
+			return false;
+		}
+		ViagogoListing rhs = (ViagogoListing) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }
