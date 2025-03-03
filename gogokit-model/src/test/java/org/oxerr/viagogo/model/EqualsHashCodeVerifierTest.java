@@ -49,7 +49,7 @@ class EqualsHashCodeVerifierTest {
 
 					// Only verify if both equals and hashCode are implemented
 					if (overridesEquals && overridesHashCode) {
-						log.info("Verifying: {}", clazz::getName);
+						log.debug("Verifying: {}", clazz::getName);
 						EqualsVerifier.forClass(clazz)
 							.usingGetClass()
 							.withPrefabValues(
@@ -68,6 +68,8 @@ class EqualsHashCodeVerifierTest {
 								Warning.BIGDECIMAL_EQUALITY
 							)
 							.verify();
+					} else {
+						log.warn("{}", clazz);
 					}
 				} catch (Exception e) {
 					log.error("Failed to verify class: {}", clazz, e);

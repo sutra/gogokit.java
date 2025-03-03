@@ -14,6 +14,10 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import io.openapitools.jackson.dataformat.hal.HALLink;
 
 public final class Link {
@@ -27,6 +31,7 @@ public final class Link {
 			.map(s -> Arrays.copyOf(s.split("=", 2), 2))
 			.collect(Collectors.groupingBy(s -> decode(s[0]), Collectors.mapping(s -> decode(s[1]), Collectors.toList())));
 	}
+
 	public Link(HALLink halLink) {
 		this(halLink.getHref());
 	}
@@ -60,6 +65,28 @@ public final class Link {
 
 	public LocalDateTime getFirstAsLocalDateTime(String name) {
 		return getFirst(name).map(LocalDateTime::parse).orElse(null);
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof Link)) {
+			return false;
+		}
+		Link rhs = (Link) obj;
+		return EqualsBuilder.reflectionEquals(this, rhs);
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 	private static String decode(final String encoded) {
