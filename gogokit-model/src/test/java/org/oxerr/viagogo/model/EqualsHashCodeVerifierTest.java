@@ -30,6 +30,8 @@ class EqualsHashCodeVerifierTest {
 
 		// Iterate over all classes and verify equals and hashCode
 		for (Class<?> clazz : allClasses) {
+			log.info("Processing: {}", clazz::getName);
+
 			if (!clazz.isInterface()
 				&& !clazz.isEnum()
 				&& !clazz.isAnnotation()
@@ -49,7 +51,7 @@ class EqualsHashCodeVerifierTest {
 
 					// Only verify if both equals and hashCode are implemented
 					if (overridesEquals && overridesHashCode) {
-						log.debug("Verifying: {}", clazz::getName);
+						log.info("Verifying: {}", clazz::getName);
 						EqualsVerifier.forClass(clazz)
 							.usingGetClass()
 							.withPrefabValues(
