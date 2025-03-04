@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.client.cached.redisson;
 
 import java.lang.reflect.Method;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +49,11 @@ class EqualsHashCodeVerifierTest {
 						log.info("Verifying: {}", clazz::getName);
 						EqualsVerifier.forClass(clazz)
 							.usingGetClass()
+							.withPrefabValues(
+								Random.class,
+								new Random(1),
+								new Random(1)
+							)
 							.suppress(
 								Warning.NONFINAL_FIELDS,
 								Warning.STRICT_INHERITANCE,
