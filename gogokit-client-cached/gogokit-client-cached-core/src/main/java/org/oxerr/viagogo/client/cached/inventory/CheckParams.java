@@ -12,12 +12,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class CheckParams implements CheckOptions {
 
 	/**
-	 * The chunk size to load keys from cache.
+	 * The page size when do check.
 	 */
 	private int pageSize = 10_000;
 
 	/**
-	 * The page size when do check.
+	 * The chunk size to load keys from cache.
 	 */
 	private int chunkSize = 0;
 
