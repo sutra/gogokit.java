@@ -290,6 +290,10 @@ public class RedissonCachedSellerListingService
 		// Check the first page.
 		PagedResource<SellerListing> listings = this.check(request(1, options), context).join();
 
+		if (listings == null) {
+			throw new RetryableException("Retrieve first page failed.");
+		}
+
 		// Check the next page to the last page.
 		log.debug("[check] total items: {}, next link: {}, last link: {}",
 			listings::getTotalItems, listings::getNextLink, listings::getLastLink);
@@ -557,6 +561,13 @@ public class RedissonCachedSellerListingService
 	private static class RetryableException extends RuntimeException {
 
 		private static final long serialVersionUID = 2023120801L;
+
+		public RetryableException() {
+		}
+
+		public RetryableException(String message) {
+			super(message);
+		}
 
 		public RetryableException(Throwable cause) {
 			super(cause);
