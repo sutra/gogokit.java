@@ -416,7 +416,7 @@ public class RedissonCachedSellerListingService
 	private void check(PagedResource<SellerListing> page, CheckContext context) {
 		// Delete the listings not in the page
 		var deleteTasks = page.getItems().stream()
-			.filter(listing -> !context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
+			.filter(listing -> !context.getExternalIdToCacheName().containsKey(listing.getExternalId()))
 			.map(listing -> this.<Void>callAsync(() -> {
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
@@ -425,7 +425,7 @@ public class RedissonCachedSellerListingService
 
 		// Check the listings in the page.
 		page.getItems().stream()
-			.filter(listing -> context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
+			.filter(listing -> context.getExternalIdToCacheName().containsKey(listing.getExternalId()))
 			.forEach((SellerListing listing) -> check(listing, context));
 	}
 
