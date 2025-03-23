@@ -1,6 +1,7 @@
 package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -18,16 +19,20 @@ final class Listings {
 	}
 
 	public static boolean isSame(SellerListing l, CreateSellerListingRequest r) {
-		return Objects.equals(l.getNumberOfTickets(), r.getNumberOfTickets())
-			&& isSame(l.getSeating(), r.getSeating())
-			&& Objects.compare(l.getTicketPrice(), r.getTicketPrice(), Money::compareTo) == 0;
+		return Stream.of(
+			Objects.equals(l.getNumberOfTickets(), r.getNumberOfTickets()),
+			isSame(l.getSeating(), r.getSeating()),
+			Objects.compare(l.getTicketPrice(), r.getTicketPrice(), Money::compareTo) == 0
+		).allMatch(Boolean::booleanValue);
 	}
 
 	public static boolean isSame(SeatingDetail seatingDetail, Seating seating) {
-		return Objects.equals(seatingDetail.getSection(), seating.getSection())
-			&& Objects.equals(seatingDetail.getRow(), seating.getRow())
-			&& Objects.equals(seatingDetail.getSeatFrom(), seating.getSeatFrom())
-			&& Objects.equals(seatingDetail.getSeatTo(), seating.getSeatTo());
+		return Stream.of(
+			Objects.equals(seatingDetail.getSection(), seating.getSection()),
+			Objects.equals(seatingDetail.getRow(), seating.getRow()),
+			Objects.equals(seatingDetail.getSeatFrom(), seating.getSeatFrom()),
+			Objects.equals(seatingDetail.getSeatTo(), seating.getSeatTo())
+		).allMatch(Boolean::booleanValue);
 	}
 
 	@Override

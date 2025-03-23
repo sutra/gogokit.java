@@ -218,7 +218,7 @@ public class RedissonCachedSellerListingService
 		private final Map<String, String> externalIdToCacheName;
 
 		/**
-		 * The external IDs listed on viagogo.
+		 * The external IDs listed on the marketplace.
 		 */
 		private final Set<String> listedExternalIds;
 
@@ -250,7 +250,7 @@ public class RedissonCachedSellerListingService
 		}
 
 		/**
-		 * Adds external IDs which is listed on viagogo.
+		 * Adds external IDs which is listed on the marketplace.
 		 *
 		 * @param externalId the external ID.
 		 */
@@ -259,7 +259,7 @@ public class RedissonCachedSellerListingService
 		}
 
 		/**
-		 * Returns the missing external IDs on viagogo.
+		 * Returns the missing external IDs on the marketplace.
 		 *
 		 * @return the missing external IDs.
 		 */
@@ -290,6 +290,10 @@ public class RedissonCachedSellerListingService
 		// Check the first page.
 		PagedResource<SellerListing> listings = this.check(request(1, options), context).join();
 
+		if (listings == null) {
+			throw new RetryableException("Retrieve first page failed.");
+		}
+
 		// Check the next page to the last page.
 		log.debug("[check] total items: {}, next link: {}, last link: {}",
 			listings::getTotalItems, listings::getNextLink, listings::getLastLink);
@@ -312,7 +316,7 @@ public class RedissonCachedSellerListingService
 		log.debug("[check] tasks size: {}", () -> context.getTasks().size());
 		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
 
-		// Create the listings which in cache but not on viagogo.
+		// Create the listings which in cache but not on the marketplace.
 		context.getMissingExternalIds().forEach(t -> {
 			var cacheName = context.getExternalIdToCacheName().get(t);
 			var cache = this.getCache(cacheName);
@@ -412,7 +416,7 @@ public class RedissonCachedSellerListingService
 	private void check(PagedResource<SellerListing> page, CheckContext context) {
 		// Delete the listings not in the page
 		var deleteTasks = page.getItems().stream()
-			.filter(listing -> !context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
+			.filter(listing -> !context.getExternalIdToCacheName().containsKey(listing.getExternalId()))
 			.map(listing -> this.<Void>callAsync(() -> {
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
@@ -421,14 +425,14 @@ public class RedissonCachedSellerListingService
 
 		// Check the listings in the page.
 		page.getItems().stream()
-			.filter(listing -> context.getExternalIdToCacheName().keySet().contains(listing.getExternalId()))
+			.filter(listing -> context.getExternalIdToCacheName().containsKey(listing.getExternalId()))
 			.forEach((SellerListing listing) -> check(listing, context));
 	}
 
 	/**
 	 * Checks the listing.
 	 *
-	 * If the listing is not cached, delete the listing from viagogo.
+	 * If the listing is not cached, delete the listing from the marketplace.
 	 * If the listing is not same as the cached listing, update the listing.
 	 *
 	 * @param listing the listing.
@@ -444,7 +448,7 @@ public class RedissonCachedSellerListingService
 
 		if (cachedListing == null) {
 			// Double check the listing if it is not cached.
-			// If the listing is not cached, delete the listing from viagogo.
+			// If the listing is not cached, delete the listing from the marketplace.
 			context.getTasks().add(this.<Void>callAsync(() -> {
 				log.trace("Deleting {}", listing::getExternalId);
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
@@ -460,11 +464,11 @@ public class RedissonCachedSellerListingService
 				var p = getPriority(e, l, cachedListing);
 
 				if (e.getViagogoEventId().equals(listing.getEvent().getId())) {
-					this.updateListing(e, l, p);
+					this.updateListing(e, l, cachedListing, p);
 				} else {
 					log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
 						e::getViagogoEventId, () -> listing.getEvent().getId(), e::getId);
-					this.deleteListing(e, listing.getExternalId(), p);
+					this.deleteListing(e, listing.getExternalId(), cachedListing, p);
 				}
 				return null;
 			}));
@@ -557,6 +561,14 @@ public class RedissonCachedSellerListingService
 	private static class RetryableException extends RuntimeException {
 
 		private static final long serialVersionUID = 2023120801L;
+
+		public RetryableException() {
+			super();
+		}
+
+		public RetryableException(String message) {
+			super(message);
+		}
 
 		public RetryableException(Throwable cause) {
 			super(cause);
