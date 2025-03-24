@@ -32,13 +32,13 @@ class RedissonCachedSellerListingServiceTest {
 	private ViagogoListing newViagogoListing(Integer numberOfTickets, String seatFrom, String seatTo, String notes) {
 		var viagogoEvent = new ViagogoEvent("1", null, 1L);
 		var createSellerListingRequest = newCreateSellerListingRequest(numberOfTickets, seatFrom, seatTo, notes);
-		return new ViagogoListing("1", viagogoEvent.getViagogoEventId(), createSellerListingRequest);
+		return new ViagogoListing("1", viagogoEvent.getMarketplaceEventId(), createSellerListingRequest);
 	}
 
 	private ViagogoCachedListing newViagogoCachedListing(Integer numberOfTickets, String seatFrom, String seatTo, String notes) {
 		var viagogoEvent = new ViagogoEvent("1", null, 1L);
 		var cachedCreateSellerListingRequest = newCreateSellerListingRequest(numberOfTickets, seatFrom, seatTo, notes);
-		var cachedViagogoListing = new ViagogoListing("1", viagogoEvent.getViagogoEventId(), cachedCreateSellerListingRequest);
+		var cachedViagogoListing = new ViagogoListing("1", viagogoEvent.getMarketplaceEventId(), cachedCreateSellerListingRequest);
 		return new ViagogoCachedListing(viagogoEvent, cachedViagogoListing, Status.LISTED);
 	}
 

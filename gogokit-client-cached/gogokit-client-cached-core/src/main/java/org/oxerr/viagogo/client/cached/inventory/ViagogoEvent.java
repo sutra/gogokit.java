@@ -12,29 +12,29 @@ import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 
 public class ViagogoEvent extends Event<String, String, CreateSellerListingRequest, ViagogoListing> {
 
-	private static final long serialVersionUID = 2023031901L;
+	private static final long serialVersionUID = 2024032401L;
 
-	private Long viagogoEventId;
+	private Long marketplaceEventId;
 
 	public ViagogoEvent() {
 		this(null, null, null, Collections.emptyList());
 	}
 
-	public ViagogoEvent(String id, OffsetDateTime startDate, Long viagogoEventId) {
-		this(id, startDate, viagogoEventId, Collections.emptyList());
+	public ViagogoEvent(String id, OffsetDateTime startDate, Long marketplaceEventId) {
+		this(id, startDate, marketplaceEventId, Collections.emptyList());
 	}
 
-	public ViagogoEvent(String id, OffsetDateTime startDate, Long viagogoEventId, List<ViagogoListing> listings) {
+	public ViagogoEvent(String id, OffsetDateTime startDate, Long marketplaceEventId, List<ViagogoListing> listings) {
 		super(id, startDate, listings);
-		this.viagogoEventId = viagogoEventId;
+		this.marketplaceEventId = marketplaceEventId;
 	}
 
-	public Long getViagogoEventId() {
-		return viagogoEventId;
+	public Long getMarketplaceEventId() {
+		return marketplaceEventId;
 	}
 
-	public void setViagogoEventId(Long viagogoEventId) {
-		this.viagogoEventId = viagogoEventId;
+	public void setMarketplaceEventId(Long marketplaceEventId) {
+		this.marketplaceEventId = marketplaceEventId;
 	}
 
 	@Override
