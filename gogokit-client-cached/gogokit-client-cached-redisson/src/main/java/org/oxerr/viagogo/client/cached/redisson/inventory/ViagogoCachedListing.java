@@ -15,8 +15,6 @@ public class ViagogoCachedListing extends CachedListing<CreateSellerListingReque
 
 	private ViagogoCachedEvent event;
 
-	private Long viagogoEventId;
-
 	public ViagogoCachedListing() {
 	}
 
@@ -31,7 +29,6 @@ public class ViagogoCachedListing extends CachedListing<CreateSellerListingReque
 	public ViagogoCachedListing(ViagogoCachedEvent event, CreateSellerListingRequest request, Status status) {
 		super(request, status);
 		this.event = event;
-		this.viagogoEventId = event.getViagogoEventId();
 	}
 
 	public ViagogoCachedEvent getEvent() {
@@ -42,16 +39,8 @@ public class ViagogoCachedListing extends CachedListing<CreateSellerListingReque
 		this.event = event;
 	}
 
-	public Long getViagogoEventId() {
-		return viagogoEventId;
-	}
-
-	public void setViagogoEventId(Long viagogoEventId) {
-		this.viagogoEventId = viagogoEventId;
-	}
-
 	public ViagogoListing toViagogoListing() {
-		return new ViagogoListing(this.getRequest().getExternalId(), this.event.getViagogoEventId(), this.getRequest());
+		return new ViagogoListing(this.getRequest().getExternalId(), this.event.getMarketplaceEventId(), this.getRequest());
 	}
 
 	@Override

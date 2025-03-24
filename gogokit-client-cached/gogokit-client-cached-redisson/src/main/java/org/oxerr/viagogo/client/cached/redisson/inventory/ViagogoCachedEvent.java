@@ -14,21 +14,21 @@ public class ViagogoCachedEvent implements Serializable {
 
 	private String id;
 
-	private Long viagogoEventId;
+	private Long marketplaceEventId;
 
 	private OffsetDateTime startDate;
 
 	public ViagogoCachedEvent() {
 	}
 
-	public ViagogoCachedEvent(String id, Long viagogoEventId, OffsetDateTime startDate) {
+	public ViagogoCachedEvent(String id, Long marketplaceEventId, OffsetDateTime startDate) {
 		this.id = id;
-		this.viagogoEventId = viagogoEventId;
+		this.marketplaceEventId = marketplaceEventId;
 		this.startDate = startDate;
 	}
 
 	public ViagogoCachedEvent(ViagogoEvent event) {
-		this(event.getId(), event.getViagogoEventId(), event.getStartDate());
+		this(event.getId(), event.getMarketplaceEventId(), event.getStartDate());
 	}
 
 	public String getId() {
@@ -39,12 +39,12 @@ public class ViagogoCachedEvent implements Serializable {
 		this.id = id;
 	}
 
-	public Long getViagogoEventId() {
-		return viagogoEventId;
+	public Long getMarketplaceEventId() {
+		return marketplaceEventId;
 	}
 
-	public void setViagogoEventId(Long viagogoEventId) {
-		this.viagogoEventId = viagogoEventId;
+	public void setMarketplaceEventId(Long marketplaceEventId) {
+		this.marketplaceEventId = marketplaceEventId;
 	}
 
 	public OffsetDateTime getStartDate() {
@@ -56,7 +56,7 @@ public class ViagogoCachedEvent implements Serializable {
 	}
 
 	public ViagogoEvent toViagogoEvent() {
-		return new ViagogoEvent(id, startDate, viagogoEventId);
+		return new ViagogoEvent(id, startDate, marketplaceEventId);
 	}
 
 	@Override

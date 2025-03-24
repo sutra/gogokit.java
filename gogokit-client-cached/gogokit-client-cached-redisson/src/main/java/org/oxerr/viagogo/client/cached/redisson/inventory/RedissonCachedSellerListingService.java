@@ -150,7 +150,7 @@ public class RedissonCachedSellerListingService
 		@Nullable ViagogoCachedListing cachedListing
 	) {
 		boolean shouldCreate = super.shouldCreate(event, listing, cachedListing);
-		return shouldCreate || (cachedListing != null && !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId()));
+		return shouldCreate || (cachedListing != null && !listing.getMarketplaceEventId().equals(cachedListing.getEvent().getMarketplaceEventId()));
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class RedissonCachedSellerListingService
 		@Nullable ViagogoCachedListing cachedListing
 	) {
 		boolean shouldUpdate = super.shouldUpdate(event, listing, cachedListing);
-		return shouldUpdate || (cachedListing != null && !listing.getViagogoEventId().equals(cachedListing.getViagogoEventId()));
+		return shouldUpdate || (cachedListing != null && !listing.getMarketplaceEventId().equals(cachedListing.getEvent().getMarketplaceEventId()));
 	}
 
 	@Override
@@ -195,12 +195,12 @@ public class RedissonCachedSellerListingService
 		@Nonnull ViagogoCachedListing cachedListing
 	) {
 		return super.shouldDelete(event, inventoryListingIds, listingId, cachedListing)
-			|| !event.getViagogoEventId().equals(cachedListing.getViagogoEventId());
+			|| !event.getMarketplaceEventId().equals(cachedListing.getEvent().getMarketplaceEventId());
 	}
 
 	@Override
 	protected void createListing(ViagogoEvent event, ViagogoListing listing) throws IOException {
-		this.sellerListingService.createListing(listing.getViagogoEventId(), listing.getRequest());
+		this.sellerListingService.createListing(listing.getMarketplaceEventId(), listing.getRequest());
 	}
 
 	@Override
@@ -463,11 +463,11 @@ public class RedissonCachedSellerListingService
 				var l = cachedListing.toViagogoListing();
 				var p = getPriority(e, l, cachedListing);
 
-				if (e.getViagogoEventId().equals(listing.getEvent().getId())) {
+				if (e.getMarketplaceEventId().equals(listing.getEvent().getId())) {
 					this.updateListing(e, l, cachedListing, p);
 				} else {
 					log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
-						e::getViagogoEventId, () -> listing.getEvent().getId(), e::getId);
+						e::getMarketplaceEventId, () -> listing.getEvent().getId(), e::getId);
 					this.deleteListing(e, listing.getExternalId(), cachedListing, p);
 				}
 				return null;
