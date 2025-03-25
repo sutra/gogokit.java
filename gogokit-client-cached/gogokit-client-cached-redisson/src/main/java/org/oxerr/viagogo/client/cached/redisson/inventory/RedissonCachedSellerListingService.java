@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -242,7 +243,7 @@ public class RedissonCachedSellerListingService
 			List<CompletableFuture<PagedResource<SellerListing>>> checkings
 		) {
 			this.externalIdToCacheName = externalIdToCacheName;
-			this.listedExternalIds = new HashSet<>();
+			this.listedExternalIds = ConcurrentHashMap.newKeySet();
 			this.tasks = tasks;
 			this.checkings = checkings;
 		}
