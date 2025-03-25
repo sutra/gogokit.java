@@ -227,6 +227,8 @@ public class RedissonCachedSellerListingService
 
 	private class CheckContext {
 
+		private final CheckOptions options;
+
 		private final Map<String, String> externalIdToCacheName;
 
 		/**
@@ -244,7 +246,8 @@ public class RedissonCachedSellerListingService
 		 */
 		private final List<CompletableFuture<Void>> tasks;
 
-		public CheckContext(Map<String, String> externalIdToCacheName) {
+		public CheckContext(CheckOptions options, Map<String, String> externalIdToCacheName) {
+			this.options = options;
 			this.externalIdToCacheName = Collections.unmodifiableMap(externalIdToCacheName);
 			this.listedExternalIds = ConcurrentHashMap.newKeySet();
 			this.checkings = Collections.synchronizedList(new ArrayList<>());
@@ -253,6 +256,21 @@ public class RedissonCachedSellerListingService
 
 		public Map<String, String> getExternalIdToCacheName() {
 			return externalIdToCacheName;
+		}
+
+		/**
+		 * Creates a seller listing request.
+		 *
+		 * @param page the page.
+		 * @param options the check options.
+		 * @return a seller listing request.
+		 */
+		public SellerListingRequest request(int page) {
+			var r = new SellerListingRequest();
+			r.setSort(SellerListingRequest.Sort.EVENT_DATE);
+			r.setPage(page);
+			r.setPageSize(options.pageSize());
+			return r;
 		}
 
 		public int checkingCount() {
@@ -316,7 +334,7 @@ public class RedissonCachedSellerListingService
 		CheckContext context = newCheckContext(options);
 
 		// Check the first page.
-		PagedResource<SellerListing> listings = this.check(request(1, options), context).join();
+		PagedResource<SellerListing> listings = this.check(context.request(1), context).join();
 
 		if (listings == null) {
 			throw new RetryableException("Retrieve first page failed.");
@@ -331,7 +349,7 @@ public class RedissonCachedSellerListingService
 		Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from)
 			.ifPresent(next -> Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from)
 				.ifPresent(last -> IntStream.rangeClosed(next.getPage(), last.getPage())
-					.mapToObj(t -> this.request(t, options))
+					.mapToObj(context::request)
 					.map(request -> this.check(request, context)).forEach(context::addChecking)
 				)
 			);
@@ -378,7 +396,7 @@ public class RedissonCachedSellerListingService
 		var externalIdToCacheName = this.getExternalIdToCacheName(options);
 
 		// The context for checking.
-		return new CheckContext(externalIdToCacheName);
+		return new CheckContext(options, externalIdToCacheName);
 	}
 
 	/**
@@ -531,21 +549,6 @@ public class RedissonCachedSellerListingService
 				throw new RetryableException(e);
 			}
 		});
-	}
-
-	/**
-	 * Creates a seller listing request.
-	 *
-	 * @param page the page.
-	 * @param options the check options.
-	 * @return a seller listing request.
-	 */
-	private SellerListingRequest request(int page, CheckOptions options) {
-		var r = new SellerListingRequest();
-		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
-		r.setPage(page);
-		r.setPageSize(options.pageSize());
-		return r;
 	}
 
 	private final Random random = new Random();
