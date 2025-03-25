@@ -213,6 +213,16 @@ public class RedissonCachedSellerListingService
 		return new ViagogoCachedListing(new ViagogoCachedEvent(event), listing, status);
 	}
 
+	@Override
+	public void check() {
+		check(CheckOptions.defaults().pageSize(pageSize));
+	}
+
+	@Override
+	public void check(CheckOptions options) {
+		doCheck(options);
+	}
+
 	private class CheckContext {
 
 		private final Map<String, String> externalIdToCacheName;
@@ -272,13 +282,7 @@ public class RedissonCachedSellerListingService
 
 	}
 
-	@Override
-	public void check() {
-		check(CheckOptions.defaults().pageSize(pageSize));
-	}
-
-	@Override
-	public void check(CheckOptions options) {
+	private void doCheck(CheckOptions options) {
 		log.info("[check] begin.");
 
 		// Create a stop watch to measure the time taken to check the listings.
