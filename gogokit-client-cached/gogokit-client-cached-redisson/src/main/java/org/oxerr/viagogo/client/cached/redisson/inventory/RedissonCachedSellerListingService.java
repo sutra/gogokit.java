@@ -421,7 +421,7 @@ public class RedissonCachedSellerListingService
 	 * @return the page in checking.
 	 */
 	private CompletableFuture<PagedResource<SellerListing>> check(SellerListingRequest request, CheckContext context) {
-		return this.<PagedResource<SellerListing>>callAsync(() -> {
+		return callAsync(() -> {
 			var page = this.getSellerListings(request);
 			Optional.ofNullable(page).ifPresent(t -> this.check(t, context));
 			log.debug("[check] page: {}, tasks size: {}", request::getPage, context::taskCount);
