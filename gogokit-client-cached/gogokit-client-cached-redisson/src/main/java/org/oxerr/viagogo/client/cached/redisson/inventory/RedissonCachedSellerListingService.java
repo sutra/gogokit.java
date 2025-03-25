@@ -334,7 +334,7 @@ public class RedissonCachedSellerListingService
 		CheckContext ctx = newCheckContext(options);
 
 		// Check the first page.
-		PagedResource<SellerListing> listings = this.check(ctx, ctx.request(1)).join();
+		PagedResource<SellerListing> listings = this.check(ctx, 1).join();
 
 		if (listings == null) {
 			throw new RetryableException("Retrieve first page failed.");
@@ -349,8 +349,8 @@ public class RedissonCachedSellerListingService
 		Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from)
 			.ifPresent(next -> Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from)
 				.ifPresent(last -> IntStream.rangeClosed(next.getPage(), last.getPage())
-					.mapToObj(ctx::request)
-					.map(request -> this.check(ctx, request)).forEach(ctx::addChecking)
+					.mapToObj(page -> this.check(ctx, page))
+					.forEach(ctx::addChecking)
 				)
 			);
 
@@ -435,15 +435,15 @@ public class RedissonCachedSellerListingService
 	 * Checks the listings of the request.
 	 *
 	 * @param ctx the context.
-	 * @param request the request.
+	 * @param int the page.
 	 * @return the page in checking.
 	 */
-	private CompletableFuture<PagedResource<SellerListing>> check(CheckContext ctx, SellerListingRequest request) {
+	private CompletableFuture<PagedResource<SellerListing>> check(CheckContext ctx, int page) {
 		return callAsync(() -> {
-			var page = this.getSellerListings(request);
-			Optional.ofNullable(page).ifPresent(t -> this.check(ctx, t));
-			log.debug("[check] page: {}, tasks size: {}", request::getPage, ctx::taskCount);
-			return page;
+			var pagedResource = this.getSellerListings(ctx.request(page));
+			Optional.ofNullable(pagedResource).ifPresent(t -> this.check(ctx, t));
+			log.debug("[check] page: {}, tasks size: {}", () -> page, ctx::taskCount);
+			return pagedResource;
 		});
 	}
 
