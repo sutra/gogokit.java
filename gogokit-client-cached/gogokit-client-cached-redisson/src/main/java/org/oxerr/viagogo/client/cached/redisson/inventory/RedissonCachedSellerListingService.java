@@ -235,27 +235,39 @@ public class RedissonCachedSellerListingService
 		private final Set<String> listedExternalIds;
 
 		/**
+		 * The checking tasks.
+		 */
+		private final List<CompletableFuture<PagedResource<SellerListing>>> checkings;
+
+		/**
 		 * The tasks to delete or update the listings.
 		 */
 		private final List<CompletableFuture<Void>> tasks;
 
-		private final List<CompletableFuture<PagedResource<SellerListing>>> checkings;
-
-		public CheckContext(
-			Map<String, String> externalIdToCacheName,
-			List<CompletableFuture<PagedResource<SellerListing>>> checkings
-		) {
-			this.externalIdToCacheName = externalIdToCacheName;
+		public CheckContext(Map<String, String> externalIdToCacheName) {
+			this.externalIdToCacheName = Collections.unmodifiableMap(externalIdToCacheName);
 			this.listedExternalIds = ConcurrentHashMap.newKeySet();
-			this.tasks = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
-			this.checkings = checkings;
+			this.checkings = Collections.synchronizedList(new ArrayList<>());
+			this.tasks = Collections.synchronizedList(new ArrayList<>());
 		}
 
 		public Map<String, String> getExternalIdToCacheName() {
 			return externalIdToCacheName;
 		}
 
-		public int getTaskCount() {
+		public int checkingCount() {
+			return checkings.size();
+		}
+
+		public boolean addChecking(CompletableFuture<PagedResource<SellerListing>> e) {
+			return checkings.add(e);
+		}
+
+		public void joinCheckings() {
+			CompletableFuture.allOf(checkings.toArray(CompletableFuture[]::new)).join();
+		}
+
+		public int taskCount() {
 			return tasks.size();
 		}
 
@@ -267,12 +279,8 @@ public class RedissonCachedSellerListingService
 			return tasks.addAll(c);
 		}
 
-		public void join() {
+		public void joinTasks() {
 			CompletableFuture.allOf(tasks.toArray(CompletableFuture[]::new)).join();
-		}
-
-		public List<CompletableFuture<PagedResource<SellerListing>>> getCheckings() {
-			return checkings;
 		}
 
 		/**
@@ -324,17 +332,17 @@ public class RedissonCachedSellerListingService
 			.ifPresent(next -> Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from)
 				.ifPresent(last -> IntStream.rangeClosed(next.getPage(), last.getPage())
 					.mapToObj(t -> this.request(t, options))
-					.map(request -> this.check(request, context)).forEach(context.getCheckings()::add)
+					.map(request -> this.check(request, context)).forEach(context::addChecking)
 				)
 			);
 
 		// Wait all checking to complete.
-		log.debug("[check] checking size: {}", () -> context.getCheckings().size());
-		CompletableFuture.allOf(context.getCheckings().toArray(CompletableFuture[]::new)).join();
+		log.debug("[check] checking size: {}", context::checkingCount);
+		context.joinCheckings();
 
 		// Wait all tasks to complete.
-		log.debug("[check] tasks size: {}", context::getTaskCount);
-		context.join();
+		log.debug("[check] tasks size: {}", context::taskCount);
+		context.joinTasks();
 
 		// Create the listings which in cache but not on the marketplace.
 		context.getMissingExternalIds().forEach(t -> {
@@ -369,11 +377,8 @@ public class RedissonCachedSellerListingService
 		// The mapping of external IDs to their corresponding cache names.
 		var externalIdToCacheName = this.getExternalIdToCacheName(options);
 
-		// The checking tasks.
-		var checkings = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
-
 		// The context for checking.
-		return new CheckContext(externalIdToCacheName, checkings);
+		return new CheckContext(externalIdToCacheName);
 	}
 
 	/**
@@ -419,7 +424,7 @@ public class RedissonCachedSellerListingService
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
 			Optional.ofNullable(page).ifPresent(t -> this.check(t, context));
-			log.debug("[check] page: {}, tasks size: {}", request::getPage, context::getTaskCount);
+			log.debug("[check] page: {}, tasks size: {}", request::getPage, context::taskCount);
 			return page;
 		});
 	}
