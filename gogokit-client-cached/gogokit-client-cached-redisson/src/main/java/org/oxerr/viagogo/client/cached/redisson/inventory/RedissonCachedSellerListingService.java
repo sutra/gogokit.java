@@ -331,10 +331,10 @@ public class RedissonCachedSellerListingService
 		StopWatch stopWatch = StopWatch.createStarted();
 
 		// Create a new check context.
-		CheckContext context = newCheckContext(options);
+		CheckContext ctx = newCheckContext(options);
 
 		// Check the first page.
-		PagedResource<SellerListing> listings = this.check(context.request(1), context).join();
+		PagedResource<SellerListing> listings = this.check(ctx, ctx.request(1)).join();
 
 		if (listings == null) {
 			throw new RetryableException("Retrieve first page failed.");
@@ -349,22 +349,22 @@ public class RedissonCachedSellerListingService
 		Optional.ofNullable(listings.getNextLink()).map(SellerListingRequest::from)
 			.ifPresent(next -> Optional.ofNullable(listings.getLastLink()).map(SellerListingRequest::from)
 				.ifPresent(last -> IntStream.rangeClosed(next.getPage(), last.getPage())
-					.mapToObj(context::request)
-					.map(request -> this.check(request, context)).forEach(context::addChecking)
+					.mapToObj(ctx::request)
+					.map(request -> this.check(ctx, request)).forEach(ctx::addChecking)
 				)
 			);
 
 		// Wait all checking to complete.
-		log.debug("[check] checking size: {}", context::checkingCount);
-		context.joinCheckings();
+		log.debug("[check] checking size: {}", ctx::checkingCount);
+		ctx.joinCheckings();
 
 		// Wait all tasks to complete.
-		log.debug("[check] tasks size: {}", context::taskCount);
-		context.joinTasks();
+		log.debug("[check] tasks size: {}", ctx::taskCount);
+		ctx.joinTasks();
 
 		// Create the listings which in cache but not on the marketplace.
-		context.getMissingExternalIds().forEach(t -> {
-			var cacheName = context.getExternalIdToCacheName().get(t);
+		ctx.getMissingExternalIds().forEach(t -> {
+			var cacheName = ctx.getExternalIdToCacheName().get(t);
 			var cache = this.getCache(cacheName);
 			var viagogoCachedListing = cache.get(t);
 
@@ -434,15 +434,15 @@ public class RedissonCachedSellerListingService
 	/**
 	 * Checks the listings of the request.
 	 *
+	 * @param ctx the context.
 	 * @param request the request.
-	 * @param context the context.
 	 * @return the page in checking.
 	 */
-	private CompletableFuture<PagedResource<SellerListing>> check(SellerListingRequest request, CheckContext context) {
+	private CompletableFuture<PagedResource<SellerListing>> check(CheckContext ctx, SellerListingRequest request) {
 		return callAsync(() -> {
 			var page = this.getSellerListings(request);
-			Optional.ofNullable(page).ifPresent(t -> this.check(t, context));
-			log.debug("[check] page: {}, tasks size: {}", request::getPage, context::taskCount);
+			Optional.ofNullable(page).ifPresent(t -> this.check(ctx, t));
+			log.debug("[check] page: {}, tasks size: {}", request::getPage, ctx::taskCount);
 			return page;
 		});
 	}
@@ -450,23 +450,23 @@ public class RedissonCachedSellerListingService
 	/**
 	 * Checks the listings in the page.
 	 *
+	 * @param ctx the context.
 	 * @param page the page.
-	 * @param context the context.
 	 */
-	private void check(PagedResource<SellerListing> page, CheckContext context) {
+	private void check(CheckContext ctx, PagedResource<SellerListing> page) {
 		// Delete the listings not in the page
 		var deleteTasks = page.getItems().stream()
-			.filter(listing -> !context.getExternalIdToCacheName().containsKey(listing.getExternalId()))
+			.filter(listing -> !ctx.getExternalIdToCacheName().containsKey(listing.getExternalId()))
 			.map(listing -> this.<Void>callAsync(() -> {
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			})).collect(Collectors.toUnmodifiableList());
-		context.addTasks(deleteTasks);
+		ctx.addTasks(deleteTasks);
 
 		// Check the listings in the page.
 		page.getItems().stream()
-			.filter(listing -> context.getExternalIdToCacheName().containsKey(listing.getExternalId()))
-			.forEach((SellerListing listing) -> check(listing, context));
+			.filter(listing -> ctx.getExternalIdToCacheName().containsKey(listing.getExternalId()))
+			.forEach((SellerListing listing) -> check(ctx, listing));
 	}
 
 	/**
@@ -475,28 +475,28 @@ public class RedissonCachedSellerListingService
 	 * If the listing is not cached, delete the listing from the marketplace.
 	 * If the listing is not same as the cached listing, update the listing.
 	 *
+	 * @param ctx the context.
 	 * @param listing the listing.
-	 * @param context the context.
 	 */
-	private void check(SellerListing listing, CheckContext context) {
+	private void check(CheckContext ctx, SellerListing listing) {
 		log.trace("Checking {}", listing::getExternalId);
 
-		context.addListedExternalId(listing.getExternalId());
+		ctx.addListedExternalId(listing.getExternalId());
 
-		String cacheName = context.getExternalIdToCacheName().get(listing.getExternalId());
+		String cacheName = ctx.getExternalIdToCacheName().get(listing.getExternalId());
 		ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
 
 		if (cachedListing == null) {
 			// Double check the listing if it is not cached.
 			// If the listing is not cached, delete the listing from the marketplace.
-			context.addTask(this.<Void>callAsync(() -> {
+			ctx.addTask(this.<Void>callAsync(() -> {
 				log.trace("Deleting {}", listing::getExternalId);
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			}));
 		} else if (!isSame(listing, cachedListing.getRequest())) {
 			// If the listing is not same as the cached listing, update the listing.
-			context.addTask(this.<Void>callAsync(() -> {
+			ctx.addTask(this.<Void>callAsync(() -> {
 				log.trace("Updating {}", listing::getExternalId);
 
 				var e = cachedListing.getEvent().toViagogoEvent();
