@@ -3,6 +3,7 @@ package org.oxerr.viagogo.client.cached.redisson.inventory;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -233,18 +234,20 @@ public class RedissonCachedSellerListingService
 		 */
 		private final Set<String> listedExternalIds;
 
+		/**
+		 * The tasks to delete or update the listings.
+		 */
 		private final List<CompletableFuture<Void>> tasks;
 
 		private final List<CompletableFuture<PagedResource<SellerListing>>> checkings;
 
 		public CheckContext(
 			Map<String, String> externalIdToCacheName,
-			List<CompletableFuture<Void>> tasks,
 			List<CompletableFuture<PagedResource<SellerListing>>> checkings
 		) {
 			this.externalIdToCacheName = externalIdToCacheName;
 			this.listedExternalIds = ConcurrentHashMap.newKeySet();
-			this.tasks = tasks;
+			this.tasks = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
 			this.checkings = checkings;
 		}
 
@@ -252,8 +255,20 @@ public class RedissonCachedSellerListingService
 			return externalIdToCacheName;
 		}
 
-		public List<CompletableFuture<Void>> getTasks() {
-			return tasks;
+		public int getTaskCount() {
+			return tasks.size();
+		}
+
+		public boolean addTask(CompletableFuture<Void> e) {
+			return tasks.add(e);
+		}
+
+		public boolean addTasks(Collection<? extends CompletableFuture<Void>> c) {
+			return tasks.addAll(c);
+		}
+
+		public void join() {
+			CompletableFuture.allOf(tasks.toArray(CompletableFuture[]::new)).join();
 		}
 
 		public List<CompletableFuture<PagedResource<SellerListing>>> getCheckings() {
@@ -318,8 +333,8 @@ public class RedissonCachedSellerListingService
 		CompletableFuture.allOf(context.getCheckings().toArray(CompletableFuture[]::new)).join();
 
 		// Wait all tasks to complete.
-		log.debug("[check] tasks size: {}", () -> context.getTasks().size());
-		CompletableFuture.allOf(context.getTasks().toArray(CompletableFuture[]::new)).join();
+		log.debug("[check] tasks size: {}", context::getTaskCount);
+		context.join();
 
 		// Create the listings which in cache but not on the marketplace.
 		context.getMissingExternalIds().forEach(t -> {
@@ -354,14 +369,11 @@ public class RedissonCachedSellerListingService
 		// The mapping of external IDs to their corresponding cache names.
 		var externalIdToCacheName = this.getExternalIdToCacheName(options);
 
-		// The tasks to delete or update the listings.
-		var tasks = Collections.synchronizedList(new ArrayList<CompletableFuture<Void>>());
-
 		// The checking tasks.
 		var checkings = new ArrayList<CompletableFuture<PagedResource<SellerListing>>>();
 
 		// The context for checking.
-		return new CheckContext(externalIdToCacheName, tasks, checkings);
+		return new CheckContext(externalIdToCacheName, checkings);
 	}
 
 	/**
@@ -407,7 +419,7 @@ public class RedissonCachedSellerListingService
 		return this.<PagedResource<SellerListing>>callAsync(() -> {
 			var page = this.getSellerListings(request);
 			Optional.ofNullable(page).ifPresent(t -> this.check(t, context));
-			log.debug("[check] page: {}, tasks size: {}", request::getPage, () -> context.getTasks().size());
+			log.debug("[check] page: {}, tasks size: {}", request::getPage, context::getTaskCount);
 			return page;
 		});
 	}
@@ -426,7 +438,7 @@ public class RedissonCachedSellerListingService
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			})).collect(Collectors.toUnmodifiableList());
-		context.getTasks().addAll(deleteTasks);
+		context.addTasks(deleteTasks);
 
 		// Check the listings in the page.
 		page.getItems().stream()
@@ -454,14 +466,14 @@ public class RedissonCachedSellerListingService
 		if (cachedListing == null) {
 			// Double check the listing if it is not cached.
 			// If the listing is not cached, delete the listing from the marketplace.
-			context.getTasks().add(this.<Void>callAsync(() -> {
+			context.addTask(this.<Void>callAsync(() -> {
 				log.trace("Deleting {}", listing::getExternalId);
 				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			}));
 		} else if (!isSame(listing, cachedListing.getRequest())) {
 			// If the listing is not same as the cached listing, update the listing.
-			context.getTasks().add(this.<Void>callAsync(() -> {
+			context.addTask(this.<Void>callAsync(() -> {
 				log.trace("Updating {}", listing::getExternalId);
 
 				var e = cachedListing.getEvent().toViagogoEvent();
