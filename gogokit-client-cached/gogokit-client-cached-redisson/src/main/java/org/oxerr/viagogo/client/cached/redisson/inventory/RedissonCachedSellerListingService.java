@@ -341,7 +341,7 @@ public class RedissonCachedSellerListingService
 		}
 
 		// Check the next page to the last page.
-		log.debug("[check] total items: {}, next link: {}, last link: {}",
+		log.debug("[check] total items: {}, next link: {}, last link: {}.",
 			listings::getTotalItems, listings::getNextLink, listings::getLastLink);
 
 		// Check subsequent pages if available
@@ -355,34 +355,34 @@ public class RedissonCachedSellerListingService
 			);
 
 		// Wait all checking to complete.
-		log.debug("[check] checking size: {}", ctx::checkingCount);
+		log.debug("[check] waiting for all checking task to complete, checking size: {}", ctx::checkingCount);
 		ctx.joinCheckings();
 
 		// Wait all tasks to complete.
-		log.debug("[check] tasks size: {}", ctx::taskCount);
+		log.debug("[check] waiting for all tasks to complete, tasks size: {}", ctx::taskCount);
 		ctx.joinTasks();
 
 		// Create the listings which in cache but not on the marketplace.
 		ctx.getMissingExternalIds().forEach(t -> {
 			var cacheName = ctx.getExternalIdToCacheName().get(t);
 			var cache = this.getCache(cacheName);
-			var viagogoCachedListing = cache.get(t);
+			var marketplaceCachedListing = cache.get(t);
 
-			if (viagogoCachedListing != null) {
+			if (marketplaceCachedListing != null) {
 				// Double check if the cached listing still exists.
-				var viagogoEvent = viagogoCachedListing.getEvent().toViagogoEvent();
-				var viagogoListing = viagogoCachedListing.toViagogoListing();
+				var marketplaceEvent = marketplaceCachedListing.getEvent().toMarketplaceEvent();
+				var marketplaceListing = marketplaceCachedListing.toMarketplaceListing();
 				try {
-					this.createListing(viagogoEvent, viagogoListing);
+					this.createListing(marketplaceEvent, marketplaceListing);
 				} catch (IOException e) {
-					log.warn("Create listing failed, external ID: {}.", viagogoListing.getId(), e);
+					log.warn("Create listing failed, listing ID: {}.", marketplaceListing.getId(), e);
 				}
 			}
 		});
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
-		log.info("[check] end. Checked {} items in {}", listings::getTotalItems, () -> stopWatch);
+		log.info("[check] end, checked {} items in {}", listings::getTotalItems, () -> stopWatch);
 	}
 
 	/**
@@ -499,8 +499,8 @@ public class RedissonCachedSellerListingService
 			ctx.addTask(this.<Void>callAsync(() -> {
 				log.trace("Updating {}", listing::getExternalId);
 
-				var e = cachedListing.getEvent().toViagogoEvent();
-				var l = cachedListing.toViagogoListing();
+				var e = cachedListing.getEvent().toMarketplaceEvent();
+				var l = cachedListing.toMarketplaceListing();
 				var p = getPriority(e, l, cachedListing);
 
 				if (e.getMarketplaceEventId().equals(listing.getEvent().getId())) {

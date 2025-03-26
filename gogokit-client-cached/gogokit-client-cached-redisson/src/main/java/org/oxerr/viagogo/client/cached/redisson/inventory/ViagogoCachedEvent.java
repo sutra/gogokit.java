@@ -55,7 +55,7 @@ public class ViagogoCachedEvent implements Serializable {
 		this.startDate = startDate;
 	}
 
-	public ViagogoEvent toViagogoEvent() {
+	public ViagogoEvent toMarketplaceEvent() {
 		return new ViagogoEvent(id, startDate, marketplaceEventId);
 	}
 
