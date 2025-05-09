@@ -39,6 +39,7 @@ import org.oxerr.viagogo.model.request.inventory.CreateSellerListingRequest;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
+import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
 public class RedissonCachedSellerListingService
@@ -363,22 +364,33 @@ public class RedissonCachedSellerListingService
 		ctx.joinTasks();
 
 		// Create the listings which in cache but not on the marketplace.
-		ctx.getMissingExternalIds().forEach(t -> {
-			var cacheName = ctx.getExternalIdToCacheName().get(t);
-			var cache = this.getCache(cacheName);
-			var marketplaceCachedListing = cache.get(t);
+		Set<String> missingExternalIds = ctx.getMissingExternalIds();
+		log.debug("[check] missing external IDs size: {}", missingExternalIds::size);
 
-			if (marketplaceCachedListing != null) {
-				// Double check if the cached listing still exists.
-				var marketplaceEvent = marketplaceCachedListing.getEvent().toMarketplaceEvent();
-				var marketplaceListing = marketplaceCachedListing.toMarketplaceListing();
+		List<CompletableFuture<Void>> createTasks = missingExternalIds.stream()
+			.map(externalId -> {
+				String cacheName = ctx.getExternalIdToCacheName().get(externalId);
+				RMap<String, ViagogoCachedListing> cache = this.getCache(cacheName);
+				return cache.get(externalId);
+			})
+			// Double check if the cached listing still exists.
+			.filter(Objects::nonNull)
+			.map(marketplaceCachedListing -> this.<Void>callAsync(() -> {
+				ViagogoEvent marketplaceEvent = marketplaceCachedListing.getEvent().toMarketplaceEvent();
+				ViagogoListing marketplaceListing = marketplaceCachedListing.toMarketplaceListing();
+
 				try {
 					this.createListing(marketplaceEvent, marketplaceListing);
 				} catch (IOException e) {
 					log.warn("Create listing failed, listing ID: {}.", marketplaceListing.getId(), e);
 				}
-			}
-		});
+
+				return null;
+			}))
+			.collect(Collectors.toUnmodifiableList());
+
+		log.debug("[check] create tasks size: {}", createTasks::size);
+		CompletableFuture.allOf(createTasks.toArray(CompletableFuture[]::new)).join();
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
