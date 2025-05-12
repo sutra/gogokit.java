@@ -39,7 +39,7 @@ public class ViagogoCachedListing extends CachedListing<CreateSellerListingReque
 		this.event = event;
 	}
 
-	public ViagogoListing toViagogoListing() {
+	public ViagogoListing toMarketplaceListing() {
 		return new ViagogoListing(this.getRequest().getExternalId(), this.event.getMarketplaceEventId(), this.getRequest());
 	}
 
