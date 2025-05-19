@@ -15,6 +15,11 @@ public class CreateSellerListingRequest implements Serializable {
 
 	private Seating seating;
 
+	/**
+	 * The price printed on the ticket, not including any booking fees.
+	 */
+	private Money faceValue;
+
 	private String ticketType;
 
 	private String splitType;
@@ -39,6 +44,14 @@ public class CreateSellerListingRequest implements Serializable {
 
 	public void setSeating(Seating seating) {
 		this.seating = seating;
+	}
+
+	public Money getFaceValue() {
+		return faceValue;
+	}
+
+	public void setFaceValue(Money faceValue) {
+		this.faceValue = faceValue;
 	}
 
 	public String getTicketType() {
