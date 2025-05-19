@@ -22,7 +22,8 @@ final class Listings {
 		return Stream.of(
 			Objects.equals(l.getNumberOfTickets(), r.getNumberOfTickets()),
 			isSame(l.getSeating(), r.getSeating()),
-			Objects.compare(l.getTicketPrice(), r.getTicketPrice(), Money::compareTo) == 0
+			Objects.compare(l.getTicketPrice(), r.getTicketPrice(), Money::compareTo) == 0,
+			Objects.compare(l.getFaceValue(), r.getFaceValue(), Money::compareTo) == 0
 		).allMatch(Boolean::booleanValue);
 	}
 
