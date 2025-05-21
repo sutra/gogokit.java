@@ -2,7 +2,6 @@ package org.oxerr.viagogo.client.rescu.impl.sale;
 
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -16,8 +15,6 @@ import org.oxerr.viagogo.model.request.sale.SaleRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.sale.Sale;
 
-import si.mazi.rescu.HttpStatusIOException;
-
 public class SaleServiceImpl implements SaleService {
 
 	private final SaleResource saleResource;
@@ -27,12 +24,12 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public PagedResource<Sale> getSalesRecentUpdates(@Nullable Instant updatedSince) throws IOException {
+	public PagedResource<Sale> getSalesRecentUpdates(@Nullable Instant updatedSince) {
 		return this.saleResource.getSalesRecentUpdates(updatedSince);
 	}
 
 	@Override
-	public PagedResource<Sale> getSales(@Nonnull SaleRequest saleRequest) throws IOException {
+	public PagedResource<Sale> getSales(@Nonnull SaleRequest saleRequest) {
 		return this.saleResource.getSales(
 			saleRequest.getPage(),
 			saleRequest.getPageSize(),
@@ -42,10 +39,10 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public Optional<Sale> getSale(@Nonnull Integer saleId) throws IOException {
+	public Optional<Sale> getSale(@Nonnull Integer saleId) {
 		try {
 			return Optional.ofNullable(this.saleResource.getSale(saleId));
-		} catch (ViagogoException | HttpStatusIOException e) {
+		} catch (ViagogoException e) {
 			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {

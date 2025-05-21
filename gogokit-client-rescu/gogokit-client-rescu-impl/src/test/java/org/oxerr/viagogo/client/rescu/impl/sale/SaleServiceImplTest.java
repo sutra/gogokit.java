@@ -1,6 +1,5 @@
 package org.oxerr.viagogo.client.rescu.impl.sale;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -27,7 +26,7 @@ class SaleServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSalesRecentUpdates() throws IOException {
+	void testGetSalesRecentUpdates() {
 		Instant updatedSince = Instant.now().minus(1, ChronoUnit.DAYS);
 		var sales = this.saleService.getSalesRecentUpdates(updatedSince);
 		this.log(sales);
@@ -35,7 +34,7 @@ class SaleServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSales() throws IOException {
+	void testGetSales() {
 		SaleRequest r = new SaleRequest();
 		var sales = this.saleService.getSales(r);
 		this.log(sales);
@@ -43,7 +42,7 @@ class SaleServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSale() throws IOException {
+	void testGetSale() {
 		Integer saleId = 512171600;
 		Sale sale = this.saleService.getSale(saleId).get();
 		this.log(sale);

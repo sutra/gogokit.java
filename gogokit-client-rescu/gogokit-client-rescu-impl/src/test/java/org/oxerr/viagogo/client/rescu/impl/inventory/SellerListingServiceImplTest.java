@@ -3,7 +3,6 @@ package org.oxerr.viagogo.client.rescu.impl.inventory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
@@ -28,7 +27,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oxerr.viagogo.client.inventory.SellerListingService;
 import org.oxerr.viagogo.client.rescu.impl.ResCUViagogoClientTest;
-import org.oxerr.viagogo.client.rescu.resource.ViagogoException;
 import org.oxerr.viagogo.model.Money;
 import org.oxerr.viagogo.model.Seating;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerListingForRequestedEventRequest;
@@ -50,7 +48,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSellerListing() throws IOException {
+	void testGetSellerListing() {
 		long listingId = 0L;
 		SellerListing sellerListing = this.sellerListingService.getSellerListing(listingId).get();
 		assertNotNull(sellerListing);
@@ -59,7 +57,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSellerListingsRecentUpdates() throws IOException {
+	void testGetSellerListingsRecentUpdates() {
 		Instant updatedSince = Instant.now().minus(1, ChronoUnit.HOURS);
 		PagedResource<SellerListing> recentUpdates = this.sellerListingService.getSellerListingsRecentUpdates(updatedSince);
 		log.info("total items: {}", recentUpdates.getTotalItems());
@@ -76,7 +74,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSellerListings() throws ViagogoException, IOException {
+	void testGetSellerListings() {
 		SellerListingRequest r = new SellerListingRequest();
 		r.setPageSize(10_000); // seems the maximum page size is 10_000
 		r.setSort(SellerListingRequest.Sort.EVENT_DATE);
@@ -104,7 +102,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetAllSellerListingsOfOneEvent() throws IOException {
+	void testGetAllSellerListingsOfOneEvent() {
 		long eventId = 150471162L;
 		List<SellerListing> sellerListings = sellerListingService.getAllSellerListings(eventId);
 		assertNotNull(sellerListings);
@@ -118,7 +116,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testCreateListingForRequestedEvent() throws IOException {
+	void testCreateListingForRequestedEvent() {
 		// given
 		final String externalId = "1";
 
@@ -198,7 +196,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testCreateListing() throws IOException {
+	void testCreateListing() {
 		// given
 		final String externalId = "1";
 
@@ -276,7 +274,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetSellerListingByExternalListingId() throws IOException {
+	void testGetSellerListingByExternalListingId() {
 		String externalListingId = "1626048103687655433";
 		SellerListing sellerListing = sellerListingService.getSellerListingByExternalId(externalListingId).get();
 		sellerListing.getSeating();
@@ -285,7 +283,7 @@ class SellerListingServiceImplTest {
 
 	@Test
 	@Disabled("Delete all seller listings")
-	void testDeleteAll() throws IOException {
+	void testDeleteAll() {
 		PagedResource<SellerListing> all;
 
 		Set<String> externalIds = new HashSet<>();
@@ -300,7 +298,7 @@ class SellerListingServiceImplTest {
 				r.setPageSize(pageSize);
 				all = sellerListingService.getSellerListings(r);
 				page++;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				log.warn("Read all seller listings failed: {}", e.getMessage());
 				all = null;
 				continue;
@@ -320,7 +318,7 @@ class SellerListingServiceImplTest {
 			executorService.execute(() -> {
 				try {
 					sellerListingService.deleteListingByExternalListingId(externalId);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.warn("Delete {} failed: {}", externalId, e.getMessage());
 				}
 			});

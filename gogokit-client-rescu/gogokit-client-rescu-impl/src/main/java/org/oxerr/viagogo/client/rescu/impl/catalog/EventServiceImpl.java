@@ -2,7 +2,6 @@ package org.oxerr.viagogo.client.rescu.impl.catalog;
 
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import org.oxerr.viagogo.client.catalog.EventService;
@@ -13,8 +12,6 @@ import org.oxerr.viagogo.model.request.catalog.SearchEventRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.catalog.Event;
 
-import si.mazi.rescu.HttpStatusIOException;
-
 public class EventServiceImpl implements EventService {
 
 	private final EventResource eventResource;
@@ -24,7 +21,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public PagedResource<Event> getEvents(EventRequest eventRequest) throws IOException {
+	public PagedResource<Event> getEvents(EventRequest eventRequest) {
 		return this.eventResource.getEvents(
 			eventRequest.getPage(),
 			eventRequest.getPageSize(),
@@ -40,10 +37,10 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Optional<Event> getEventByExternalEventId(String platform, Long externalEventId) throws IOException {
+	public Optional<Event> getEventByExternalEventId(String platform, Long externalEventId) {
 		try {
 			return Optional.ofNullable(this.eventResource.getEventByExternalEventId(platform, externalEventId));
-		} catch (ViagogoException | HttpStatusIOException e) {
+		} catch (ViagogoException e) {
 			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
@@ -53,10 +50,10 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Optional<Event> getEvent(Long eventId) throws IOException {
+	public Optional<Event> getEvent(Long eventId) {
 		try {
 			return Optional.ofNullable(this.eventResource.getEvent(eventId));
-		} catch (ViagogoException | HttpStatusIOException e) {
+		} catch (ViagogoException e) {
 			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
@@ -66,7 +63,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public PagedResource<Event> searchEvents(SearchEventRequest searchEventRequest) throws IOException {
+	public PagedResource<Event> searchEvents(SearchEventRequest searchEventRequest) {
 		return this.eventResource.searchEvents(
 			searchEventRequest.getQ(),
 			searchEventRequest.getDateLocal(),

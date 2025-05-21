@@ -1,6 +1,5 @@
 package org.oxerr.viagogo.client.catalog;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +20,10 @@ public interface EventService {
 	 *
 	 * @param eventRequest the request.
 	 * @return the events.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	PagedResource<Event> getEvents(EventRequest eventRequest) throws IOException;
+	PagedResource<Event> getEvents(EventRequest eventRequest);
 
-	default PagedResource<Event> getEvents(HALLink link) throws IOException {
+	default PagedResource<Event> getEvents(HALLink link) {
 		return this.getEvents(EventRequest.from(link));
 	}
 
@@ -36,33 +34,30 @@ public interface EventService {
 	 * Can be {@code legacy_stubhub}.
 	 * @param externalEventId The event identifier from the external platform.
 	 * @return the event.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	Optional<Event> getEventByExternalEventId(String platform, Long externalEventId) throws IOException;
+	Optional<Event> getEventByExternalEventId(String platform, Long externalEventId);
 
 	/**
 	 * Get an event.
 	 *
 	 * @param eventId The event identifier.
 	 * @return the event.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	Optional<Event> getEvent(Long eventId) throws IOException;
+	Optional<Event> getEvent(Long eventId);
 
 	/**
 	 * Search events.
 	 *
 	 * @param searchEventRequest the request.
 	 * @return the events.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	PagedResource<Event> searchEvents(SearchEventRequest searchEventRequest) throws IOException;
+	PagedResource<Event> searchEvents(SearchEventRequest searchEventRequest);
 
-	default PagedResource<Event> searchEvents(HALLink link) throws IOException {
+	default PagedResource<Event> searchEvents(HALLink link) {
 		return this.searchEvents(SearchEventRequest.from(link));
 	}
 
-	default List<Event> searchAll(SearchEventRequest searchEventRequest, Predicate<Event> predicate) throws IOException {
+	default List<Event> searchAll(SearchEventRequest searchEventRequest, Predicate<Event> predicate) {
 		PagedResource<Event> pagedEvents = this.searchEvents(searchEventRequest);
 		List<Event> matched = new ArrayList<>(pagedEvents.getTotalItems());
 		matched.addAll(pagedEvents.getItems().stream().filter(predicate).collect(Collectors.toList()));
@@ -75,7 +70,7 @@ public interface EventService {
 		return matched;
 	}
 
-	default Optional<Event> searchFirst(SearchEventRequest searchEventRequest, Predicate<Event> predicate) throws IOException {
+	default Optional<Event> searchFirst(SearchEventRequest searchEventRequest, Predicate<Event> predicate) {
 		PagedResource<Event> pagedEvents = this.searchEvents(searchEventRequest);
 		Optional<Event> matched = this.findFirst(pagedEvents, predicate);
 

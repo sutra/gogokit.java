@@ -1,6 +1,5 @@
 package org.oxerr.viagogo.client.inventory;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +20,8 @@ public interface SellerListingService {
 	 *
 	 * @param listingId the listing ID.
 	 * @return the seller listing of the specified listing ID.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	Optional<SellerListing> getSellerListing(Long listingId) throws IOException;
+	Optional<SellerListing> getSellerListing(Long listingId);
 
 	/**
 	 * List seller listings (recent updates)
@@ -34,20 +32,18 @@ public interface SellerListingService {
 	 * @param updatedSince Filters the response to only return items
 	 * that have been updated since the given timestamp
 	 * @return recent updates
-	 * @throws IOException indicates any I/O exception.
 	 */
-	PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince) throws IOException;
+	PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince);
 
 	/**
 	 * List seller listings.
 	 *
 	 * @param sellerListingRequest the request.
 	 * @return the seller listings.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest) throws IOException;
+	PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest);
 
-	default PagedResource<SellerListing> getSellerListings(HALLink link) throws IOException {
+	default PagedResource<SellerListing> getSellerListings(HALLink link) {
 		return this.getSellerListings(SellerListingRequest.from(link));
 	}
 
@@ -56,9 +52,8 @@ public interface SellerListingService {
 	 *
 	 * @param sellerListingRequest the request.
 	 * @return the seller listings.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	default List<SellerListing> getAllSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
+	default List<SellerListing> getAllSellerListings(SellerListingRequest sellerListingRequest) {
 		PagedResource<SellerListing> pagedSellerListings = this.getSellerListings(sellerListingRequest);
 		List<SellerListing> sellerListings = new ArrayList<>(pagedSellerListings.getTotalItems());
 		sellerListings.addAll(pagedSellerListings.getItems());
@@ -76,9 +71,8 @@ public interface SellerListingService {
 	 *
 	 * @param eventId the event ID.
 	 * @return the seller listings.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	default List<SellerListing> getAllSellerListings(Long eventId) throws IOException {
+	default List<SellerListing> getAllSellerListings(Long eventId) {
 		SellerListingRequest r = new SellerListingRequest(eventId);
 		r.setPage(1);
 		return getAllSellerListings(r);
@@ -89,11 +83,10 @@ public interface SellerListingService {
 	 *
 	 * @param createSellerListingForRequestedEventRequest the request.
 	 * @return the created seller listing.
-	 * @throws IOException indicates any I/O exception.
 	 */
 	SellerListing createListingForRequestedEvent(
 		CreateSellerListingForRequestedEventRequest
-			createSellerListingForRequestedEventRequest) throws IOException;
+			createSellerListingForRequestedEventRequest);
 
 	/**
 	 * Create a seller listing.
@@ -101,9 +94,8 @@ public interface SellerListingService {
 	 * @param eventId the event ID.
 	 * @param createSellerListingRequest the request.
 	 * @return the created seller listing.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	SellerListing createListing(Long eventId, CreateSellerListingRequest createSellerListingRequest) throws IOException;
+	SellerListing createListing(Long eventId, CreateSellerListingRequest createSellerListingRequest);
 
 	/**
 	 * Get a seller listing by external ID.
@@ -113,9 +105,8 @@ public interface SellerListingService {
 	 * </p>
 	 * @param externalListingId the external ID.
 	 * @return the seller listing.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	Optional<SellerListing> getSellerListingByExternalId(String externalListingId) throws IOException;
+	Optional<SellerListing> getSellerListingByExternalId(String externalListingId);
 
 	/**
 	 * Delete a seller listing by external ID.
@@ -125,8 +116,7 @@ public interface SellerListingService {
 	 * </p>
 	 * 
 	 * @param externalId the external ID.
-	 * @throws IOException indicates any I/O exception.
 	 */
-	void deleteListingByExternalListingId(String externalId) throws IOException;
+	void deleteListingByExternalListingId(String externalId);
 
 }

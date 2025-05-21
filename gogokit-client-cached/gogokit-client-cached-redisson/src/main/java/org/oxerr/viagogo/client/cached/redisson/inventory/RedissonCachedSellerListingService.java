@@ -557,7 +557,7 @@ public class RedissonCachedSellerListingService
 		return this.retry(() -> {
 			try {
 				return this.sellerListingService.getSellerListings(request);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RetryableException(e);
 			}
 		});

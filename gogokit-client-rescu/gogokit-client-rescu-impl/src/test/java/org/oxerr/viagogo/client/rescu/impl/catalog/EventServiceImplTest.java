@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -47,7 +46,7 @@ class EventServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetEvents() throws ViagogoException, IOException {
+	void testGetEvents() {
 		// when
 		PagedResource<Event> events = eventService.getEvents(new EventRequest());
 
@@ -99,14 +98,14 @@ class EventServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetAllEvents() throws ViagogoException, IOException {
+	void testGetAllEvents() {
 		AtomicLong counter = new AtomicLong();
 
 		EventRequest eventRequest = new EventRequest();
 		eventRequest.setPageSize(1_000);
 
 		RetryConfig config = new RetryConfigBuilder()
-			.retryOnSpecificExceptions(IOException.class)
+			.retryOnSpecificExceptions(Exception.class)
 			.withMaxNumberOfTries(10)
 			.withDelayBetweenTries(30, ChronoUnit.SECONDS)
 			.withExponentialBackoff()
@@ -149,7 +148,7 @@ class EventServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetEventByExternalEventId() throws IOException {
+	void testGetEventByExternalEventId() {
 		long externalEventId = 104683510L;
 		Event event = this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).get();
 		log.info("event: {} {} {}", event.getId(), event.getName(), event.getStartDate());
@@ -157,14 +156,14 @@ class EventServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testGetEventByExternalEventIdNotExists() throws IOException {
+	void testGetEventByExternalEventIdNotExists() {
 		long externalEventId = 1L;
 		assertFalse(this.eventService.getEventByExternalEventId("legacy_stubhub", externalEventId).isPresent());
 	}
 
 	@Test
 	@Disabled("Token is required")
-	void testGetEvent() throws IOException {
+	void testGetEvent() {
 		long eventId  = 4502151L;
 		Event event = this.eventService.getEvent(eventId).get();
 		log.info("event: {} {} {}({})", event.getId(), event.getName(), event.getStartDate(), event.getStartDate().withOffsetSameInstant(ZoneOffset.UTC).toInstant());
@@ -172,7 +171,7 @@ class EventServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testSearchEvents() throws ViagogoException, IOException {
+	void testSearchEvents() throws ViagogoException {
 		String q = "The Chicks";
 		ZoneId zoneId = ZoneId.of("America/Los_Angeles");
 		LocalDateTime dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
@@ -204,7 +203,7 @@ class EventServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testSearchFirst() throws ViagogoException, IOException {
+	void testSearchFirst() throws ViagogoException {
 		String q = "The";
 		LocalDateTime dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
 		log.info("dateLocal: {}", dateLocal);
@@ -219,7 +218,7 @@ class EventServiceImplTest {
 
 	@Test
 	@Disabled("Token is required")
-	void testSearchAll() throws ViagogoException, IOException {
+	void testSearchAll() throws ViagogoException {
 		String q = "The";
 		LocalDateTime dateLocal = LocalDateTime.parse("2023-05-03T20:00:00");
 		log.info("dateLocal: {}", dateLocal);
