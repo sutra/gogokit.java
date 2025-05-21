@@ -25,7 +25,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<log4j.version>2.20.0</log4j.version>
 		<rescu-ext.version>1.1.0</rescu-ext.version>
-		<ticket-inventory-support.version>5.6.1</ticket-inventory-support.version>
+		<ticket-inventory-support.version>6.0.0</ticket-inventory-support.version>
 	</properties>
 	<modules>
 		<module>gogokit-model</module>
