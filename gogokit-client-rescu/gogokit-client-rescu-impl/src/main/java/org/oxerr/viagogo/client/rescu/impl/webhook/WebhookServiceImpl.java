@@ -2,15 +2,11 @@ package org.oxerr.viagogo.client.rescu.impl.webhook;
 
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
-import java.io.IOException;
-
 import org.oxerr.viagogo.client.rescu.resource.ViagogoException;
 import org.oxerr.viagogo.client.rescu.resource.webhook.WebhookResource;
 import org.oxerr.viagogo.client.webhook.WebhookService;
 import org.oxerr.viagogo.model.response.webhook.Webhook;
 import org.oxerr.viagogo.model.response.webhook.Webhooks;
-
-import si.mazi.rescu.HttpStatusIOException;
 
 public class WebhookServiceImpl implements WebhookService {
 
@@ -21,30 +17,30 @@ public class WebhookServiceImpl implements WebhookService {
 	}
 
 	@Override
-	public Webhooks getWebhooks(Integer page, Integer pageSize, String sort) throws IOException {
+	public Webhooks getWebhooks(Integer page, Integer pageSize, String sort) {
 		return this.webhookResource.getWebhooks(page, pageSize, sort);
 	}
 
 	@Override
-	public Webhook createWebhook(Webhook webhook) throws IOException {
+	public Webhook createWebhook(Webhook webhook) {
 		return this.webhookResource.createWebhook(webhook);
 	}
 
 	@Override
-	public Webhook getWebhook(Integer id) throws IOException {
+	public Webhook getWebhook(Integer id) {
 		return this.webhookResource.getWebhook(id);
 	}
 
 	@Override
-	public Webhook updateWebhook(Integer id, Webhook webhook) throws IOException {
+	public Webhook updateWebhook(Integer id, Webhook webhook) {
 		return this.webhookResource.updateWebhook(id, webhook);
 	}
 
 	@Override
-	public void deleteWebhook(Integer id) throws IOException {
+	public void deleteWebhook(Integer id) {
 		try {
 			this.webhookResource.deleteWebhook(id);
-		} catch (ViagogoException | HttpStatusIOException e) {
+		} catch (ViagogoException e) {
 			if (e.getHttpStatusCode() != NOT_FOUND.getStatusCode()) {
 				throw e;
 			}
@@ -52,7 +48,7 @@ public class WebhookServiceImpl implements WebhookService {
 	}
 
 	@Override
-	public void ping(Integer id) throws IOException {
+	public void ping(Integer id) {
 		this.webhookResource.ping(id);
 	}
 

@@ -1,6 +1,5 @@
 package org.oxerr.viagogo.client.rescu.resource.inventory;
 
-import java.io.IOException;
 import java.time.Instant;
 
 import org.oxerr.viagogo.client.rescu.resource.ViagogoException;
@@ -30,7 +29,6 @@ public interface SellerEventResource {
 	 * containing {@code id}, {@code number_of_tickets},
 	 * 	{@code orresource_version}.
 	 * @return events with listings that belong to the authenticated user.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
@@ -39,19 +37,18 @@ public interface SellerEventResource {
 		@QueryParam("page_size") Integer pageSize,
 		@QueryParam("updated_since") Instant updatedSince,
 		@QueryParam("sort") String sort
-	) throws IOException, ViagogoException;
+	) throws ViagogoException;
 
 	/**
 	 * Creates seller event.
 	 *
 	 * @param r the {@link CreateSellerEventRequest}
 	 * @return the seller event.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	SellerEvent createSellerEvent(CreateSellerEventRequest r) throws IOException, ViagogoException;
+	SellerEvent createSellerEvent(CreateSellerEventRequest r) throws ViagogoException;
 
 }

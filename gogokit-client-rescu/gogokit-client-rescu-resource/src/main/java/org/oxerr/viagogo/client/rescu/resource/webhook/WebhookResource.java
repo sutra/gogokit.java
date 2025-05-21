@@ -1,7 +1,5 @@
 package org.oxerr.viagogo.client.rescu.resource.webhook;
 
-import java.io.IOException;
-
 import org.oxerr.viagogo.client.rescu.resource.ViagogoException;
 import org.oxerr.viagogo.model.response.webhook.Webhook;
 import org.oxerr.viagogo.model.response.webhook.Webhooks;
@@ -29,7 +27,6 @@ public interface WebhookResource {
 	 * @param pageSize Set custom page sizes on response.
 	 * @param sort Determines the ordering of items. A comma-separated string containing {@code resource_version}.
 	 * @return all webhooks on the viagogo platform.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
@@ -39,32 +36,30 @@ public interface WebhookResource {
 		@QueryParam("page") Integer page,
 		@QueryParam("page_size") Integer pageSize,
 		@QueryParam("sort") String sort
-	) throws IOException, ViagogoException;
+	) throws ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/webhooks#operation/Webhooks_Post">Create a webhook</a>
 	 *
 	 * @param webhook the webhook.
 	 * @return the created webhook.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Webhook createWebhook(Webhook webhook) throws IOException, ViagogoException;
+	Webhook createWebhook(Webhook webhook) throws ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/webhooks#operation/Webhooks_Get2">Get a webhook</a>
 	 *
 	 * @param webhookId the webhook ID.
 	 * @return the webhook.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@GET
 	@Path("/{webhookId}")
-	Webhook getWebhook(@PathParam("webhookId") Integer webhookId) throws IOException, ViagogoException;
+	Webhook getWebhook(@PathParam("webhookId") Integer webhookId) throws ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/webhooks#operation/Webhooks_Patch">Update a webhook</a>
@@ -72,25 +67,23 @@ public interface WebhookResource {
 	 * @param webhookId the webhook ID.
 	 * @param webhook the webhook.
 	 * @return the updated webhook.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@PATCH
 	@Path("/{webhookId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	Webhook updateWebhook(@PathParam("webhookId") Integer webhookId, Webhook webhook) throws IOException, ViagogoException;
+	Webhook updateWebhook(@PathParam("webhookId") Integer webhookId, Webhook webhook) throws ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/webhooks#operation/Webhooks_Delete">Delete a webhook</a>
 	 *
 	 * @param webhookId the webhook ID.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@DELETE
 	@Path("/{webhookId}")
-	void deleteWebhook(@PathParam("webhookId") Integer webhookId) throws IOException, ViagogoException;
+	void deleteWebhook(@PathParam("webhookId") Integer webhookId) throws ViagogoException;
 
 	/**
 	 * <a href="https://developer.viagogo.net/api-reference/webhooks#operation/Webhooks_PingWebhook">Ping a webhook</a>
@@ -98,13 +91,12 @@ public interface WebhookResource {
 	 * <p>Triggers a request to be sent to your webhook. Call this endpoint to test your webhook.</p>
 	 *
 	 * @param webhookId the webhook ID.
-	 * @throws IOException indicates I/O exception
 	 * @throws ViagogoException indicates business exception
 	 */
 	@POST
 	@Path("/{webhookId}/ping")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	void ping(@PathParam("webhookId") Integer webhookId) throws IOException, ViagogoException;
+	void ping(@PathParam("webhookId") Integer webhookId) throws ViagogoException;
 
 }

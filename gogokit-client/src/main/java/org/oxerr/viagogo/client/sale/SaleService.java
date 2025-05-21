@@ -1,6 +1,5 @@
 package org.oxerr.viagogo.client.sale;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -13,10 +12,10 @@ import org.oxerr.viagogo.model.response.sale.Sale;
 
 public interface SaleService {
 
-	PagedResource<Sale> getSalesRecentUpdates(@Nullable Instant updatedSince) throws IOException;
+	PagedResource<Sale> getSalesRecentUpdates(@Nullable Instant updatedSince);
 
-	PagedResource<Sale> getSales(@Nonnull SaleRequest saleRequest) throws IOException;
+	PagedResource<Sale> getSales(@Nonnull SaleRequest saleRequest);
 
-	Optional<Sale> getSale(@Nonnull Integer saleId) throws IOException;
+	Optional<Sale> getSale(@Nonnull Integer saleId);
 
 }

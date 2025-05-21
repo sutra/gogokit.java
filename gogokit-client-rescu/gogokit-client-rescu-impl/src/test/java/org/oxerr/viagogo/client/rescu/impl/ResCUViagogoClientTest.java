@@ -3,7 +3,6 @@ package org.oxerr.viagogo.client.rescu.impl;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -40,7 +39,7 @@ public class ResCUViagogoClientTest {
 			} else {
 				throw new IllegalArgumentException(String.format("No resource found: %s", name));
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new IllegalArgumentException("Read " + name + " failed.");
 		}
 		return props;
@@ -71,7 +70,7 @@ public class ResCUViagogoClientTest {
 				var sales = client.getSaleService().getSales(saleRequest);
 				log.debug("{}: {}", entry.getKey(), sales.getTotalItems());
 				return sales.getTotalItems();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}).mapToLong(Integer::longValue).sum();
@@ -100,7 +99,7 @@ public class ResCUViagogoClientTest {
 					var sales = client.getSaleService().getSales(saleRequest);
 					log.debug("{}: {}", entry.getKey(), sales.getTotalItems());
 					return sales.getTotalItems();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 			};

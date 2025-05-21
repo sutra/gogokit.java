@@ -1,6 +1,5 @@
 package org.oxerr.viagogo.client.cached.redisson.inventory;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,17 +58,6 @@ public class RedissonCachedSellerListingService
 	private final int pageSize;
 
 	private final RetryConfiguration retryConfig;
-
-	@Deprecated(since = "5.0.0", forRemoval = true)
-	public RedissonCachedSellerListingService(
-		SellerListingService sellerListingService,
-		RedissonClient redissonClient,
-		String keyPrefix,
-		Executor executor,
-		boolean create
-	) {
-		this(sellerListingService, redissonClient, keyPrefix, executor, new ListingConfiguration(create, true, true), 10_000, new RetryConfiguration());
-	}
 
 	/**
 	 * Constructs with default {@link ListingConfiguration} and default {@link RetryConfiguration}.
@@ -202,12 +190,12 @@ public class RedissonCachedSellerListingService
 	}
 
 	@Override
-	protected void createListing(ViagogoEvent event, ViagogoListing listing) throws IOException {
+	protected void createListing(ViagogoEvent event, ViagogoListing listing) {
 		this.sellerListingService.createListing(listing.getMarketplaceEventId(), listing.getRequest());
 	}
 
 	@Override
-	protected void deleteListing(ViagogoEvent event, String listingId) throws IOException {
+	protected void deleteListing(ViagogoEvent event, String listingId) {
 		this.sellerListingService.deleteListingByExternalListingId(listingId);
 	}
 
@@ -381,7 +369,7 @@ public class RedissonCachedSellerListingService
 
 				try {
 					this.createListing(marketplaceEvent, marketplaceListing);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.warn("Create listing failed, listing ID: {}.", marketplaceListing.getId(), e);
 				}
 
@@ -557,7 +545,7 @@ public class RedissonCachedSellerListingService
 		return this.retry(() -> {
 			try {
 				return this.sellerListingService.getSellerListings(request);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RetryableException(e);
 			}
 		});

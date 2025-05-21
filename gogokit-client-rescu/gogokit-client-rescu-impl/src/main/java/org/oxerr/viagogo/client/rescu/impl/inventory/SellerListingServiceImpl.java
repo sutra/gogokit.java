@@ -2,7 +2,6 @@ package org.oxerr.viagogo.client.rescu.impl.inventory;
 
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -15,8 +14,6 @@ import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
 
-import si.mazi.rescu.HttpStatusIOException;
-
 public class SellerListingServiceImpl implements SellerListingService {
 
 	private final SellerListingResource sellerListingsResource;
@@ -26,10 +23,10 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
-	public Optional<SellerListing> getSellerListing(Long listingId) throws IOException {
+	public Optional<SellerListing> getSellerListing(Long listingId) {
 		try {
 			return Optional.ofNullable(this.sellerListingsResource.getSellerListing(listingId));
-		} catch (ViagogoException | HttpStatusIOException e) {
+		} catch (ViagogoException e) {
 			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
@@ -39,12 +36,12 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
-	public PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince) throws IOException {
+	public PagedResource<SellerListing> getSellerListingsRecentUpdates(Instant updatedSince) {
 		return this.sellerListingsResource.getSellerListingsRecentUpdates(updatedSince);
 	}
 
 	@Override
-	public PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest) throws IOException {
+	public PagedResource<SellerListing> getSellerListings(SellerListingRequest sellerListingRequest) {
 		return this.sellerListingsResource.getSellerListings(
 			sellerListingRequest.getEventId(),
 			sellerListingRequest.getRequestedEventId(),
@@ -56,20 +53,20 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
-	public SellerListing createListingForRequestedEvent(CreateSellerListingForRequestedEventRequest createSellerListingForRequestedEventRequest) throws IOException {
+	public SellerListing createListingForRequestedEvent(CreateSellerListingForRequestedEventRequest createSellerListingForRequestedEventRequest) {
 		return this.sellerListingsResource.createListingForRequestedEvent(createSellerListingForRequestedEventRequest);
 	}
 
 	@Override
-	public SellerListing createListing(Long eventId, CreateSellerListingRequest createSellerListingRequest) throws IOException {
+	public SellerListing createListing(Long eventId, CreateSellerListingRequest createSellerListingRequest) {
 		return this.sellerListingsResource.createListing(eventId, createSellerListingRequest);
 	}
 
 	@Override
-	public Optional<SellerListing> getSellerListingByExternalId(String externalListingId) throws IOException {
+	public Optional<SellerListing> getSellerListingByExternalId(String externalListingId) {
 		try {
 			return Optional.ofNullable(this.sellerListingsResource.getSellerListingByExternalId(externalListingId));
-		} catch (ViagogoException | HttpStatusIOException e) {
+		} catch (ViagogoException e) {
 			if (e.getHttpStatusCode() == NOT_FOUND.getStatusCode()) {
 				return Optional.empty();
 			} else {
@@ -79,10 +76,10 @@ public class SellerListingServiceImpl implements SellerListingService {
 	}
 
 	@Override
-	public void deleteListingByExternalListingId(String externalId) throws IOException {
+	public void deleteListingByExternalListingId(String externalId) {
 		try {
 			this.sellerListingsResource.deleteListingByExternalListingId(externalId);
-		} catch (ViagogoException | HttpStatusIOException e) {
+		} catch (ViagogoException e) {
 			if (e.getHttpStatusCode() != NOT_FOUND.getStatusCode()) {
 				throw e;
 			}

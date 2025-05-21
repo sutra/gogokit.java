@@ -42,26 +42,6 @@ public class RedissonCachedViagogoClient implements CachedViagogoClient {
 		);
 	}
 
-	@Deprecated(since = "5.0.0", forRemoval = true)
-	public RedissonCachedViagogoClient(
-		ViagogoClient viagogoClient,
-		RedissonClient redissonClient,
-		String keyPrefix,
-		Executor executor,
-		boolean create
-	) {
-		this(
-			viagogoClient,
-			new RedissonCachedSellerListingService(
-				viagogoClient.getSellerListingService(),
-				redissonClient,
-				keyPrefix,
-				executor,
-				create
-			)
-		);
-	}
-
 	public RedissonCachedViagogoClient(
 		ViagogoClient viagogoClient,
 		RedissonCachedSellerListingService cachedSellerListingService

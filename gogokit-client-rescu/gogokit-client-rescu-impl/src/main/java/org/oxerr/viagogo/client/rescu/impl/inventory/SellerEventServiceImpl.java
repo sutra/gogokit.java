@@ -1,7 +1,5 @@
 package org.oxerr.viagogo.client.rescu.impl.inventory;
 
-import java.io.IOException;
-
 import org.oxerr.viagogo.client.inventory.SellerEventService;
 import org.oxerr.viagogo.client.rescu.resource.inventory.SellerEventResource;
 import org.oxerr.viagogo.model.request.inventory.CreateSellerEventRequest;
@@ -18,7 +16,7 @@ public class SellerEventServiceImpl implements SellerEventService {
 	}
 
 	@Override
-	public PagedResource<SellerEvent> getSellerEvents(SellerEventRequest sellerEventRequest) throws IOException {
+	public PagedResource<SellerEvent> getSellerEvents(SellerEventRequest sellerEventRequest) {
 		return this.sellerEventResource.getSellerEvents(
 			sellerEventRequest.getPage(),
 			sellerEventRequest.getPageSize(),
@@ -28,7 +26,7 @@ public class SellerEventServiceImpl implements SellerEventService {
 	}
 
 	@Override
-	public SellerEvent createSellerEvent(CreateSellerEventRequest createSellerEventRequest) throws IOException {
+	public SellerEvent createSellerEvent(CreateSellerEventRequest createSellerEventRequest) {
 		return this.sellerEventResource.createSellerEvent(createSellerEventRequest);
 	}
 

@@ -1,7 +1,5 @@
 package org.oxerr.viagogo.client.rescu.impl.webhook;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Disabled;
@@ -25,7 +23,7 @@ class WebhookServiceImplTest {
 	 */
 	@Test
 	@Disabled("Token is required")
-	void testGetWebhooks() throws IOException {
+	void testGetWebhooks() {
 		var webhooks = this.webhookService.getWebhooks(null, null, null);
 		log.info("webhook count: {}", webhooks.getItems().size());
 	}
@@ -35,7 +33,7 @@ class WebhookServiceImplTest {
 	 */
 	@Test
 	@Disabled("Token is required")
-	void testCreateWebhook() throws IOException {
+	void testCreateWebhook() {
 		var webhook = new Webhook("hello webhook", "https://www.example.com", "Sales");
 		var createdWebhook = this.webhookService.createWebhook(webhook);
 		log.info("created webhook: {}", createdWebhook.getId());
@@ -47,7 +45,7 @@ class WebhookServiceImplTest {
 	 */
 	@Test
 	@Disabled("Token is required")
-	void testGetWebhook() throws IOException {
+	void testGetWebhook() {
 		var webhook = this.webhookService.getWebhook(88431);
 		log.info("webhook: {}", webhook.getSelfLink().getHref());
 		log.info("webhook: {}", webhook.getDeleteLink().getHref());
@@ -58,7 +56,7 @@ class WebhookServiceImplTest {
 	 */
 	@Test
 	@Disabled("Token is required")
-	void testUpdateWebhook() throws IOException {
+	void testUpdateWebhook() {
 		var id = 1;
 		var webhook = new Webhook();
 		this.webhookService.updateWebhook(id, webhook);
@@ -69,7 +67,7 @@ class WebhookServiceImplTest {
 	 */
 	@Test
 	@Disabled("Token is required")
-	void testDeleteWebhook() throws IOException {
+	void testDeleteWebhook() {
 		var id = 1;
 		this.webhookService.deleteWebhook(id);
 	}
@@ -79,7 +77,7 @@ class WebhookServiceImplTest {
 	 */
 	@Test
 	@Disabled("Token is required")
-	void testPing() throws IOException {
+	void testPing() {
 		var id = 1;
 		this.webhookService.ping(id);
 	}
