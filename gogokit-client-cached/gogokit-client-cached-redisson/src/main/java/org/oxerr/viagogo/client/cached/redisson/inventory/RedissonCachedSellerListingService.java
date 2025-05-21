@@ -1,6 +1,5 @@
 package org.oxerr.viagogo.client.cached.redisson.inventory;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -202,12 +201,12 @@ public class RedissonCachedSellerListingService
 	}
 
 	@Override
-	protected void createListing(ViagogoEvent event, ViagogoListing listing) throws IOException {
+	protected void createListing(ViagogoEvent event, ViagogoListing listing) {
 		this.sellerListingService.createListing(listing.getMarketplaceEventId(), listing.getRequest());
 	}
 
 	@Override
-	protected void deleteListing(ViagogoEvent event, String listingId) throws IOException {
+	protected void deleteListing(ViagogoEvent event, String listingId) {
 		this.sellerListingService.deleteListingByExternalListingId(listingId);
 	}
 
@@ -381,7 +380,7 @@ public class RedissonCachedSellerListingService
 
 				try {
 					this.createListing(marketplaceEvent, marketplaceListing);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.warn("Create listing failed, listing ID: {}.", marketplaceListing.getId(), e);
 				}
 
