@@ -59,17 +59,6 @@ public class RedissonCachedSellerListingService
 
 	private final RetryConfiguration retryConfig;
 
-	@Deprecated(since = "5.0.0", forRemoval = true)
-	public RedissonCachedSellerListingService(
-		SellerListingService sellerListingService,
-		RedissonClient redissonClient,
-		String keyPrefix,
-		Executor executor,
-		boolean create
-	) {
-		this(sellerListingService, redissonClient, keyPrefix, executor, new ListingConfiguration(create, true, true), 10_000, new RetryConfiguration());
-	}
-
 	/**
 	 * Constructs with default {@link ListingConfiguration} and default {@link RetryConfiguration}.
 	 *

@@ -9,17 +9,6 @@ import org.redisson.api.RedissonClient;
 @Deprecated(since = "6.5.0", forRemoval = true)
 public class RedissonCachedSellerListingsService extends RedissonCachedSellerListingService {
 
-	@Deprecated(since = "5.0.0", forRemoval = true)
-	public RedissonCachedSellerListingsService(
-		SellerListingService sellerListingService,
-		RedissonClient redissonClient,
-		String keyPrefix,
-		Executor executor,
-		boolean create
-	) {
-		super(sellerListingService, redissonClient, keyPrefix, executor, create);
-	}
-
 	public RedissonCachedSellerListingsService(SellerListingService sellerListingService, RedissonClient redissonClient,
 			String keyPrefix, Executor executor) {
 		super(sellerListingService, redissonClient, keyPrefix, executor);
