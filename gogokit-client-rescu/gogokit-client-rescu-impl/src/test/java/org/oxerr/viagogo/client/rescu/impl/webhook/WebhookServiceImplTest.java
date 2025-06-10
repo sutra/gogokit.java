@@ -41,7 +41,6 @@ class WebhookServiceImplTest {
 
 	/**
 	 * Test for {@link WebhookServiceImpl#getWebhook(Integer)}.
-	 * @throws IOException
 	 */
 	@Test
 	@Disabled("Token is required")
