@@ -387,7 +387,7 @@ public class RedissonCachedSellerListingService
 			// If the listing is not cached, delete the listing from the marketplace.
 			ctx.addTask(this.<Void>callAsync(() -> {
 				log.trace("Deleting {}", listing::getExternalId);
-				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
+				sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			}));
 		} else if (!isSame(listing, cachedListing.getRequest())) {
@@ -400,11 +400,11 @@ public class RedissonCachedSellerListingService
 				var p = getPriority(e, l, cachedListing);
 
 				if (e.getMarketplaceEventId().equals(listing.getEvent().getId())) {
-					this.updateListing(e, l, cachedListing, p);
+					updateListing(e, l, (ViagogoListing) null, p);
 				} else {
 					log.info("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
 						e::getMarketplaceEventId, () -> listing.getEvent().getId(), e::getId);
-					this.deleteListing(e, listing.getExternalId(), cachedListing, p);
+					deleteListing(e, listing.getExternalId(), cachedListing, p);
 				}
 				return null;
 			}));
@@ -477,24 +477,6 @@ public class RedissonCachedSellerListingService
 
 		log.debug("sleeping {}", millis);
 		ThreadUtils.sleepQuietly(Duration.ofMillis(millis));
-	}
-
-	private static class RetryableException extends RuntimeException {
-
-		private static final long serialVersionUID = 2023120801L;
-
-		public RetryableException() {
-			super();
-		}
-
-		public RetryableException(String message) {
-			super(message);
-		}
-
-		public RetryableException(Throwable cause) {
-			super(cause);
-		}
-
 	}
 
 }
