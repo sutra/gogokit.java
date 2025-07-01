@@ -402,7 +402,7 @@ public class RedissonCachedSellerListingService
 				if (e.getMarketplaceEventId().equals(listing.getEvent().getId())) {
 					this.updateListing(e, l, cachedListing, p);
 				} else {
-					log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
+					log.info("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
 						e::getMarketplaceEventId, () -> listing.getEvent().getId(), e::getId);
 					this.deleteListing(e, listing.getExternalId(), cachedListing, p);
 				}
