@@ -7,11 +7,26 @@ public class SeatingDetail extends Seating {
 
 	private static final long serialVersionUID = 2023021301L;
 
+	/**
+	 * (SeatingState (object or null))
+	 * This field indicates whether the listing's seating is visible on the
+	 * website on the venue map.
+	 */
+	private SeatingState state;
+
 	public SeatingDetail() {
 	}
 
 	public SeatingDetail(String section, String row, String seatFrom, String seatTo) {
 		super(section, row, seatFrom, seatTo);
+	}
+
+	public SeatingState getState() {
+		return state;
+	}
+
+	public void setState(SeatingState state) {
+		this.state = state;
 	}
 
 	@Override
