@@ -123,4 +123,11 @@ class CheckContext {
 		return missingExternalIds;
 	}
 
+	public double getVisibleRate() {
+		if (listedExternalIds.isEmpty()) {
+			return 0.0;
+		}
+		return visibleInVenueMapExternalIds.size() / (double) listedExternalIds.size();
+	}
+
 }

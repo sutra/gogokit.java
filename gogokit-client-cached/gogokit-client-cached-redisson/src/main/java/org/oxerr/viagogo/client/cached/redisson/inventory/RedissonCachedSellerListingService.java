@@ -278,7 +278,8 @@ public class RedissonCachedSellerListingService
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
-		log.info("[check] end, checked {} items in {}", listings::getTotalItems, () -> stopWatch);
+		log.info("[check] end, checked {} items in {}, visible rate: {}",
+			listings::getTotalItems, () -> stopWatch, ctx::getVisibleRate);
 	}
 
 	/**
