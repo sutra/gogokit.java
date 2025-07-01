@@ -377,7 +377,7 @@ public class RedissonCachedSellerListingService
 	private void check(CheckContext ctx, SellerListing listing) {
 		log.trace("Checking {}", listing::getExternalId);
 
-		ctx.addListedExternalId(listing.getExternalId());
+		ctx.addListed(listing);
 
 		String cacheName = ctx.getExternalIdToCacheName().get(listing.getExternalId());
 		ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());

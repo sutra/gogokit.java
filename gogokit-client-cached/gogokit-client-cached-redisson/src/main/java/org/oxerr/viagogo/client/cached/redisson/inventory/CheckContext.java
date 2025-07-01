@@ -27,6 +27,12 @@ class CheckContext {
 	private final Set<String> listedExternalIds;
 
 	/**
+	 * The external IDs which listings are visible in the venue map
+	 * that will be shown to buyers.
+	 */
+	private final Set<String> visibleInVenueMapExternalIds;
+
+	/**
 	 * The checking tasks.
 	 */
 	private final List<CompletableFuture<PagedResource<SellerListing>>> checkings;
@@ -40,6 +46,7 @@ class CheckContext {
 		this.options = options;
 		this.externalIdToCacheName = Collections.unmodifiableMap(externalIdToCacheName);
 		this.listedExternalIds = ConcurrentHashMap.newKeySet();
+		this.visibleInVenueMapExternalIds = ConcurrentHashMap.newKeySet();
 		this.checkings = Collections.synchronizedList(new ArrayList<>());
 		this.tasks = Collections.synchronizedList(new ArrayList<>());
 	}
@@ -92,12 +99,17 @@ class CheckContext {
 	}
 
 	/**
-	 * Adds external IDs which is listed on the marketplace.
+	 * Adds listing which is listed on the marketplace.
 	 *
-	 * @param externalId the external ID.
+	 * @param listing the seller listing.
 	 */
-	public void addListedExternalId(String externalId) {
-		listedExternalIds.add(externalId);
+	public void addListed(SellerListing listing) {
+		listedExternalIds.add(listing.getExternalId());
+
+		Boolean visible = listing.getDisplaySeating().getState().getVisibleInVenueMap();
+		if (Boolean.TRUE.equals(visible)) {
+			visibleInVenueMapExternalIds.add(listing.getExternalId());
+		}
 	}
 
 	/**
