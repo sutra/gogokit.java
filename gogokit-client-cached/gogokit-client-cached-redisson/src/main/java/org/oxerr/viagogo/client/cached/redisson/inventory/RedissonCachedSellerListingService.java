@@ -307,7 +307,6 @@ public class RedissonCachedSellerListingService
 		public Set<String> getMissingExternalIds() {
 			var missingExternalIds = new HashSet<>(externalIdToCacheName.keySet());
 			missingExternalIds.removeAll(listedExternalIds);
-			log.debug("missingExternalIds count: {}", missingExternalIds::size);
 			return missingExternalIds;
 		}
 
