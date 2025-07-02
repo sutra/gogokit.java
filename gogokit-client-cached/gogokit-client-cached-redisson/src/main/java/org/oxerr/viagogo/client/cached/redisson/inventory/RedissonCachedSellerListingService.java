@@ -355,7 +355,8 @@ public class RedissonCachedSellerListingService
 		var deleteTasks = page.getItems().stream()
 			.filter(listing -> !ctx.getExternalIdToCacheName().containsKey(listing.getExternalId()))
 			.map(listing -> this.<Void>callAsync(() -> {
-				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
+				log.trace("Deleting {}", listing::getExternalId);
+				sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			})).collect(Collectors.toUnmodifiableList());
 		ctx.addTasks(deleteTasks);
