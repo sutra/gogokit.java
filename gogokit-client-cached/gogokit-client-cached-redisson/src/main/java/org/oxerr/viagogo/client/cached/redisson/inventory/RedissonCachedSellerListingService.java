@@ -212,7 +212,7 @@ public class RedissonCachedSellerListingService
 	}
 
 	private void doCheck(CheckOptions options) {
-		log.info("[check] begin.");
+		log.info("Checking listings with options: {}", options);
 
 		// Create a stop watch to measure the time taken to check the listings.
 		StopWatch stopWatch = StopWatch.createStarted();
@@ -228,7 +228,7 @@ public class RedissonCachedSellerListingService
 		}
 
 		// Check the next page to the last page.
-		log.debug("[check] total items: {}, next link: {}, last link: {}.",
+		log.debug("total items: {}, next link: {}, last link: {}.",
 			listings::getTotalItems, listings::getNextLink, listings::getLastLink);
 
 		// Check subsequent pages if available
@@ -242,16 +242,16 @@ public class RedissonCachedSellerListingService
 			);
 
 		// Wait all checking to complete.
-		log.debug("[check] waiting for all checking task to complete, checking size: {}", ctx::checkingCount);
+		log.debug("waiting for all checking task to complete, checking size: {}", ctx::checkingCount);
 		ctx.joinCheckings();
 
 		// Wait all tasks to complete.
-		log.debug("[check] waiting for all tasks to complete, tasks size: {}", ctx::taskCount);
+		log.debug("waiting for all tasks to complete, tasks size: {}", ctx::taskCount);
 		ctx.joinTasks();
 
 		// Create the listings which in cache but not on the marketplace.
 		Set<String> missingExternalIds = ctx.getMissingExternalIds();
-		log.debug("[check] missing external IDs size: {}", missingExternalIds::size);
+		log.debug("missing external IDs size: {}", missingExternalIds::size);
 
 		List<CompletableFuture<Void>> createTasks = missingExternalIds.stream()
 			.map(externalId -> {
@@ -275,12 +275,12 @@ public class RedissonCachedSellerListingService
 			}))
 			.collect(Collectors.toUnmodifiableList());
 
-		log.debug("[check] create tasks size: {}", createTasks::size);
+		log.debug("create tasks size: {}", createTasks::size);
 		CompletableFuture.allOf(createTasks.toArray(CompletableFuture[]::new)).join();
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
-		log.info("[check] end, checked {} items in {}, visible rate: {}",
+		log.info("Check completed, checked {} items in {}, visible rate: {}",
 			listings::getTotalItems, () -> stopWatch, ctx::getVisibleRate);
 	}
 
@@ -341,7 +341,7 @@ public class RedissonCachedSellerListingService
 		return callAsync(() -> {
 			var pagedResource = this.getSellerListings(ctx.request(page));
 			Optional.ofNullable(pagedResource).ifPresent(t -> this.check(ctx, t));
-			log.debug("[check] page: {}, tasks size: {}", () -> page, ctx::taskCount);
+			log.debug("page: {}, tasks size: {}", () -> page, ctx::taskCount);
 			return pagedResource;
 		});
 	}
