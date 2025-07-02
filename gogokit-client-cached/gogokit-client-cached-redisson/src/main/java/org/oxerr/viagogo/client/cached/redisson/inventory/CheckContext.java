@@ -6,11 +6,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.oxerr.viagogo.client.cached.inventory.CheckOptions;
+import org.oxerr.viagogo.model.SeatingState;
 import org.oxerr.viagogo.model.request.inventory.SellerListingRequest;
 import org.oxerr.viagogo.model.response.PagedResource;
 import org.oxerr.viagogo.model.response.inventory.SellerListing;
@@ -106,7 +108,10 @@ class CheckContext {
 	public void addListed(SellerListing listing) {
 		listedExternalIds.add(listing.getExternalId());
 
-		Boolean visible = listing.getDisplaySeating().getState().getVisibleInVenueMap();
+		SeatingState state = listing.getDisplaySeating().getState();
+		Boolean visible = Optional.ofNullable(state)
+			.map(SeatingState::getVisibleInVenueMap)
+			.orElse(Boolean.FALSE);
 		if (Boolean.TRUE.equals(visible)) {
 			visibleInVenueMapExternalIds.add(listing.getExternalId());
 		}
