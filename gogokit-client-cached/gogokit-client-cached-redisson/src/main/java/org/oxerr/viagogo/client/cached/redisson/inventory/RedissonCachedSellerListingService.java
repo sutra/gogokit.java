@@ -402,11 +402,14 @@ public class RedissonCachedSellerListingService
 				var p = getPriority(e, l, cachedListing);
 
 				if (e.getMarketplaceEventId().equals(listing.getEvent().getId())) {
+					log.trace("Updating listing {}", listing::getExternalId);
 					updateListing(e, l, (ViagogoListing) null, p);
+					log.trace("Updated listing {}", listing::getExternalId);
 				} else {
 					log.info("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
 						e::getMarketplaceEventId, () -> listing.getEvent().getId(), e::getId);
 					deleteListing(e, listing.getExternalId(), cachedListing, p);
+					log.trace("Deleted listing {}", listing::getExternalId);
 				}
 				return null;
 			}));
