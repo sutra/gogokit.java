@@ -382,7 +382,9 @@ public class RedissonCachedSellerListingService
 		ctx.addListed(listing);
 
 		String cacheName = ctx.getExternalIdToCacheName().get(listing.getExternalId());
+		log.trace("Cache name: {}", () -> cacheName);
 		ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
+		log.trace("Cached listing: {}", () -> cachedListing);
 
 		if (cachedListing == null) {
 			// Double check the listing if it is not cached.
