@@ -206,7 +206,9 @@ public class RedissonCachedSellerListingService
 
 	@Override
 	public void check(CheckOptions options) {
+		log.trace("Starting check with options: {}", options);
 		doCheck(options);
+		log.trace("Check completed.");
 	}
 
 	private void doCheck(CheckOptions options) {
