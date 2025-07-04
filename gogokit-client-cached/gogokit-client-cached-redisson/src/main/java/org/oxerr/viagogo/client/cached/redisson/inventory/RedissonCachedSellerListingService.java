@@ -1,10 +1,6 @@
 package org.oxerr.viagogo.client.cached.redisson.inventory;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,7 +8,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -211,110 +206,13 @@ public class RedissonCachedSellerListingService
 
 	@Override
 	public void check(CheckOptions options) {
+		log.trace("Starting check with options: {}", options);
 		doCheck(options);
-	}
-
-	private class CheckContext {
-
-		private final CheckOptions options;
-
-		private final Map<String, String> externalIdToCacheName;
-
-		/**
-		 * The external IDs listed on the marketplace.
-		 */
-		private final Set<String> listedExternalIds;
-
-		/**
-		 * The checking tasks.
-		 */
-		private final List<CompletableFuture<PagedResource<SellerListing>>> checkings;
-
-		/**
-		 * The tasks to delete or update the listings.
-		 */
-		private final List<CompletableFuture<Void>> tasks;
-
-		public CheckContext(CheckOptions options, Map<String, String> externalIdToCacheName) {
-			this.options = options;
-			this.externalIdToCacheName = Collections.unmodifiableMap(externalIdToCacheName);
-			this.listedExternalIds = ConcurrentHashMap.newKeySet();
-			this.checkings = Collections.synchronizedList(new ArrayList<>());
-			this.tasks = Collections.synchronizedList(new ArrayList<>());
-		}
-
-		public Map<String, String> getExternalIdToCacheName() {
-			return externalIdToCacheName;
-		}
-
-		/**
-		 * Creates a seller listing request.
-		 *
-		 * @param page the page.
-		 * @param options the check options.
-		 * @return a seller listing request.
-		 */
-		public SellerListingRequest request(int page) {
-			var r = new SellerListingRequest();
-			r.setSort(SellerListingRequest.Sort.EVENT_DATE);
-			r.setPage(page);
-			r.setPageSize(options.pageSize());
-			return r;
-		}
-
-		public int checkingCount() {
-			return checkings.size();
-		}
-
-		public boolean addChecking(CompletableFuture<PagedResource<SellerListing>> e) {
-			return checkings.add(e);
-		}
-
-		public void joinCheckings() {
-			CompletableFuture.allOf(checkings.toArray(CompletableFuture[]::new)).join();
-		}
-
-		public int taskCount() {
-			return tasks.size();
-		}
-
-		public boolean addTask(CompletableFuture<Void> e) {
-			return tasks.add(e);
-		}
-
-		public boolean addTasks(Collection<? extends CompletableFuture<Void>> c) {
-			return tasks.addAll(c);
-		}
-
-		public void joinTasks() {
-			CompletableFuture.allOf(tasks.toArray(CompletableFuture[]::new)).join();
-		}
-
-		/**
-		 * Adds external IDs which is listed on the marketplace.
-		 *
-		 * @param externalId the external ID.
-		 */
-		public void addListedExternalId(String externalId) {
-			listedExternalIds.add(externalId);
-		}
-
-		/**
-		 * Returns the missing external IDs on the marketplace.
-		 *
-		 * @return the missing external IDs.
-		 */
-		public Set<String> getMissingExternalIds() {
-			var missingExternalIds = new HashSet<>(externalIdToCacheName.keySet());
-			missingExternalIds.removeAll(listedExternalIds);
-			log.debug("missingExternalIds count: {}", missingExternalIds::size);
-			return missingExternalIds;
-		}
-
+		log.trace("Check completed.");
 	}
 
 	private void doCheck(CheckOptions options) {
-		log.info("[check] begin.");
+		log.info("Checking listings with options: {}", options);
 
 		// Create a stop watch to measure the time taken to check the listings.
 		StopWatch stopWatch = StopWatch.createStarted();
@@ -330,7 +228,7 @@ public class RedissonCachedSellerListingService
 		}
 
 		// Check the next page to the last page.
-		log.debug("[check] total items: {}, next link: {}, last link: {}.",
+		log.debug("total items: {}, next link: {}, last link: {}.",
 			listings::getTotalItems, listings::getNextLink, listings::getLastLink);
 
 		// Check subsequent pages if available
@@ -344,16 +242,16 @@ public class RedissonCachedSellerListingService
 			);
 
 		// Wait all checking to complete.
-		log.debug("[check] waiting for all checking task to complete, checking size: {}", ctx::checkingCount);
+		log.debug("waiting for all checking task to complete, checking size: {}", ctx::checkingCount);
 		ctx.joinCheckings();
 
 		// Wait all tasks to complete.
-		log.debug("[check] waiting for all tasks to complete, tasks size: {}", ctx::taskCount);
+		log.debug("waiting for all tasks to complete, tasks size: {}", ctx::taskCount);
 		ctx.joinTasks();
 
 		// Create the listings which in cache but not on the marketplace.
 		Set<String> missingExternalIds = ctx.getMissingExternalIds();
-		log.debug("[check] missing external IDs size: {}", missingExternalIds::size);
+		log.debug("missing external IDs size: {}", missingExternalIds::size);
 
 		List<CompletableFuture<Void>> createTasks = missingExternalIds.stream()
 			.map(externalId -> {
@@ -377,12 +275,13 @@ public class RedissonCachedSellerListingService
 			}))
 			.collect(Collectors.toUnmodifiableList());
 
-		log.debug("[check] create tasks size: {}", createTasks::size);
+		log.debug("create tasks size: {}", createTasks::size);
 		CompletableFuture.allOf(createTasks.toArray(CompletableFuture[]::new)).join();
 
 		// Log the time taken to check the listings.
 		stopWatch.stop();
-		log.info("[check] end, checked {} items in {}", listings::getTotalItems, () -> stopWatch);
+		log.info("Check completed, checked {} items in {}, visible rate: {}",
+			listings::getTotalItems, () -> stopWatch, ctx::getVisibleRate);
 	}
 
 	/**
@@ -442,7 +341,7 @@ public class RedissonCachedSellerListingService
 		return callAsync(() -> {
 			var pagedResource = this.getSellerListings(ctx.request(page));
 			Optional.ofNullable(pagedResource).ifPresent(t -> this.check(ctx, t));
-			log.debug("[check] page: {}, tasks size: {}", () -> page, ctx::taskCount);
+			log.debug("page: {}, tasks size: {}", () -> page, ctx::taskCount);
 			return pagedResource;
 		});
 	}
@@ -458,7 +357,8 @@ public class RedissonCachedSellerListingService
 		var deleteTasks = page.getItems().stream()
 			.filter(listing -> !ctx.getExternalIdToCacheName().containsKey(listing.getExternalId()))
 			.map(listing -> this.<Void>callAsync(() -> {
-				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
+				log.trace("Deleting {}", listing::getExternalId);
+				sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			})).collect(Collectors.toUnmodifiableList());
 		ctx.addTasks(deleteTasks);
@@ -481,17 +381,19 @@ public class RedissonCachedSellerListingService
 	private void check(CheckContext ctx, SellerListing listing) {
 		log.trace("Checking {}", listing::getExternalId);
 
-		ctx.addListedExternalId(listing.getExternalId());
+		ctx.addListed(listing);
 
 		String cacheName = ctx.getExternalIdToCacheName().get(listing.getExternalId());
+		log.trace("Cache name: {}", () -> cacheName);
 		ViagogoCachedListing cachedListing = this.getCache(cacheName).get(listing.getExternalId());
+		log.trace("Cached listing: {}", () -> cachedListing);
 
 		if (cachedListing == null) {
 			// Double check the listing if it is not cached.
 			// If the listing is not cached, delete the listing from the marketplace.
 			ctx.addTask(this.<Void>callAsync(() -> {
 				log.trace("Deleting {}", listing::getExternalId);
-				this.sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
+				sellerListingService.deleteListingByExternalListingId(listing.getExternalId());
 				return null;
 			}));
 		} else if (!isSame(listing, cachedListing.getRequest())) {
@@ -504,11 +406,14 @@ public class RedissonCachedSellerListingService
 				var p = getPriority(e, l, cachedListing);
 
 				if (e.getMarketplaceEventId().equals(listing.getEvent().getId())) {
-					this.updateListing(e, l, cachedListing, p);
+					log.trace("Updating listing {}", listing::getExternalId);
+					updateListing(e, l, (ViagogoListing) null, p);
+					log.trace("Updated listing {}", listing::getExternalId);
 				} else {
-					log.warn("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
+					log.info("Viagogo Event ID mismatch:  {} != {}, event ID = {}",
 						e::getMarketplaceEventId, () -> listing.getEvent().getId(), e::getId);
-					this.deleteListing(e, listing.getExternalId(), cachedListing, p);
+					deleteListing(e, listing.getExternalId(), cachedListing, p);
+					log.trace("Deleted listing {}", listing::getExternalId);
 				}
 				return null;
 			}));
@@ -581,24 +486,6 @@ public class RedissonCachedSellerListingService
 
 		log.debug("sleeping {}", millis);
 		ThreadUtils.sleepQuietly(Duration.ofMillis(millis));
-	}
-
-	private static class RetryableException extends RuntimeException {
-
-		private static final long serialVersionUID = 2023120801L;
-
-		public RetryableException() {
-			super();
-		}
-
-		public RetryableException(String message) {
-			super(message);
-		}
-
-		public RetryableException(Throwable cause) {
-			super(cause);
-		}
-
 	}
 
 }
